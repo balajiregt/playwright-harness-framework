@@ -1,0 +1,42 @@
+{
+  "name": "playwright-agentic-framework",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MCP-optional agentic Playwright harness for standardized AI-assisted UI automation with CLI evidence, capture workflows, context graphs, and trace-first debugging.",
+  "type": "module",
+  "scripts": {
+    "source:manifest": "node scripts/sync-source-manifest.mjs --write",
+    "source:manifest:check": "node scripts/sync-source-manifest.mjs --check",
+    "source:manifest:crm": "node scripts/sync-source-manifest.mjs --write --adapter=sample-crm --output=examples/sample-crm-app/source-manifest.json",
+    "source:manifest:crm:check": "node scripts/sync-source-manifest.mjs --check --adapter=sample-crm --output=examples/sample-crm-app/source-manifest.json",
+    "test": "npm run source:manifest:crm -- --quiet && npx playwright test",
+    "test:smoke": "npm run source:manifest:crm -- --quiet && npx playwright test --grep @smoke",
+    "test:headed": "npm run source:manifest:crm -- --quiet && npx playwright test --headed --project=chromium",
+    "test:debug": "npm run source:manifest:crm -- --quiet && npx playwright test --debug --project=chromium",
+    "test:ui": "npm run source:manifest:crm -- --quiet && npx playwright test --ui",
+    "test:auth": "npm run source:manifest:crm -- --quiet && npx playwright test tests/auth.setup.ts --project=setup",
+    "sample:crm": "node examples/sample-crm-app/server.mjs",
+    "sample:crm:test": "npm run source:manifest:crm -- --quiet && npx playwright test tests/sample-crm.spec.ts --project=chromium",
+    "capture:recipes:generate": "npm run source:manifest:crm -- --quiet && node scripts/generate-capture-recipes.mjs --write",
+    "capture:recipe": "node scripts/run-capture-recipe.mjs",
+    "capture:crm:admin": "node scripts/run-capture-recipe.mjs crm-admin-role",
+    "capture:crm:manager": "node scripts/run-capture-recipe.mjs crm-manager-role",
+    "capture:crm:sales": "node scripts/run-capture-recipe.mjs crm-sales-role",
+    "capture:crm:viewer": "node scripts/run-capture-recipe.mjs crm-viewer-role",
+    "graph:source": "npm run source:manifest:crm -- --quiet && node scripts/graph-source.mjs",
+    "graph:tests": "node scripts/graph-tests.mjs",
+    "graph:coverage": "node scripts/graph-coverage.mjs",
+    "graph:duplicates": "node scripts/graph-duplicates.mjs",
+    "graph:view": "npm run source:manifest:crm -- --quiet && node scripts/graph-view.mjs",
+    "graph:serve": "npm run source:manifest:crm -- --quiet && node scripts/graph-view.mjs --serve",
+    "show:report": "npx playwright show-report",
+    "show:trace": "npx playwright show-trace",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.1",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0",
+    "yaml": "^2.9.0"
+  }
+}

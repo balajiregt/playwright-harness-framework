@@ -1,0 +1,28 @@
+name: "duplication-rules"
+version: 1
+purpose: "Rules for identifying duplicate or overlapping Playwright coverage."
+
+compare_dimensions:
+  - "normalized title"
+  - "route"
+  - "role"
+  - "action"
+  - "assertion intent"
+  - "tags"
+  - "page object imports"
+  - "capture references"
+
+duplicate_levels:
+  exact:
+    rule: "Same route, role, action, assertion intent, and primary tag."
+    recommendation: "Do not add another test; extend the existing test only if an assertion is missing."
+  overlap:
+    rule: "Same route and action with different title or secondary tags."
+    recommendation: "Review whether the second test covers a new state or only repeats coverage."
+  safe:
+    rule: "Same route but different role, state, validation rule, or assertion intent."
+    recommendation: "Keep as distinct coverage."
+
+outputs:
+  duplicates: "graphs/data/duplicates.json"
+

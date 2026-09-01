@@ -1,0 +1,133 @@
+name: "static-flow-graph"
+version: 1
+purpose: "Static graph context that maps prompt-level flows to captured page context, framework files, tags, and evidence."
+
+nodes:
+  prompt:
+    kind: "input"
+    owns: "User intent, business flow, acceptance criteria, roles, and data hints."
+  scope_router:
+    kind: "decision"
+    owns: "Decides whether a prompt is a small direct update or a new flow that needs a spec first."
+    direct_update_when:
+      - "Add or adjust one assertion in an existing test."
+      - "Fix one locator or move repeated selectors into an existing page object."
+      - "Add one missing tag or update one framework helper without changing scenario scope."
+    spec_first_when:
+      - "The prompt introduces a new role flow or business workflow."
+      - "The prompt spans multiple routes, states, or user permissions."
+      - "The acceptance criteria are broad or ambiguous."
+      - "The graph suggests a new coverage area rather than a small missing expectation."
+  page_capture:
+    kind: "context-capture"
+    path: "contexts/captures/*"
+    owns: "Curated playwright-cli YAML snapshots, screenshot notes, and page-state evidence."
+  source_graph:
+    kind: "source-intelligence"
+    path: "contexts/source-map.yml, graphs/data/source-graph.json"
+    owns: "Source-discovered routes, roles, actions, fields, validation states, and possible tests."
+  coverage_graph:
+    kind: "coverage-intelligence"
+    path: "graphs/data/coverage-graph.json, graphs/data/duplicates.json, graphs/index.html"
+    owns: "Existing coverage, missing coverage, capture gaps, and duplicate risks."
+  flow_spec:
+    kind: "specification"
+    path: "specs/*.md"
+    owns: "Human-readable scenarios, steps, expected results, tags, and required context."
+  fixture:
+    kind: "setup"
+    path: "fixtures/*.ts"
+    owns: "Typed fixtures, page instantiation, auth state, browser context policy."
+  page_object:
+    kind: "interaction"
+    path: "pages/*.ts"
+    owns: "Stable locators and user actions."
+  assertion_helper:
+    kind: "verification"
+    path: "assertions/*.ts"
+    owns: "Reusable web-first expectations."
+  test_data:
+    kind: "data"
+    path: "data/*.ts"
+    owns: "Reusable test data builders and scenario data."
+  executable_spec:
+    kind: "test"
+    path: "tests/*.spec.ts"
+    owns: "Executable behavior flow assembled from framework layers."
+  evidence:
+    kind: "artifact"
+    path: "test-results/**, playwright-report/**, and temporary .playwright-cli/**"
+    owns: "Test-runner output, traces, screenshots, videos, reports, logs, and temporary capture output."
+
+edges:
+  - from: "prompt"
+    to: "scope_router"
+    agent_state: "scope_router"
+  - from: "scope_router"
+    to: "source_graph"
+    agent_state: "source_analyzer"
+  - from: "scope_router"
+    to: "executable_spec"
+    agent_state: "generator"
+    condition: "direct_update"
+  - from: "source_graph"
+    to: "coverage_graph"
+    agent_state: "coverage_reviewer"
+  - from: "coverage_graph"
+    to: "page_capture"
+    agent_state: "capture"
+  - from: "page_capture"
+    to: "flow_spec"
+    agent_state: "planner"
+  - from: "flow_spec"
+    to: "executable_spec"
+    agent_state: "generator"
+  - from: "executable_spec"
+    to: "fixture"
+    agent_state: "generator"
+  - from: "executable_spec"
+    to: "page_object"
+    agent_state: "generator"
+  - from: "executable_spec"
+    to: "assertion_helper"
+    agent_state: "generator"
+  - from: "executable_spec"
+    to: "test_data"
+    agent_state: "generator"
+  - from: "evidence"
+    to: "fixture"
+    agent_state: "healer"
+  - from: "evidence"
+    to: "page_object"
+    agent_state: "healer"
+  - from: "evidence"
+    to: "assertion_helper"
+    agent_state: "healer"
+  - from: "evidence"
+    to: "executable_spec"
+    agent_state: "healer"
+
+duplicate_coverage_check:
+  compare:
+    - "flow"
+    - "role"
+    - "setup"
+    - "action"
+    - "assertion"
+    - "tags"
+  outcome:
+    exact_match: "Do not add a new test."
+    missing_assertion: "Add the smallest assertion to the existing test."
+    new_dimension: "Add a focused test using existing framework layers."
+    unsupported_behavior: "Report a product, app, or environment gap."
+
+capture_rules:
+  source: "playwright-cli"
+  curated_path: "contexts/captures/"
+  temporary_path: ".playwright-cli/"
+  rules:
+    - "Capture YAML snapshots with meaningful filenames before generating page-specific tests."
+    - "Capture screenshots when visual layout, charts, canvas, or image content matters."
+    - "Re-snapshot after navigation or DOM-changing actions because element refs expire."
+    - "Prefer scoped snapshots or --depth on complex pages to reduce context size."
+    - "Do not treat temporary .playwright-cli files as stable context unless curated."

@@ -1,0 +1,28 @@
+- generic [ref=f3e2]:
+  - banner [ref=f3e3]:
+    - generic [ref=f3e4]:
+      - paragraph [ref=f3e5]: Sample Agentic CRM
+      - heading "Accounts" [level=1] [ref=f3e6]
+    - generic [ref=f3e7]: Vik Viewer · viewer
+    - button "Logout" [ref=f3e8] [cursor=pointer]
+  - navigation "CRM sections" [ref=f3e9]:
+    - button "Dashboard" [ref=f3e10] [cursor=pointer]
+    - button "Leads" [disabled] [ref=f3e11]
+    - button "Accounts" [ref=f3e12] [cursor=pointer]
+    - button "Opportunities" [disabled] [ref=f3e13]
+    - button "Reports" [disabled] [ref=f3e14]
+    - button "Admin users" [disabled] [ref=f3e15]
+  - main [ref=f3e16]:
+    - generic [ref=f3e17]:
+      - paragraph [ref=f3e18]: Read-only access
+      - heading "Accounts" [level=2] [ref=f3e19]
+      - paragraph [ref=f3e20]: Viewer role can inspect accounts but cannot export them.
+      - table [ref=f3e21]:
+        - rowgroup [ref=f3e22]:
+          - row [ref=f3e23]:
+            - cell "Acme Health" [ref=f3e24]
+            - cell "Renewal due" [ref=f3e25]
+          - row [ref=f3e26]:
+            - cell "Northstar Bank" [ref=f3e27]
+            - cell "Expansion" [ref=f3e28]
+      - button "Export accounts" [disabled] [ref=f3e29]

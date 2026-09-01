@@ -1,0 +1,150 @@
+name: "playwright-command-map"
+version: 1
+purpose: "Canonical CLI commands agents should prefer before inventing new commands."
+
+prerequisites:
+  node: "Node.js 20 or newer must be installed by the workstation or CI image."
+  npm: "npm and npx come from Node.js/npm; this project does not install npm globally."
+  dependencies: "Run npm install or npm ci before using the command map."
+  agent_cli_global: "Install npm install -g @playwright/cli@latest when the team approves global agent exploration tools."
+  agent_cli_path: "If playwright-cli is not found after install, add the npm global bin directory to PATH."
+  test_runner_cli: "Use npx playwright so test commands resolve to the project-local Playwright test package."
+  source_manifest: "When source access exists, keep the source manifest in sync before graph, capture, and broad test generation flows."
+
+commands:
+  source_manifest:
+    command: "npm run source:manifest"
+    expands_to: "node scripts/sync-source-manifest.mjs --write"
+    use_when: "Create a first-pass source manifest with the common generic scanner."
+  source_manifest_check:
+    command: "npm run source:manifest:check"
+    expands_to: "node scripts/sync-source-manifest.mjs --check"
+    use_when: "Confirm the generic-scanner source manifest is current without modifying files."
+  source_manifest_crm:
+    command: "npm run source:manifest:crm"
+    expands_to: "node scripts/sync-source-manifest.mjs --write --adapter=sample-crm --output=examples/sample-crm-app/source-manifest.json"
+    use_when: "Regenerate the richer source manifest for the optional sample CRM demo app."
+  source_manifest_crm_check:
+    command: "npm run source:manifest:crm:check"
+    expands_to: "node scripts/sync-source-manifest.mjs --check --adapter=sample-crm --output=examples/sample-crm-app/source-manifest.json"
+    use_when: "Confirm the sample CRM source manifest is current without modifying files."
+  agent_cli_help:
+    command: "playwright-cli --help"
+    expands_to: "playwright-cli --help"
+    use_when: "Confirm the global Playwright agent CLI is installed and discover available commands."
+  agent_cli_install_skills:
+    command: "playwright-cli install --skills"
+    expands_to: "playwright-cli install --skills"
+    use_when: "Install local coding-agent skills when the team's agent setup allows them."
+  capture_open:
+    command: "playwright-cli open <url> --headed"
+    expands_to: "playwright-cli open <url> --headed"
+    use_when: "Open a page for no-MCP exploration and capture."
+  capture_snapshot:
+    command: "playwright-cli snapshot --filename=contexts/captures/<flow-or-page>.yml"
+    expands_to: "playwright-cli snapshot --filename=contexts/captures/<flow-or-page>.yml"
+    use_when: "Save a reusable YAML accessibility snapshot for agent context."
+  capture_screenshot:
+    command: "playwright-cli screenshot --filename=contexts/captures/<flow-or-page>.png"
+    expands_to: "playwright-cli screenshot --filename=contexts/captures/<flow-or-page>.png"
+    use_when: "Save visual layout evidence when accessibility snapshots are not enough."
+  capture_state_save:
+    command: "playwright-cli state-save playwright/.auth/user.json"
+    expands_to: "playwright-cli state-save playwright/.auth/user.json"
+    use_when: "Persist authenticated browser state after login."
+  capture_state_load:
+    command: "playwright-cli state-load playwright/.auth/user.json"
+    expands_to: "playwright-cli state-load playwright/.auth/user.json"
+    use_when: "Reuse saved auth state during no-MCP exploration."
+  all:
+    command: "npm test"
+    expands_to: "npm run source:manifest:crm -- --quiet && npx playwright test"
+    use_when: "Refresh sample CRM manifest context, then run the whole harness gate."
+  smoke:
+    command: "npm run test:smoke"
+    expands_to: "npm run source:manifest:crm -- --quiet && npx playwright test --grep @smoke"
+    use_when: "Verify prompt-created smoke coverage or fast regression checks."
+  headed:
+    command: "npm run test:headed"
+    expands_to: "npm run source:manifest:crm -- --quiet && npx playwright test --headed --project=chromium"
+    use_when: "Local visual debugging when headed execution is allowed."
+  debug:
+    command: "npm run test:debug"
+    expands_to: "npm run source:manifest:crm -- --quiet && npx playwright test --debug --project=chromium"
+    use_when: "Interactive local debugging only when the environment supports it."
+  auth_setup:
+    command: "npm run test:auth"
+    expands_to: "npm run source:manifest:crm -- --quiet && npx playwright test tests/auth.setup.ts --project=setup"
+    use_when: "Regenerate storageState before authenticated tests."
+  sample_crm_app:
+    command: "npm run sample:crm"
+    expands_to: "node examples/sample-crm-app/server.mjs"
+    use_when: "Start the optional demo CRM app for V2 graph and sample-flow validation."
+  sample_crm_test:
+    command: "APP_BASE_URL=http://127.0.0.1:4173 npm run sample:crm:test"
+    expands_to: "npm run source:manifest:crm -- --quiet && npx playwright test tests/sample-crm.spec.ts --project=chromium"
+    use_when: "Run focused validation for the optional sample CRM app."
+  capture_recipes_generate:
+    command: "npm run capture:recipes:generate"
+    expands_to: "npm run source:manifest:crm -- --quiet && node scripts/generate-capture-recipes.mjs --write"
+    use_when: "Refresh the sample CRM source manifest, then generate reusable playwright-cli capture workflows."
+  capture_recipe_list:
+    command: "npm run capture:recipe -- --list"
+    expands_to: "node scripts/run-capture-recipe.mjs --list"
+    use_when: "Show available role or flow capture workflows before running one."
+  capture_recipe_manager_dry_run:
+    command: "npm run capture:crm:manager -- --dry-run"
+    expands_to: "node scripts/run-capture-recipe.mjs crm-manager-role --dry-run"
+    use_when: "Preview manager role playwright-cli capture steps without opening or changing the browser."
+  capture_recipe_manager:
+    command: "npm run capture:crm:manager"
+    expands_to: "node scripts/run-capture-recipe.mjs crm-manager-role"
+    use_when: "Capture manager role allowed and denied CRM page states into contexts/captures."
+  graph_source:
+    command: "npm run graph:source"
+    expands_to: "npm run source:manifest:crm -- --quiet && node scripts/graph-source.mjs"
+    use_when: "Refresh sample CRM source manifest context, then generate source routes/components/actions/roles/states and possible test candidates."
+  graph_tests:
+    command: "npm run graph:tests"
+    expands_to: "node scripts/graph-tests.mjs"
+    use_when: "Generate existing spec/test/page/assertion/tag/capture graph data."
+  graph_coverage:
+    command: "npm run graph:coverage"
+    expands_to: "node scripts/graph-coverage.mjs"
+    use_when: "Compare source-discovered possible tests with existing coverage after graph:source and graph:tests."
+  graph_duplicates:
+    command: "npm run graph:duplicates"
+    expands_to: "node scripts/graph-duplicates.mjs"
+    use_when: "Identify duplicate or overlapping test candidates after graph:tests."
+  graph_view:
+    command: "npm run graph:view"
+    expands_to: "npm run source:manifest:crm -- --quiet && node scripts/graph-view.mjs"
+    use_when: "Refresh sample CRM source manifest context, regenerate all graph data, and write the tabbed static HTML graph report."
+  report:
+    command: "npm run show:report"
+    expands_to: "npx playwright show-report"
+    use_when: "Inspect HTML report after a run."
+  trace:
+    command: "npm run show:trace -- path/to/trace.zip"
+    expands_to: "npx playwright show-trace path/to/trace.zip"
+    use_when: "Inspect a trace artifact from a failure."
+  typecheck:
+    command: "npm run typecheck"
+    expands_to: "tsc --noEmit"
+    use_when: "Validate framework TypeScript after changing fixtures, pages, assertions, or config."
+
+selection_rules:
+  - "When source access exists, refresh or check the source manifest before graph-driven planning and broad test work."
+  - "Use the generic source scanner when a consuming team has not built an app-specific manifest generator yet."
+  - "After a generic scan, have the agent review and enrich auth, role, state, and workflow context before relying on generated capture workflows."
+  - "Treat the source manifest as a contract; use SOURCE_MANIFEST_COMMAND or SOURCE_MANIFEST_ADAPTER for non-sample applications."
+  - "Use playwright-cli for page exploration and reusable YAML captures."
+  - "Use capture workflows for repeated role or flow captures so users do not need to memorize low-level playwright-cli command sequences."
+  - "Use npx playwright test for executable test verification."
+  - "Use graph commands for source-aware planning and duplicate review when source access exists."
+  - "Use the narrowest command that answers the current question."
+  - "Read curated captures from contexts/captures before opening a browser."
+  - "Re-snapshot after navigation or DOM-changing actions because element refs expire."
+  - "Prefer --grep tags for prompt-created flow families."
+  - "Prefer --project when browser or device scope matters."
+  - "Use traces, screenshots, videos, reports, and logs as evidence before changing code."

@@ -1,0 +1,301 @@
+{
+  "name": "sample-agentic-crm",
+  "description": "Demo CRM app for source-aware Playwright graph intelligence.",
+  "capturePrefix": "crm",
+  "entrypoint": "examples/sample-crm-app/server.mjs",
+  "publicRoot": "examples/sample-crm-app/public",
+  "defaultUrl": "http://127.0.0.1:4173",
+  "auth": {
+    "strategy": "localStorage",
+    "loginRoute": "/login",
+    "storageKey": "crm-user"
+  },
+  "users": [
+    {
+      "role": "admin",
+      "username": "admin@example.com",
+      "password": "password",
+      "displayName": "Asha Admin",
+      "access": [
+        "/crm/dashboard",
+        "/crm/leads",
+        "/crm/accounts",
+        "/crm/opportunities",
+        "/crm/reports",
+        "/crm/admin/users"
+      ],
+      "session": {
+        "username": "admin@example.com",
+        "password": "password",
+        "role": "admin",
+        "displayName": "Asha Admin",
+        "routes": [
+          "/crm/dashboard",
+          "/crm/leads",
+          "/crm/accounts",
+          "/crm/opportunities",
+          "/crm/reports",
+          "/crm/admin/users"
+        ]
+      }
+    },
+    {
+      "role": "manager",
+      "username": "manager@example.com",
+      "password": "password",
+      "displayName": "Mira Manager",
+      "access": [
+        "/crm/dashboard",
+        "/crm/accounts",
+        "/crm/opportunities",
+        "/crm/reports"
+      ],
+      "session": {
+        "username": "manager@example.com",
+        "password": "password",
+        "role": "manager",
+        "displayName": "Mira Manager",
+        "routes": [
+          "/crm/dashboard",
+          "/crm/accounts",
+          "/crm/opportunities",
+          "/crm/reports"
+        ]
+      }
+    },
+    {
+      "role": "sales",
+      "username": "sales@example.com",
+      "password": "password",
+      "displayName": "Sam Sales",
+      "access": [
+        "/crm/dashboard",
+        "/crm/leads",
+        "/crm/opportunities"
+      ],
+      "session": {
+        "username": "sales@example.com",
+        "password": "password",
+        "role": "sales",
+        "displayName": "Sam Sales",
+        "routes": [
+          "/crm/dashboard",
+          "/crm/leads",
+          "/crm/opportunities"
+        ]
+      }
+    },
+    {
+      "role": "viewer",
+      "username": "viewer@example.com",
+      "password": "password",
+      "displayName": "Vik Viewer",
+      "access": [
+        "/crm/dashboard",
+        "/crm/accounts"
+      ],
+      "session": {
+        "username": "viewer@example.com",
+        "password": "password",
+        "role": "viewer",
+        "displayName": "Vik Viewer",
+        "routes": [
+          "/crm/dashboard",
+          "/crm/accounts"
+        ]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "path": "/login",
+      "component": "LoginPage",
+      "roles": [
+        "anonymous"
+      ],
+      "actions": [
+        "sign in"
+      ],
+      "fields": [
+        "username",
+        "password"
+      ],
+      "states": [
+        "loaded",
+        "validation-error"
+      ],
+      "testIds": [
+        "login-page",
+        "login-form",
+        "username-input",
+        "password-input",
+        "login-submit",
+        "login-error",
+        "seeded-users"
+      ]
+    },
+    {
+      "path": "/crm/dashboard",
+      "component": "DashboardPage",
+      "roles": [
+        "admin",
+        "manager",
+        "sales",
+        "viewer"
+      ],
+      "actions": [
+        "refresh metrics",
+        "open account detail"
+      ],
+      "fields": [],
+      "states": [
+        "loaded",
+        "loading"
+      ],
+      "testIds": [
+        "dashboard-page",
+        "metric-open-pipeline",
+        "metric-at-risk-accounts",
+        "refresh-dashboard",
+        "metric-new-leads",
+        "loading-state"
+      ]
+    },
+    {
+      "path": "/crm/leads",
+      "component": "LeadsPage",
+      "roles": [
+        "admin",
+        "sales"
+      ],
+      "actions": [
+        "create lead",
+        "filter leads"
+      ],
+      "fields": [
+        "lead name",
+        "email",
+        "source"
+      ],
+      "states": [
+        "loaded",
+        "empty",
+        "validation-error"
+      ],
+      "testIds": [
+        "leads-page",
+        "lead-name-input",
+        "lead-email-input",
+        "lead-source-input",
+        "save-lead",
+        "lead-form",
+        "lead-validation-error",
+        "leads-empty-state",
+        "leads-table"
+      ]
+    },
+    {
+      "path": "/crm/accounts",
+      "component": "AccountsPage",
+      "roles": [
+        "admin",
+        "manager",
+        "viewer"
+      ],
+      "actions": [
+        "open account detail",
+        "export accounts"
+      ],
+      "fields": [],
+      "states": [
+        "loaded",
+        "read-only"
+      ],
+      "testIds": [
+        "accounts-page",
+        "accounts-table",
+        "export-accounts",
+        "read-only-banner"
+      ]
+    },
+    {
+      "path": "/crm/opportunities",
+      "component": "OpportunitiesPage",
+      "roles": [
+        "admin",
+        "manager",
+        "sales"
+      ],
+      "actions": [
+        "create opportunity",
+        "advance stage"
+      ],
+      "fields": [
+        "opportunity name",
+        "deal value"
+      ],
+      "states": [
+        "loaded",
+        "validation-error"
+      ],
+      "testIds": [
+        "opportunities-page",
+        "opportunity-name-input",
+        "opportunity-value-input",
+        "save-opportunity",
+        "opportunity-form",
+        "opportunity-validation-error",
+        "opportunities-table"
+      ]
+    },
+    {
+      "path": "/crm/reports",
+      "component": "ReportsPage",
+      "roles": [
+        "admin",
+        "manager"
+      ],
+      "actions": [
+        "download report",
+        "retry report"
+      ],
+      "fields": [],
+      "states": [
+        "loaded",
+        "error"
+      ],
+      "testIds": [
+        "reports-page",
+        "download-report",
+        "retry-report",
+        "report-error",
+        "report-ready"
+      ]
+    },
+    {
+      "path": "/crm/admin/users",
+      "component": "AdminUsersPage",
+      "roles": [
+        "admin"
+      ],
+      "actions": [
+        "invite user",
+        "change role"
+      ],
+      "fields": [
+        "role"
+      ],
+      "states": [
+        "loaded",
+        "permission-denied"
+      ],
+      "testIds": [
+        "admin-users-page",
+        "invite-user",
+        "role-select",
+        "permission-denied-page",
+        "back-to-dashboard"
+      ]
+    }
+  ]
+}

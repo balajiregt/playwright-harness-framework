@@ -1,0 +1,79 @@
+name: "source-map"
+version: 1
+purpose: "Describe source-code locations that graph intelligence should inspect when source access is available."
+
+default_source_target:
+  name: "sample-agentic-crm"
+  manifest: "examples/sample-crm-app/source-manifest.json"
+  root: "examples/sample-crm-app"
+  app_url: "http://127.0.0.1:4173"
+  adapter: "scripts/source-adapters/sample-crm.mjs"
+
+manifest_contract:
+  purpose: "A source manifest is the reusable app map consumed by graph, capture, and prompt-planning workflows."
+  expected_fields:
+    - "name"
+    - "defaultUrl"
+    - "users with role, username, access routes, and optional session state"
+    - "routes with path, component, roles, actions, fields, states, and testIds"
+    - "optional auth strategy, loginRoute, storageKey, and capturePrefix"
+  adoption_rule: "External teams should generate this manifest from their own route/config/source model instead of copying the sample CRM shape blindly."
+
+manifest_sync:
+  write_command: "npm run source:manifest"
+  check_command: "npm run source:manifest:check"
+  generic_scanner_command: "npm run source:manifest -- --root=path/to/app --output=source-manifest.json --url=http://localhost:3000 --name=my-app"
+  default_adapter: "scripts/source-adapters/generic-source.mjs"
+  generic_adapter: "scripts/source-adapters/generic-source.mjs"
+  sample_crm_adapter: "scripts/source-adapters/sample-crm.mjs"
+  sample_crm_command: "npm run source:manifest:crm"
+  custom_adapter_env: "SOURCE_MANIFEST_ADAPTER=path/to/adapter.mjs"
+  custom_command_env: "SOURCE_MANIFEST_COMMAND=\"npm run your-app:manifest\""
+  output_env: "SOURCE_MANIFEST=path/to/source-manifest.json"
+  disable_env: "SOURCE_MANIFEST_SYNC=0"
+  rules:
+    - "The harness consumes the manifest; each application owns how the manifest is produced."
+    - "Start with the generic scanner for common React, Next, Angular, Vue, HTML, Spring Boot, and .NET route patterns."
+    - "Let agents review and enrich scanner output before generating capture workflows for business-critical auth, role, and state coverage."
+    - "Use app-specific manifest commands or adapters when teams need exact auth, role, feature flag, or dynamic-state semantics."
+    - "Run source manifest sync before broad test generation, capture workflow generation, and graph generation when source access exists."
+    - "Project scripts refresh the manifest before Playwright tests, sample CRM tests, capture workflow generation, and graph view generation."
+    - "Use --check in CI when teams want to fail fast on stale committed manifests instead of auto-updating them."
+
+source_discovery:
+  preferred:
+    - "generic source scanner for first-pass manifests when no app manifest exists"
+    - "source-manifest.json when an app provides one"
+    - "routes declared in source files"
+    - "components or page modules"
+    - "forms, buttons, labels, data-testid values, and role guards"
+  heuristic_patterns:
+    routes:
+      - "path"
+      - "route"
+      - "href"
+      - "data-route"
+    actions:
+      - "button"
+      - "submit"
+      - "click"
+      - "data-testid"
+    states:
+      - "role=\"alert\""
+      - "loading"
+      - "empty"
+      - "denied"
+      - "error"
+
+graph_outputs:
+  source_graph: "graphs/data/source-graph.json"
+  possible_tests: "graphs/data/coverage-graph.json"
+
+rules:
+  - "Use source access to suggest possible tests, not to bypass user-visible validation."
+  - "Prefer app-provided manifests over fragile scraping when available."
+  - "Treat generic scanner output as a reviewable starting point, not a guaranteed complete model of the app."
+  - "Scanner output should reduce blank-page discovery; agent review should convert it into curated workflow context."
+  - "Keep manifest generation app-specific and manifest consumption harness-generic."
+  - "When source and captures disagree, mark the capture stale instead of guessing."
+  - "Keep sample app source separate from reusable harness code."

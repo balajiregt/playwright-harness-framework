@@ -1,0 +1,94 @@
+name: "playwright-cli-capture-map"
+version: 1
+purpose: "Rules and catalog for reusable page context captured by global @playwright/cli."
+
+tooling:
+  install_global: "npm install -g @playwright/cli@latest"
+  verify_install: "playwright-cli --help"
+  path_note: "If playwright-cli is not found, ensure the npm global bin directory is on PATH."
+  optional_skills: "playwright-cli install --skills"
+  temporary_output: ".playwright-cli/"
+  curated_output: "contexts/captures/"
+  recipe_file: "contexts/capture-recipes.yml"
+  recipe_generator: "npm run capture:recipes:generate"
+  recipe_runner: "npm run capture:recipe -- <recipe-id>"
+
+capture_workflow:
+  purpose: "Turn source or manifest knowledge into repeatable playwright-cli capture runs."
+  daily_flow:
+    - "User gives intent, such as create manager role flow tests."
+    - "Agent reads app source, source manifest, and existing coverage."
+    - "Agent identifies accessible and denied routes for the target role."
+    - "Agent creates or refreshes contexts/capture-recipes.yml."
+    - "Agent runs the matching capture workflow to produce curated YAML snapshots and selected screenshots."
+    - "Agent generates or heals Playwright tests from captures, page objects, assertions, fixtures, and graph evidence."
+  day_1: "Capture the role/page states once, then create tests from those captures."
+  day_2: "Run npx playwright test commands; do not recapture unless page context is missing or stale."
+  later_refresh: "Refresh only affected captures when UI copy, locators, permissions, routes, or failing tests indicate stale context."
+  commands:
+    generate_from_manifest: "npm run capture:recipes:generate"
+    list_recipes: "npm run capture:recipe -- --list"
+    dry_run_manager: "npm run capture:crm:manager -- --dry-run"
+    run_manager: "npm run capture:crm:manager"
+    run_without_screenshots: "npm run capture:crm:manager -- --no-screenshots"
+  source_manifest_default: "examples/sample-crm-app/source-manifest.json"
+  custom_source_manifest: "SOURCE_MANIFEST=path/to/source-manifest.json npm run capture:recipes:generate"
+  custom_cli_path: "PLAYWRIGHT_CLI=/path/to/playwright-cli npm run capture:crm:manager"
+
+capture_types:
+  accessibility_snapshot:
+    extension: ".yml"
+    command: "playwright-cli snapshot --filename=contexts/captures/<name>.yml"
+    use_for:
+      - "Page structure"
+      - "Accessible names"
+      - "Element refs"
+      - "Locator discovery"
+      - "Prompt-to-test generation"
+  screenshot:
+    extension: ".png"
+    command: "playwright-cli screenshot --filename=contexts/captures/<name>.png"
+    use_for:
+      - "Visual layout"
+      - "Charts, canvas, images, and visual regressions"
+      - "Bug documentation"
+  storage_state:
+    extension: ".json"
+    command: "playwright-cli state-save playwright/.auth/user.json"
+    use_for:
+      - "Persisting authenticated cookies and localStorage after login"
+
+naming:
+  pattern: "<app-or-domain>-<flow-or-page>-<state>.<ext>"
+  examples:
+    - "checkout-cart-after-add.yml"
+    - "admin-dashboard-loaded.png"
+    - "crm-manager-dashboard-loaded.yml"
+    - "crm-manager-admin-users-denied.png"
+
+freshness:
+  refresh_when:
+    - "The app route changed."
+    - "The UI component or copy changed."
+    - "The capture was taken before a relevant navigation or DOM-changing action."
+    - "The generated test cannot find a locator from the capture."
+  ref_lifetime: "Element refs are valid only for the current snapshot and should not be hard-coded into tests."
+
+agent_usage:
+  - "Read existing curated captures before opening a browser."
+  - "Prefer capture workflows for known roles or repeated flows instead of asking humans to remember each open, login, snapshot, and screenshot command."
+  - "Use captures to infer stable locators, flow states, and page-object methods."
+  - "Do not paste full large captures into the prompt when a targeted file read is enough."
+  - "Prefer scoped snapshots or --depth for large pages."
+  - "Convert refs into Playwright locators; do not put transient refs in executable tests."
+  - "Use npx playwright test to prove generated tests pass."
+
+catalog:
+  - name: "crm-login-loaded"
+    url: "http://127.0.0.1:4173/login"
+    snapshot: "contexts/captures/crm-login-loaded.yml"
+    screenshot: "contexts/captures/crm-login-loaded.png"
+    use_for:
+      - "Sample CRM login flow generation"
+      - "Locator discovery for login form fields, submit action, and seeded user context"
+      - "Example of curated playwright-cli context capture"

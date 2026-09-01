@@ -1,0 +1,79 @@
+<svg width="1400" height="900" viewBox="0 0 1400 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1400" height="900" fill="#07111F"/>
+  <defs>
+    <pattern id="dots" x="0" y="0" width="42" height="42" patternUnits="userSpaceOnUse">
+      <circle cx="8" cy="8" r="3" fill="#243044" opacity="0.65"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="16" flood-color="#000000" flood-opacity="0.30"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#CBD5E1"/>
+    </marker>
+  </defs>
+  <rect width="1400" height="900" fill="url(#dots)" opacity="0.85"/>
+
+  <text x="70" y="78" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="800">Capture Workflow Lifecycle</text>
+  <text x="70" y="118" fill="#A7B4C8" font-family="Inter, Arial, sans-serif" font-size="22">From a role-based prompt to reusable Playwright CLI page context and framework-aligned tests</text>
+
+  <g filter="url(#shadow)">
+    <rect x="68" y="180" width="190" height="104" rx="12" fill="#102033" stroke="#38BDF8" stroke-width="2"/>
+    <text x="96" y="222" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">User Intent</text>
+    <text x="96" y="257" fill="#A7B4C8" font-family="Inter, Arial, sans-serif" font-size="17">manager flows</text>
+
+    <rect x="318" y="180" width="210" height="104" rx="12" fill="#13251E" stroke="#34D399" stroke-width="2"/>
+    <text x="350" y="222" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Source Context</text>
+    <text x="350" y="257" fill="#A7B4C8" font-family="Inter, Arial, sans-serif" font-size="17">routes, roles, states</text>
+
+    <rect x="588" y="180" width="230" height="104" rx="12" fill="#251B36" stroke="#A78BFA" stroke-width="2"/>
+    <text x="620" y="222" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Capture Workflow</text>
+    <text x="620" y="257" fill="#A7B4C8" font-family="Inter, Arial, sans-serif" font-size="17">YAML workflow file</text>
+
+    <rect x="878" y="180" width="220" height="104" rx="12" fill="#2A1D14" stroke="#FBBF24" stroke-width="2"/>
+    <text x="910" y="222" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Workflow Runner</text>
+    <text x="910" y="257" fill="#A7B4C8" font-family="Inter, Arial, sans-serif" font-size="17">playwright-cli steps</text>
+
+    <rect x="1158" y="180" width="190" height="104" rx="12" fill="#172033" stroke="#60A5FA" stroke-width="2"/>
+    <text x="1190" y="222" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Curated</text>
+    <text x="1190" y="251" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Captures</text>
+  </g>
+
+  <line x1="258" y1="232" x2="318" y2="232" stroke="#CBD5E1" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="528" y1="232" x2="588" y2="232" stroke="#CBD5E1" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="818" y1="232" x2="878" y2="232" stroke="#CBD5E1" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="1098" y1="232" x2="1158" y2="232" stroke="#CBD5E1" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <path d="M1253 284 C1253 360 704 350 704 430" stroke="#CBD5E1" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <g filter="url(#shadow)">
+    <rect x="458" y="430" width="492" height="126" rx="16" fill="#0F1E2E" stroke="#22D3EE" stroke-width="2"/>
+    <text x="520" y="477" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="800">Generate Or Heal Tests</text>
+    <text x="520" y="516" fill="#A7B4C8" font-family="Inter, Arial, sans-serif" font-size="20">fixtures + page objects + assertions + tags</text>
+  </g>
+
+  <line x1="704" y1="556" x2="704" y2="638" stroke="#CBD5E1" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <g filter="url(#shadow)">
+    <rect x="458" y="638" width="492" height="98" rx="16" fill="#142315" stroke="#22C55E" stroke-width="2"/>
+    <text x="548" y="682" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="800">npx playwright test</text>
+    <text x="548" y="716" fill="#A7B4C8" font-family="Inter, Arial, sans-serif" font-size="19">verification, traces, screenshots, reports</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="88" y="760" width="330" height="86" rx="14" fill="#111827" stroke="#64748B" stroke-width="2"/>
+    <text x="126" y="798" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="800">Day 1</text>
+    <text x="126" y="829" fill="#A7B4C8" font-family="Inter, Arial, sans-serif" font-size="18">Capture once, create tests</text>
+
+    <rect x="535" y="760" width="330" height="86" rx="14" fill="#111827" stroke="#64748B" stroke-width="2"/>
+    <text x="573" y="798" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="800">Day 2</text>
+    <text x="573" y="829" fill="#A7B4C8" font-family="Inter, Arial, sans-serif" font-size="18">Run tests, no recapture</text>
+
+    <rect x="982" y="760" width="330" height="86" rx="14" fill="#111827" stroke="#64748B" stroke-width="2"/>
+    <text x="1020" y="798" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="800">Later</text>
+    <text x="1020" y="829" fill="#A7B4C8" font-family="Inter, Arial, sans-serif" font-size="18">Refresh only affected captures</text>
+  </g>
+
+  <path d="M704 736 C704 758 253 730 253 760" stroke="#64748B" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M704 736 L704 760" stroke="#64748B" stroke-width="3" marker-end="url(#arrow)"/>
+  <path d="M704 736 C704 758 1147 730 1147 760" stroke="#64748B" stroke-width="3" marker-end="url(#arrow)"/>
+</svg>

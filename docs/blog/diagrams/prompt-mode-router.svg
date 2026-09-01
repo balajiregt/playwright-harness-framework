@@ -1,0 +1,60 @@
+<svg width="1400" height="820" viewBox="0 0 1400 820" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1400" height="820" fill="#07111F"/>
+  <defs>
+    <pattern id="dots" x="0" y="0" width="42" height="42" patternUnits="userSpaceOnUse">
+      <circle cx="8" cy="8" r="3" fill="#243044" opacity="0.65"/>
+    </pattern>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="14" flood-color="#000000" flood-opacity="0.30"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#CBD5E1"/>
+    </marker>
+  </defs>
+  <rect width="1400" height="820" fill="url(#dots)" opacity="0.85"/>
+
+  <text x="70" y="76" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="800">Prompt Mode Router</text>
+  <text x="70" y="116" fill="#A7B4C8" font-family="Inter, Arial, sans-serif" font-size="22">Every prompt first checks MCP availability, then uses the same harness standards</text>
+
+  <g filter="url(#shadow)">
+    <rect x="516" y="168" width="368" height="102" rx="14" fill="#102033" stroke="#38BDF8" stroke-width="2"/>
+    <text x="560" y="210" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="800">Prompt</text>
+    <text x="560" y="246" fill="#A7B4C8" font-family="Inter, Arial, sans-serif" font-size="19">"create manager role flow tests"</text>
+  </g>
+
+  <line x1="700" y1="270" x2="700" y2="326" stroke="#CBD5E1" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <g filter="url(#shadow)">
+    <path d="M700 326 L882 438 L700 550 L518 438 Z" fill="#24201A" stroke="#FBBF24" stroke-width="2"/>
+    <text x="592" y="426" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="800">MCP Available</text>
+    <text x="628" y="462" fill="#A7B4C8" font-family="Inter, Arial, sans-serif" font-size="19">and allowed?</text>
+  </g>
+
+  <line x1="518" y1="438" x2="360" y2="438" stroke="#CBD5E1" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="882" y1="438" x2="1040" y2="438" stroke="#CBD5E1" stroke-width="4" marker-end="url(#arrow)"/>
+  <text x="422" y="408" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="700">No</text>
+  <text x="954" y="408" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="700">Yes</text>
+
+  <g filter="url(#shadow)">
+    <rect x="70" y="350" width="290" height="176" rx="14" fill="#172033" stroke="#60A5FA" stroke-width="2"/>
+    <text x="106" y="392" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="800">CLI Evidence Path</text>
+    <text x="106" y="432" fill="#A7B4C8" font-family="Inter, Arial, sans-serif" font-size="18">source/manifest</text>
+    <text x="106" y="464" fill="#A7B4C8" font-family="Inter, Arial, sans-serif" font-size="18">capture workflows</text>
+    <text x="106" y="496" fill="#A7B4C8" font-family="Inter, Arial, sans-serif" font-size="18">YAML snapshots</text>
+
+    <rect x="1040" y="350" width="290" height="176" rx="14" fill="#13251E" stroke="#34D399" stroke-width="2"/>
+    <text x="1076" y="392" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="800">MCP Agent Path</text>
+    <text x="1076" y="432" fill="#A7B4C8" font-family="Inter, Arial, sans-serif" font-size="18">planner agent</text>
+    <text x="1076" y="464" fill="#A7B4C8" font-family="Inter, Arial, sans-serif" font-size="18">generator agent</text>
+    <text x="1076" y="496" fill="#A7B4C8" font-family="Inter, Arial, sans-serif" font-size="18">healer agent</text>
+  </g>
+
+  <path d="M215 526 C215 638 570 620 570 674" stroke="#CBD5E1" stroke-width="4" marker-end="url(#arrow)"/>
+  <path d="M1185 526 C1185 638 830 620 830 674" stroke="#CBD5E1" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <g filter="url(#shadow)">
+    <rect x="458" y="674" width="484" height="92" rx="16" fill="#251B36" stroke="#A78BFA" stroke-width="2"/>
+    <text x="520" y="711" fill="#F8FAFC" font-family="Inter, Arial, sans-serif" font-size="25" font-weight="800">Same Harness Standards</text>
+    <text x="520" y="746" fill="#A7B4C8" font-family="Inter, Arial, sans-serif" font-size="18">fixtures, page objects, assertions, tags, graph checks, npx verification</text>
+  </g>
+</svg>

@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Playwright generated output
+playwright-report/
+test-results/
+.playwright/
+.playwright-cli/
+playwright/.auth/
+graphs/index.html
+graphs/data/*.json
+*.trace.zip
+*.webm
+*.png
+*.jpg
+*.jpeg
+!contexts/captures/*.png
+!contexts/captures/*.jpg
+!contexts/captures/*.jpeg
+!docs/blog/assets/*.png
+
+# Environment and local tooling
+.env
+.env.*
+!.env.example
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

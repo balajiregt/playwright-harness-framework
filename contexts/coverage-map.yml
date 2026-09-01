@@ -1,0 +1,31 @@
+name: "coverage-map"
+version: 1
+purpose: "Rules for comparing source-discovered possible tests with existing Playwright coverage."
+
+outputs:
+  coverage_graph: "graphs/data/coverage-graph.json"
+  html_report: "graphs/index.html"
+
+coverage_dimensions:
+  - "route"
+  - "role"
+  - "action"
+  - "state"
+  - "form field"
+  - "validation rule"
+  - "capture"
+  - "tag"
+
+gap_types:
+  missing_route_smoke: "No test or spec covers a source route."
+  missing_role_access: "A role can access a route but no test covers that role-route pair."
+  missing_state: "A source state has no matching test or spec."
+  missing_validation: "A form or validation state has no matching test."
+  missing_denied_route_assertion: "A capture workflow expects a role to be denied on a route, but no matching role test opens the route and asserts permission denied."
+  stale_capture: "A route exists in source but no curated capture observes it."
+
+rules:
+  - "Coverage suggestions are candidates for human review, not automatic requirements."
+  - "Prioritize smoke coverage for login, dashboard, and high-traffic role routes."
+  - "Prioritize regression coverage for forms, permission-denied states, and error states."
+  - "Permission-denied captures must be backed by a matching role test that opens the restricted route and asserts the denied state."

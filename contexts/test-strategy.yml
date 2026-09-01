@@ -1,0 +1,44 @@
+name: "playwright-test-strategy"
+version: 1
+purpose: "Testing and authoring strategy for the no-MCP Playwright harness."
+
+testing_pyramid:
+  smoke:
+    tags: ["@smoke"]
+    goal: "Fast confidence for critical happy paths."
+  regression:
+    tags: ["@regression"]
+    goal: "Broader business-flow coverage."
+  auth:
+    tags: ["@auth"]
+    goal: "Authentication, authorization, and session reuse coverage."
+  accessibility:
+    tags: ["@accessibility"]
+    goal: "User-facing semantics and accessibility-visible behavior."
+  visual:
+    tags: ["@visual"]
+    goal: "Stable visual checkpoints when the project explicitly owns baselines."
+  api_setup:
+    tags: ["@api-setup"]
+    goal: "Backend setup that supports UI flows without replacing UI assertions."
+
+authoring_rules:
+  - "Specs describe behavior; page objects own locators/actions; assertions own repeated expectations."
+  - "Fixtures instantiate page objects and share auth/context setup."
+  - "Use accessible locators first, then stable test ids, then page-object wrappers."
+  - "Use web-first assertions and avoid fixed sleeps."
+  - "Check duplicate coverage before adding tests."
+  - "If expected behavior is unsupported by the app or environment, report a gap."
+
+artifact_policy:
+  evidence:
+    - "contexts/captures/*.yml"
+    - "contexts/captures/*.png"
+    - "playwright-report"
+    - "test-results"
+    - "trace.zip"
+    - "screenshots"
+    - "videos"
+    - "console logs"
+    - "network logs"
+  git_policy: "Commit curated capture context only when it is intentionally reusable; do not commit generated artifacts unless explicitly promoted to fixtures or baselines."

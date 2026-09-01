@@ -1,0 +1,38 @@
+name: "app-under-test"
+version: 1
+purpose: "Describe the target application facts an agent must know before creating or healing Playwright tests."
+status: "template"
+
+runtime:
+  base_url_env: "APP_BASE_URL"
+  default_base_url: null
+  requires_running_app: true
+
+authentication:
+  default_pattern: "storageState setup project"
+  auth_state_file: "playwright/.auth/user.json"
+  setup_test: "tests/auth.setup.ts"
+  env:
+    login_url: "LOGIN_URL"
+    username: "LOGIN_USERNAME"
+    password: "LOGIN_PASSWORD"
+    username_selector: "LOGIN_USERNAME_SELECTOR"
+    password_selector: "LOGIN_PASSWORD_SELECTOR"
+    submit_selector: "LOGIN_SUBMIT_SELECTOR"
+    success_url_pattern: "LOGIN_SUCCESS_URL_PATTERN"
+  session_storage_extension:
+    status: "future"
+    rule: "Use addInitScript only when the app stores signed-in state in sessionStorage."
+
+test_users:
+  default:
+    role: "user"
+    storage_state: "playwright/.auth/user.json"
+    source: "environment variables or test account provider"
+
+agent_notes:
+  - "Do not assume MCP browser inspection is available."
+  - "Use global @playwright/cli captures when the team approves the agent exploration CLI."
+  - "Curate reusable YAML snapshots under contexts/captures instead of relying on temporary .playwright-cli output."
+  - "When APP_BASE_URL is absent, example specs skip themselves and serve as framework examples."
+  - "Never commit auth state files; they may contain sensitive cookies or headers."

@@ -1,0 +1,134 @@
+name: "agent-loop"
+version: 1
+purpose: "MCP-optional planner-generator-healer-reviewer loop for Playwright agent and CLI work."
+
+states:
+  mode_router:
+    goal: "Decide whether the current prompt can use MCP-enabled Playwright Agents or should use the no-MCP CLI capture path."
+    inputs:
+      - "user prompt"
+      - "available tool access"
+      - "organization policy"
+      - "contexts/command-map.yml"
+      - "contexts/capture-map.yml"
+    outputs:
+      - "selected mode: mcp_agents or cli_evidence"
+      - "reason for the selected mode"
+    stop_when:
+      - "The agent knows whether to use official Playwright Agents with MCP or capture workflows with playwright-cli evidence."
+    transitions:
+      mcp_agents:
+        - "Use official Playwright planner/generator/healer capabilities when available."
+        - "Keep all generated work inside this harness's fixture, page object, assertion, tag, evidence, and review rules."
+        - "Verify with project-local npx playwright test commands."
+      cli_evidence:
+        - "Use capture workflows or direct playwright-cli commands to collect missing page context."
+        - "Use curated YAML captures and screenshots as reusable local evidence."
+        - "Verify with project-local npx playwright test commands."
+  scope_router:
+    goal: "Decide whether the prompt is a small owning-layer change or a new flow that needs a spec first."
+    inputs:
+      - "user prompt"
+      - "existing specs and tests"
+      - "changed or requested framework layer"
+      - "contexts/flow-graph.yml"
+    outputs:
+      - "selected path: direct_update or spec_first"
+      - "reason for selected path"
+    stop_when:
+      - "Small changes go directly to the owning layer; new role or business flows go through a concrete flow spec."
+  source_analyzer:
+    goal: "Use app source and manifests to identify possible UI test coverage before generation."
+    inputs:
+      - "user prompt"
+      - "contexts/source-map.yml"
+      - "available application source or source-manifest.json"
+      - "existing tests, specs, pages, assertions, and captures"
+    outputs:
+      - "graphs/data/source-graph.json"
+      - "candidate routes, roles, actions, fields, states, and possible tests"
+    stop_when:
+      - "The agent can explain which source-discovered flows are covered, missing, or ambiguous."
+  coverage_reviewer:
+    goal: "Compare source-discovered possible tests with existing test and capture coverage."
+    inputs:
+      - "graphs/data/source-graph.json"
+      - "graphs/data/test-graph.json"
+      - "contexts/coverage-map.yml"
+      - "contexts/duplication-rules.yml"
+    outputs:
+      - "graphs/data/coverage-graph.json"
+      - "graphs/data/duplicates.json"
+      - "graphs/index.html"
+    stop_when:
+      - "Coverage gaps and duplicate risks are available for planning and review."
+  capture:
+    goal: "Use capture workflows or direct playwright-cli commands to create reusable local page context before test generation."
+    inputs:
+      - "user prompt"
+      - "contexts/app-under-test.yml"
+      - "contexts/capture-map.yml"
+      - "existing contexts/captures files"
+    outputs:
+      - "contexts/captures/*.yml"
+      - "optional contexts/captures/*.png"
+    stop_when:
+      - "The agent has current YAML snapshots for the pages, states, and post-action views needed by the flow."
+  planner:
+    goal: "Convert new role flows, business workflows, broad coverage requests, or unclear prompts into precise flow specs."
+    inputs:
+      - "user prompt"
+      - "contexts/captures/*.yml"
+      - "contexts/app-under-test.yml"
+      - "contexts/test-strategy.yml"
+      - "existing specs and tests"
+    outputs:
+      - "specs/*.md"
+    stop_when:
+      - "Flow, role, data, tags, steps, expected results, and evidence needs are explicit."
+  generator:
+    goal: "Create or update executable Playwright tests using framework layers."
+    inputs:
+      - "specs/*.md"
+      - "contexts/flow-graph.yml"
+      - "fixtures, pages, assertions, and data"
+    outputs:
+      - "tests/*.spec.ts"
+      - "supporting fixture/page/assertion/data updates"
+    stop_when:
+      - "The generated test follows layering, locator, auth, and tagging rules."
+  healer:
+    goal: "Use MCP evidence when available, or capture and test-runner evidence when MCP is blocked, to repair failing tests."
+    inputs:
+      - "focused Playwright command"
+      - "terminal output"
+      - "contexts/captures/*.yml"
+      - "traces, screenshots, videos, reports, and logs"
+    outputs:
+      - "smallest owning-layer fix"
+    stop_when:
+      - "Focused verification passes or a clear app/environment/framework gap is reported."
+  reviewer:
+    goal: "Guard against duplicate coverage, brittle locators, waits, auth leaks, and artifact commits."
+    inputs:
+      - "changed files"
+      - "contexts/test-strategy.yml"
+      - "contexts/flow-graph.yml"
+      - "verification output"
+    outputs:
+      - "final task report"
+    stop_when:
+      - "Changes, commands, evidence, skipped gates, and residual risks are reported."
+
+loop_guardrails:
+  - "Check MCP availability before choosing the exploration path."
+  - "When MCP-enabled Playwright Agents are available, use them within this harness's standards and still verify with npx playwright test."
+  - "When MCP is unavailable or blocked, use playwright-cli capture workflows and CLI evidence."
+  - "Use playwright-cli captures before generating page-specific tests when captures are missing or stale."
+  - "Use npx playwright test for verification, not playwright-cli snapshots alone."
+  - "Do not add arbitrary waits."
+  - "Do not commit auth state, reports, traces, screenshots, videos, or temporary .playwright-cli files."
+  - "Commit only curated capture context that the team wants agents to reuse."
+  - "Do not broaden a focused prompt into unrelated flows."
+  - "Do not rewrite expectations to match broken behavior."
+  - "Prefer static context graph updates over runtime graph machinery in V2."

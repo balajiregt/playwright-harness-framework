@@ -1,0 +1,27 @@
+name: "test-graph"
+version: 1
+purpose: "Describe how existing Playwright automation is mapped into graph nodes and coverage edges."
+
+inputs:
+  tests: "tests/**/*.spec.ts"
+  setup_tests: "tests/**/*.setup.ts"
+  specs: "specs/**/*.md"
+  fixtures: "fixtures/**/*.ts"
+  pages: "pages/**/*.ts"
+  assertions: "assertions/**/*.ts"
+  data: "data/**/*.ts"
+
+extract:
+  tags: "All @tag tokens in specs and tests."
+  test_titles: "Executable test(...) titles; describe blocks are grouping context, not coverage."
+  imports: "Relative imports connecting tests to fixtures, pages, assertions, and data."
+  page_objects: "Classes in pages/*.ts."
+  assertion_helpers: "Classes and expect calls in assertions/*.ts."
+
+outputs:
+  test_graph: "graphs/data/test-graph.json"
+
+rules:
+  - "A test covers a route/action only when its title, spec, imports, or capture references make that relationship explicit."
+  - "Do not infer coverage from similar words alone when the flow is ambiguous."
+  - "Use tags as execution intent, not as proof of behavior."

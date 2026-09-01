@@ -1,0 +1,229 @@
+name: capture-recipes
+version: 1
+generated_from: examples/sample-crm-app/source-manifest.json
+purpose: Reusable role and flow capture workflows for playwright-cli page context.
+usage:
+  list: npm run capture:recipe -- --list
+  run_manager: npm run capture:crm:manager
+  dry_run: npm run capture:recipe -- crm-manager-role --dry-run
+rules:
+  - Capture workflows are stored as YAML recipes in this file.
+  - Workflows capture page context once and reuse it for prompt-to-test generation.
+  - Refresh only affected captures when routes, visible copy, locators, or role permissions change.
+  - Do not treat captures as test verification; run npx playwright test after generating or healing tests.
+recipes:
+  crm-admin-role:
+    description: Capture admin role accessible and denied states from the source manifest.
+    app_url: http://127.0.0.1:4173
+    login_route: /login
+    auth:
+      strategy: localStorage
+      key: crm-user
+      value:
+        username: admin@example.com
+        password: password
+        role: admin
+        displayName: Asha Admin
+        routes:
+          - /crm/dashboard
+          - /crm/leads
+          - /crm/accounts
+          - /crm/opportunities
+          - /crm/reports
+          - /crm/admin/users
+    captures:
+      - name: crm-admin-dashboard-loaded
+        route: /crm/dashboard
+        role: admin
+        expected_access: allowed
+        state: loaded
+        screenshot: true
+      - name: crm-admin-leads-empty
+        route: /crm/leads
+        role: admin
+        expected_access: allowed
+        state: empty
+        screenshot: false
+      - name: crm-admin-accounts-loaded
+        route: /crm/accounts
+        role: admin
+        expected_access: allowed
+        state: loaded
+        screenshot: false
+      - name: crm-admin-opportunities-loaded
+        route: /crm/opportunities
+        role: admin
+        expected_access: allowed
+        state: loaded
+        screenshot: false
+      - name: crm-admin-reports-error
+        route: /crm/reports
+        role: admin
+        expected_access: allowed
+        state: error
+        screenshot: false
+      - name: crm-admin-admin-users-loaded
+        route: /crm/admin/users
+        role: admin
+        expected_access: allowed
+        state: loaded
+        screenshot: false
+  crm-manager-role:
+    description: Capture manager role accessible and denied states from the source manifest.
+    app_url: http://127.0.0.1:4173
+    login_route: /login
+    auth:
+      strategy: localStorage
+      key: crm-user
+      value:
+        username: manager@example.com
+        password: password
+        role: manager
+        displayName: Mira Manager
+        routes:
+          - /crm/dashboard
+          - /crm/accounts
+          - /crm/opportunities
+          - /crm/reports
+    captures:
+      - name: crm-manager-dashboard-loaded
+        route: /crm/dashboard
+        role: manager
+        expected_access: allowed
+        state: loaded
+        screenshot: true
+      - name: crm-manager-leads-denied
+        route: /crm/leads
+        role: manager
+        expected_access: denied
+        state: denied
+        screenshot: true
+      - name: crm-manager-accounts-loaded
+        route: /crm/accounts
+        role: manager
+        expected_access: allowed
+        state: loaded
+        screenshot: false
+      - name: crm-manager-opportunities-loaded
+        route: /crm/opportunities
+        role: manager
+        expected_access: allowed
+        state: loaded
+        screenshot: false
+      - name: crm-manager-reports-error
+        route: /crm/reports
+        role: manager
+        expected_access: allowed
+        state: error
+        screenshot: false
+      - name: crm-manager-admin-users-denied
+        route: /crm/admin/users
+        role: manager
+        expected_access: denied
+        state: denied
+        screenshot: true
+  crm-sales-role:
+    description: Capture sales role accessible and denied states from the source manifest.
+    app_url: http://127.0.0.1:4173
+    login_route: /login
+    auth:
+      strategy: localStorage
+      key: crm-user
+      value:
+        username: sales@example.com
+        password: password
+        role: sales
+        displayName: Sam Sales
+        routes:
+          - /crm/dashboard
+          - /crm/leads
+          - /crm/opportunities
+    captures:
+      - name: crm-sales-dashboard-loaded
+        route: /crm/dashboard
+        role: sales
+        expected_access: allowed
+        state: loaded
+        screenshot: true
+      - name: crm-sales-leads-empty
+        route: /crm/leads
+        role: sales
+        expected_access: allowed
+        state: empty
+        screenshot: false
+      - name: crm-sales-accounts-denied
+        route: /crm/accounts
+        role: sales
+        expected_access: denied
+        state: denied
+        screenshot: true
+      - name: crm-sales-opportunities-loaded
+        route: /crm/opportunities
+        role: sales
+        expected_access: allowed
+        state: loaded
+        screenshot: false
+      - name: crm-sales-reports-denied
+        route: /crm/reports
+        role: sales
+        expected_access: denied
+        state: denied
+        screenshot: true
+      - name: crm-sales-admin-users-denied
+        route: /crm/admin/users
+        role: sales
+        expected_access: denied
+        state: denied
+        screenshot: true
+  crm-viewer-role:
+    description: Capture viewer role accessible and denied states from the source manifest.
+    app_url: http://127.0.0.1:4173
+    login_route: /login
+    auth:
+      strategy: localStorage
+      key: crm-user
+      value:
+        username: viewer@example.com
+        password: password
+        role: viewer
+        displayName: Vik Viewer
+        routes:
+          - /crm/dashboard
+          - /crm/accounts
+    captures:
+      - name: crm-viewer-dashboard-loaded
+        route: /crm/dashboard
+        role: viewer
+        expected_access: allowed
+        state: loaded
+        screenshot: true
+      - name: crm-viewer-leads-denied
+        route: /crm/leads
+        role: viewer
+        expected_access: denied
+        state: denied
+        screenshot: true
+      - name: crm-viewer-accounts-read-only
+        route: /crm/accounts
+        role: viewer
+        expected_access: allowed
+        state: read-only
+        screenshot: false
+      - name: crm-viewer-opportunities-denied
+        route: /crm/opportunities
+        role: viewer
+        expected_access: denied
+        state: denied
+        screenshot: true
+      - name: crm-viewer-reports-denied
+        route: /crm/reports
+        role: viewer
+        expected_access: denied
+        state: denied
+        screenshot: true
+      - name: crm-viewer-admin-users-denied
+        route: /crm/admin/users
+        role: viewer
+        expected_access: denied
+        state: denied
+        screenshot: true
