@@ -31,7 +31,12 @@
     "graph:serve": "npm run source:manifest:crm -- --quiet && node scripts/graph-view.mjs --serve",
     "show:report": "npx playwright show-report",
     "show:trace": "npx playwright show-trace",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "benchmark:collect": "node benchmarks/trials.mjs collect",
+    "benchmark:summary": "node benchmarks/trials.mjs summary",
+    "benchmark:test": "node --test benchmarks/*.test.mjs",
+    "benchmark:oracle": "playwright test --config=benchmarks/playwright.config.ts",
+    "benchmark:mutation": "node benchmarks/mutation.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.62.1",

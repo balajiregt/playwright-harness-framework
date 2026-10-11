@@ -1,4 +1,5 @@
 import http from 'node:http';
+import { createApi } from './api.mjs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -21,8 +22,13 @@ function resolveAsset(urlPath) {
   return path.join(publicDir, 'index.html');
 }
 
+const fault = process.env.CRM_BENCHMARK_FAULT ?? null;
+if (fault && process.env.CRM_BENCHMARK_MODE !== '1') throw new Error('Faults require explicit benchmark mode');
+const api = createApi({ fault });
+
 const server = http.createServer(async (request, response) => {
   try {
+    if (await api(request, response)) return;
     const url = new URL(request.url ?? '/', `http://${request.headers.host}`);
     const filePath = resolveAsset(url.pathname);
     const data = await fs.readFile(filePath);

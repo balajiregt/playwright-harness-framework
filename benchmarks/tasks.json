@@ -1,0 +1,5 @@
+[
+  {"id":"crm-viewer-export","track":"ui-and-api","intent":"Verify viewer has a disabled export button and a direct GET /api/accounts/export returns 403 after authenticating via POST /api/session. Assert exact denial body. Use SampleCrmPage and existing fixtures in the framework arm.","requiredTests":["viewer export denied in UI and API"]},
+  {"id":"crm-manager-export","track":"api","intent":"Verify manager export contains the seeded account IDs and unauthenticated export returns 401. A status-only assertion is insufficient.","requiredTests":["manager exports exact account fixture","unauthenticated export denied"]},
+  {"id":"crm-manager-direct-route","track":"ui","intent":"Verify manager cannot navigate directly to /crm/admin/users and the page displays Permission denied. Do not infer denial from disabled navigation.","requiredTests":["manager direct admin route denied"]}
+]

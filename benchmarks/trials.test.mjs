@@ -1,0 +1,11 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {collectTrial,summarizeTrials} from './trials.mjs';
+const tasks=[{id:'task',requiredTests:['denial','contents']}];
+const m={trialId:'one',taskId:'task',arm:'baseline',evidenceKind:'scripted-validation',model:'none',modelVersion:'none',targetRevision:'a'.repeat(64),promptSha256:'b'.repeat(64),repeat:0,startedAt:'2026-10-11T00:00:00Z',finishedAt:'2026-10-11T00:00:01Z',humanCorrectionMs:null,incorrectChanges:null,usage:null,pricing:null};
+const report=status=>({suites:[{specs:['denial','contents'].map(title=>({title,tests:[{results:[{status}]}]}))}]});
+test('skips and missing oracle tests cannot become correct completion',()=>{for(const r of [report('skipped'),{suites:[]}])assert.equal(collectTrial(m,r,'hash',tasks).correctCompletion,false);});
+test('unknown cost and human metrics stay null, repeated collection rejected by summary',()=>{const r=collectTrial(m,report('passed'),'hash',tasks);assert.equal(r.cost,null);assert.equal(r.elapsedMs,1000);assert.equal(summarizeTrials([r])[0].baseline.humanCorrectionObserved,0);assert.throws(()=>summarizeTrials([r,r]),/Duplicate/);});
+test('no comparison across model/target/evidence kinds',()=>{const a=collectTrial(m,report('passed'),'hash',tasks);assert.equal(summarizeTrials([a,{...a,trialId:'two',arm:'framework',model:'different'}]).length,2);});
+test('negative metrics, unaudited corrections and cost without usage are rejected',()=>{for(const patch of [{humanCorrectionMs:-1},{incorrectChanges:1},{pricing:{inputPerMillion:1}}])assert.throws(()=>collectTrial({...m,...patch},report('passed'),'hash',tasks));});
+test('provider usage produces dated estimate, not invented invoice cost',()=>{const row=collectTrial({...m,usage:{inputTokens:1000,outputTokens:500,source:'provider-receipt'},pricing:{inputPerMillion:1,outputPerMillion:2,currency:'USD',asOf:'2026-10-11',source:'provider-pricing'}},report('passed'),'hash',tasks);assert.equal(row.cost.amount,0.002);});
+
+test('duplicate arm/repeat cannot inflate paired sample count',()=>{const r=collectTrial(m,report('passed'),'hash',tasks);assert.throws(()=>summarizeTrials([r,{...r,trialId:'new-id'}]),/Duplicate arm/);});

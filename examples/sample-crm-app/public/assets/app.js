@@ -99,7 +99,8 @@ function saveUser(user) {
   window.localStorage.setItem('crm-user', JSON.stringify(user));
 }
 
-function logout() {
+async function logout() {
+  await fetch('/api/session', { method: 'DELETE' });
   state.user = null;
   window.localStorage.removeItem('crm-user');
   navigate('/login');
@@ -314,7 +315,7 @@ function render() {
   document.querySelector('#app').innerHTML = (pages[path] ?? dashboardPage)();
 }
 
-document.addEventListener('submit', (event) => {
+document.addEventListener('submit', async (event) => {
   if (event.target.matches('[data-testid="login-form"]')) {
     event.preventDefault();
     const username = document.querySelector('[data-testid="username-input"]').value;
@@ -324,6 +325,8 @@ document.addEventListener('submit', (event) => {
       document.querySelector('[data-testid="login-error"]').hidden = false;
       return;
     }
+    const session = await fetch('/api/session', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ email: username, password }) });
+    if (!session.ok) { document.querySelector('[data-testid="login-error"]').hidden = false; return; }
     saveUser(user);
     navigate('/crm/dashboard');
   }

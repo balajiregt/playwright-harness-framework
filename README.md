@@ -477,3 +477,7 @@ Core rules:
 - [Playwright fixtures](https://playwright.dev/docs/test-fixtures)
 - [Playwright annotations and tags](https://playwright.dev/docs/test-annotations)
 - [Playwright CLI](https://playwright.dev/docs/test-cli)
+
+## Controlled benchmark instrumentation
+
+See [benchmark protocol and validation](benchmarks/README.md) for reproducible synthetic tasks, measured evidence, missing metrics and claim limitations.
