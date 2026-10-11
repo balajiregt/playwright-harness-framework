@@ -39,7 +39,8 @@
     "benchmark:mutation": "npm run benchmark",
     "benchmark": "python3 benchmarks/dashboard/run.py",
     "benchmark:publish": "python3 benchmarks/dashboard/publish.py",
-    "postbenchmark:collect": "python3 benchmarks/dashboard/publish.py --refresh-trials"
+    "postbenchmark:collect": "python3 benchmarks/dashboard/publish.py --refresh-trials",
+    "benchmark:trials": "python3 benchmarks/controlled-trials.py"
   },
   "devDependencies": {
     "@playwright/test": "1.62.1",

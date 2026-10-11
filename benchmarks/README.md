@@ -22,3 +22,17 @@ The existing browser login now also establishes an HttpOnly demo server session 
 Measured 2026-10-11: four normal browser/API checks passed; one seeded viewer-export bypass was detected by the independent HTTP assertion even though the UI remained read-only. This proves detection of that specific defect only. No AI productivity, business savings or general mutation score is claimed.
 
 See [automatic dashboard publication](AUTOMATIC-PUBLICATION.md) for the canonical runner, CI, privacy controls and retry behaviour.
+
+## Controlled baseline / framework generation trials
+
+The first live pilot uses the existing sample app, three repeats per condition, the same model settings, and an independent healthy-app + fault-injection evaluation of unchanged generated tests. This is a context-assisted generation experiment, not the complete autonomous workflow. Human correction effort remains unmeasured; standard API-equivalent cost is an estimate, not billed spend.
+
+[Protocol, runner and limitations](https://github.com/balajiregt/framework-benchmark-dashboard/blob/main/trials/README.md) · [Live charts and evidence](https://framework-benchmarks-balaji.netlify.app/#controlled-trials)
+
+Run from this checkout after installing the documented prerequisites:
+
+```sh
+npm run benchmark:trials -- --dashboard /path/to/framework-benchmark-dashboard --peer /path/to/other-app-repo --campaign /path/to/private-campaign
+```
+
+Use the API checkout as peer from Playwright, or Playwright as peer from API. The campaign directory must be outside all source checkouts. The command prepares/resumes 12 calls, evaluates them and publishes both result feeds automatically. Use `--no-publish` for local-only work. A future run reads new results without dashboard deployment. These model calls are explicit local runs, not automatically triggered by every source push. Existing `npm run benchmark` continues to run only the original browser/API execution benchmark.
