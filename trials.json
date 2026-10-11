@@ -1,0 +1,369 @@
+{
+  "schemaVersion": 1,
+  "project": "harness",
+  "campaignId": "c2efffa6088e40be",
+  "protocol": "one-response-mutation-v1",
+  "createdAt": "2026-10-11T15:19:22.433101+00:00",
+  "updatedAt": "2026-10-11T15:22:28.589159+00:00",
+  "model": "gpt-6.1-sol",
+  "modelVersion": "Alias requested; backend snapshot not exposed by CLI",
+  "reasoning": "low",
+  "cliVersion": "codex-cli 0.162.0-alpha.17.2",
+  "sourceRevision": "a9d3bbe87bfeb8f56e1236045cdc4b6e23452e0a",
+  "targetSha256": "5258fcfcc3e0138fcd12d0ed9d35a73ef050f53a6207e933b7a8974d6ed69395",
+  "planSha256": "c2efffa6088e40be87c48d9b5d31f20113143015ba41a425cee0cf680a3f14d7",
+  "plannedTrials": 6,
+  "pairedRepeats": 3,
+  "arms": {
+    "baseline": {
+      "trials": 3,
+      "evaluated": 3,
+      "correct": 3,
+      "qualityPassed": 15,
+      "qualityTotal": 15,
+      "medianGenerationMs": 13316,
+      "medianEvaluationMs": 14580,
+      "medianHumanCorrectionMs": null,
+      "totalInputTokens": 48342,
+      "totalOutputTokens": 877,
+      "apiEquivalentUSD": 0.105454,
+      "actualCostUSD": null
+    },
+    "framework": {
+      "trials": 3,
+      "evaluated": 3,
+      "correct": 3,
+      "qualityPassed": 15,
+      "qualityTotal": 15,
+      "medianGenerationMs": 12308,
+      "medianEvaluationMs": 14774,
+      "medianHumanCorrectionMs": null,
+      "totalInputTokens": 58363,
+      "totalOutputTokens": 677,
+      "apiEquivalentUSD": 0.123496,
+      "actualCostUSD": null
+    }
+  },
+  "rows": [
+    {
+      "arm": "baseline",
+      "repeat": 1,
+      "startedAt": "2026-10-11T15:19:48.628615+00:00",
+      "finishedAt": "2026-10-11T15:20:01.079715+00:00",
+      "operationalStatus": "evaluated",
+      "correct": true,
+      "qualityPassed": 5,
+      "qualityTotal": 5,
+      "generationMs": 12451,
+      "evaluationMs": 14580,
+      "humanCorrectionMs": null,
+      "incorrectChanges": null,
+      "inputTokens": 16114,
+      "cachedInputTokens": 0,
+      "outputTokens": 282,
+      "apiEquivalentUSD": 0.035048,
+      "actualCostUSD": null,
+      "promptSha256": "bba82ae7002c306c6b60cbd9b8d1d012325f174c3645312ead966beb6ec12e9b",
+      "responseSha256": "db9f3fc4e74224fc771be639ac33d4c57eba298f2fdb2a4d5c1ea5b46e9939f6",
+      "eventsSha256": "42984c6dad3361bec34cf089482299def09405c9e1d4e7c4a9168e37ff87b395",
+      "evaluationSha256": "4b2fbb0d85c16518b4d8f1560a6a0704516d273cad5a76fcb74f7b33729a1fb8",
+      "checks": [
+        {
+          "name": "healthy",
+          "passed": true,
+          "injectedResponses": 0
+        },
+        {
+          "name": "viewer-http-200",
+          "passed": true,
+          "injectedResponses": 1
+        },
+        {
+          "name": "wrong-error-body",
+          "passed": true,
+          "injectedResponses": 1
+        },
+        {
+          "name": "enabled-export-button",
+          "passed": true,
+          "injectedResponses": 1
+        },
+        {
+          "name": "missing-read-only-banner",
+          "passed": true,
+          "injectedResponses": 1
+        }
+      ]
+    },
+    {
+      "arm": "framework",
+      "repeat": 1,
+      "startedAt": "2026-10-11T15:21:24.320336+00:00",
+      "finishedAt": "2026-10-11T15:21:35.220287+00:00",
+      "operationalStatus": "evaluated",
+      "correct": true,
+      "qualityPassed": 5,
+      "qualityTotal": 5,
+      "generationMs": 10900,
+      "evaluationMs": 13931,
+      "humanCorrectionMs": null,
+      "incorrectChanges": null,
+      "inputTokens": 21865,
+      "cachedInputTokens": 0,
+      "outputTokens": 230,
+      "apiEquivalentUSD": 0.04603,
+      "actualCostUSD": null,
+      "promptSha256": "5ecd43349b7419eff04c62d639f2dbe1f658a597e32af9778a986457a6f54588",
+      "responseSha256": "383bdb215cc07cde19858d12cd50f4ae9a33a38559f4dc2d077e77ca2056cfe1",
+      "eventsSha256": "6e7a78046f032050a92032643c846e56651bff24fae4a9f52b1f23a7eb64ab19",
+      "evaluationSha256": "491f927ff66f8b3d7cad178007c7717e5b5b8870b51d89499029f674a03dc99d",
+      "checks": [
+        {
+          "name": "healthy",
+          "passed": true,
+          "injectedResponses": 0
+        },
+        {
+          "name": "viewer-http-200",
+          "passed": true,
+          "injectedResponses": 1
+        },
+        {
+          "name": "wrong-error-body",
+          "passed": true,
+          "injectedResponses": 1
+        },
+        {
+          "name": "enabled-export-button",
+          "passed": true,
+          "injectedResponses": 1
+        },
+        {
+          "name": "missing-read-only-banner",
+          "passed": true,
+          "injectedResponses": 1
+        }
+      ]
+    },
+    {
+      "arm": "framework",
+      "repeat": 2,
+      "startedAt": "2026-10-11T15:21:35.221030+00:00",
+      "finishedAt": "2026-10-11T15:21:47.528908+00:00",
+      "operationalStatus": "evaluated",
+      "correct": true,
+      "qualityPassed": 5,
+      "qualityTotal": 5,
+      "generationMs": 12308,
+      "evaluationMs": 14774,
+      "humanCorrectionMs": null,
+      "incorrectChanges": null,
+      "inputTokens": 18249,
+      "cachedInputTokens": 0,
+      "outputTokens": 196,
+      "apiEquivalentUSD": 0.038458,
+      "actualCostUSD": null,
+      "promptSha256": "5ecd43349b7419eff04c62d639f2dbe1f658a597e32af9778a986457a6f54588",
+      "responseSha256": "0e1dcb02e2c3a706d03ac6162a769e50371ce11821875a4aad13c29cb030ae4a",
+      "eventsSha256": "808c1017a6699935de01743290b0a35fa09edb516d240409b5f96e6d0867078c",
+      "evaluationSha256": "33abcada3d80fad8b78a79e5fd4f0fb1be7eafb69eee9378f8276af8656d12d1",
+      "checks": [
+        {
+          "name": "healthy",
+          "passed": true,
+          "injectedResponses": 0
+        },
+        {
+          "name": "viewer-http-200",
+          "passed": true,
+          "injectedResponses": 1
+        },
+        {
+          "name": "wrong-error-body",
+          "passed": true,
+          "injectedResponses": 1
+        },
+        {
+          "name": "enabled-export-button",
+          "passed": true,
+          "injectedResponses": 1
+        },
+        {
+          "name": "missing-read-only-banner",
+          "passed": true,
+          "injectedResponses": 1
+        }
+      ]
+    },
+    {
+      "arm": "baseline",
+      "repeat": 2,
+      "startedAt": "2026-10-11T15:21:47.530294+00:00",
+      "finishedAt": "2026-10-11T15:22:00.846153+00:00",
+      "operationalStatus": "evaluated",
+      "correct": true,
+      "qualityPassed": 5,
+      "qualityTotal": 5,
+      "generationMs": 13316,
+      "evaluationMs": 13778,
+      "humanCorrectionMs": null,
+      "incorrectChanges": null,
+      "inputTokens": 16114,
+      "cachedInputTokens": 0,
+      "outputTokens": 283,
+      "apiEquivalentUSD": 0.035058,
+      "actualCostUSD": null,
+      "promptSha256": "bba82ae7002c306c6b60cbd9b8d1d012325f174c3645312ead966beb6ec12e9b",
+      "responseSha256": "40f86dda93709309c75223184a2446f02852b0d3a8954c3022a898d3c5b217e2",
+      "eventsSha256": "1592ce3364e58ce4f3d4879a167f906f6a13bf9986ae52df16c7d778fa11a198",
+      "evaluationSha256": "f745418f243e5fe715c9444876343e2ad5b0ac60631579b37f867300f402d575",
+      "checks": [
+        {
+          "name": "healthy",
+          "passed": true,
+          "injectedResponses": 0
+        },
+        {
+          "name": "viewer-http-200",
+          "passed": true,
+          "injectedResponses": 1
+        },
+        {
+          "name": "wrong-error-body",
+          "passed": true,
+          "injectedResponses": 1
+        },
+        {
+          "name": "enabled-export-button",
+          "passed": true,
+          "injectedResponses": 1
+        },
+        {
+          "name": "missing-read-only-banner",
+          "passed": true,
+          "injectedResponses": 1
+        }
+      ]
+    },
+    {
+      "arm": "baseline",
+      "repeat": 3,
+      "startedAt": "2026-10-11T15:22:00.848457+00:00",
+      "finishedAt": "2026-10-11T15:22:16.015860+00:00",
+      "operationalStatus": "evaluated",
+      "correct": true,
+      "qualityPassed": 5,
+      "qualityTotal": 5,
+      "generationMs": 15168,
+      "evaluationMs": 18287,
+      "humanCorrectionMs": null,
+      "incorrectChanges": null,
+      "inputTokens": 16114,
+      "cachedInputTokens": 0,
+      "outputTokens": 312,
+      "apiEquivalentUSD": 0.035348,
+      "actualCostUSD": null,
+      "promptSha256": "bba82ae7002c306c6b60cbd9b8d1d012325f174c3645312ead966beb6ec12e9b",
+      "responseSha256": "a40ab7127ce49a80ad626334cfb6862ba8dd09acfd62e002aec1657f2daaf714",
+      "eventsSha256": "eb34ccc34daabebe3c8e5210eb96157e1e60130b6b20d37b0072e5c41936d7a5",
+      "evaluationSha256": "154a47cdd93d48f3de035d0de57e9ae0df74e0677e63b6f861ce12c68a62b798",
+      "checks": [
+        {
+          "name": "healthy",
+          "passed": true,
+          "injectedResponses": 0
+        },
+        {
+          "name": "viewer-http-200",
+          "passed": true,
+          "injectedResponses": 1
+        },
+        {
+          "name": "wrong-error-body",
+          "passed": true,
+          "injectedResponses": 1
+        },
+        {
+          "name": "enabled-export-button",
+          "passed": true,
+          "injectedResponses": 1
+        },
+        {
+          "name": "missing-read-only-banner",
+          "passed": true,
+          "injectedResponses": 1
+        }
+      ]
+    },
+    {
+      "arm": "framework",
+      "repeat": 3,
+      "startedAt": "2026-10-11T15:22:16.017233+00:00",
+      "finishedAt": "2026-10-11T15:22:28.589159+00:00",
+      "operationalStatus": "evaluated",
+      "correct": true,
+      "qualityPassed": 5,
+      "qualityTotal": 5,
+      "generationMs": 12572,
+      "evaluationMs": 15192,
+      "humanCorrectionMs": null,
+      "incorrectChanges": null,
+      "inputTokens": 18249,
+      "cachedInputTokens": 0,
+      "outputTokens": 251,
+      "apiEquivalentUSD": 0.039008,
+      "actualCostUSD": null,
+      "promptSha256": "5ecd43349b7419eff04c62d639f2dbe1f658a597e32af9778a986457a6f54588",
+      "responseSha256": "371bfb8bf85b04ebbf559fb782f8d61146188276c2439099d2efabf592a10b18",
+      "eventsSha256": "96567cdb7ccc9ae606c9ec77cdf33290b445b3e891167cc29dc166117b00c6c2",
+      "evaluationSha256": "9f82edc87b459ba47d4bdd846ee522b7fa28f0d936c53ae5fdf8ff52a9a97b59",
+      "checks": [
+        {
+          "name": "healthy",
+          "passed": true,
+          "injectedResponses": 0
+        },
+        {
+          "name": "viewer-http-200",
+          "passed": true,
+          "injectedResponses": 1
+        },
+        {
+          "name": "wrong-error-body",
+          "passed": true,
+          "injectedResponses": 1
+        },
+        {
+          "name": "enabled-export-button",
+          "passed": true,
+          "injectedResponses": 1
+        },
+        {
+          "name": "missing-read-only-banner",
+          "passed": true,
+          "injectedResponses": 1
+        }
+      ]
+    }
+  ],
+  "pricing": {
+    "classification": "API-equivalent estimate, not billed spend",
+    "source": "https://developers.openai.com/api/docs/models/gpt-6.1-sol",
+    "asOf": "2026-10-11",
+    "currency": "USD",
+    "inputPerMillion": 2,
+    "cachedInputPerMillion": 0.1,
+    "cacheWritePerMillion": 2.5,
+    "outputPerMillion": 10
+  },
+  "limitations": [
+    "One task per application; three repeats per arm, descriptive pilot only.",
+    "Tests are generated in one response with tools disabled; full planning, capture, repair and review workflows were not measured.",
+    "The framework condition adds existing helpers and conventions; context size differs intentionally.",
+    "Generated tests run unchanged against the real sample app via controlled fault injection. Synthetic faults are not production defects.",
+    "Generation wall time includes CLI/provider overhead. Evaluation time is separate; background machine load was not controlled.",
+    "The same model alias and CLI configuration were requested; a fixed backend model snapshot is not exposed.",
+    "Human correction effort and incorrect changes require a human review; neither is inferred from automatic checks.",
+    "Cost is a counterfactual standard-tier API estimate from CLI tokens, including cache counts; actual billed spend, subscription allocation and infrastructure cost are unavailable."
+  ]
+}
