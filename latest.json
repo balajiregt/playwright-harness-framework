@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "project": "harness",
-  "updatedAt": "2026-10-11T14:59:38.993873+00:00",
+  "updatedAt": "2026-10-11T15:47:27.467982+00:00",
   "run": {
     "project": "harness",
     "title": "Agentic Playwright",
@@ -110,21 +110,21 @@
     "evidence": [
       {
         "file": "oracle.json",
-        "sha256": "382316ea1a24a01c6bd71693835eea029a4ddc48e66549d1db2c82fe8d0e2241",
-        "fileModifiedAt": "2026-10-11T14:59:34.659606+00:00"
+        "sha256": "f9bcb598f2e78fb6dc7acc722c961d6c802c681ecbaab0f92f2bc64d5a296a89",
+        "fileModifiedAt": "2026-10-11T15:47:25.304540+00:00"
       },
       {
         "file": "mutation-summary.json",
-        "sha256": "74c21304bfcd04885ecc9f0cae6aea002429371b58214cc0ae105d71232331e0",
-        "fileModifiedAt": "2026-10-11T14:59:37.138868+00:00"
+        "sha256": "f322e9ee5cf49594c2bcaf7e324eeb50a6ba2244b45cab04d125cd5be711c940",
+        "fileModifiedAt": "2026-10-11T15:47:26.774532+00:00"
       },
       {
         "file": "mutant.json",
-        "sha256": "0b6b609e4a8de4b7e96175f512cd5eef99d168f1bc1ff53578b48b01016f8350",
-        "fileModifiedAt": "2026-10-11T14:59:37.105529+00:00"
+        "sha256": "b00ad9af3168796019db366acfff9d653c74499d0a11b3b80b8f1edd3dd31b69",
+        "fileModifiedAt": "2026-10-11T15:47:26.762532+00:00"
       }
     ],
-    "runAt": "2026-10-11T14:59:31.103826+00:00",
+    "runAt": "2026-10-11T15:47:23.217368+00:00",
     "timeBasis": "benchmark attempt start",
     "agentTrials": {
       "liveTrials": 0,
@@ -135,16 +135,16 @@
     },
     "status": "passed",
     "integrity": "verified",
-    "runId": "0caa30119f9992a8",
+    "runId": "15d8c4fd1a1f6a53",
     "execution": {
-      "startedAt": "2026-10-11T14:59:31.103826+00:00",
-      "finishedAt": "2026-10-11T14:59:37.149994+00:00",
+      "startedAt": "2026-10-11T15:47:23.217368+00:00",
+      "finishedAt": "2026-10-11T15:47:26.811499+00:00",
       "exitCode": 0,
-      "revision": "e0d80368987dc79fa33eb01af59ad8ead2d5a4da",
-      "dirtySource": true
+      "revision": "2ac1d1a13ddd3aab9282edbb91349c78d690cb35",
+      "dirtySource": false
     },
-    "revision": "e0d80368987dc79fa33eb01af59ad8ead2d5a4da",
-    "dirtySource": true
+    "revision": "2ac1d1a13ddd3aab9282edbb91349c78d690cb35",
+    "dirtySource": false
   },
   "history": [
     {
@@ -722,6 +722,150 @@
       },
       "revision": "e0d80368987dc79fa33eb01af59ad8ead2d5a4da",
       "dirtySource": true
+    },
+    {
+      "project": "harness",
+      "title": "Agentic Playwright",
+      "repository": "https://github.com/balajiregt/playwright-harness-framework",
+      "protocol": "https://github.com/balajiregt/playwright-harness-framework/blob/main/benchmarks/README.md",
+      "checks": [
+        {
+          "name": "Mutation report hash",
+          "ok": true,
+          "detail": "Summary bound to source report"
+        },
+        {
+          "name": "Seeded defect observed",
+          "ok": true,
+          "detail": "Intentional viewer-export bypass must fail its oracle"
+        },
+        {
+          "name": "Trial records consistent",
+          "ok": true,
+          "detail": "Duplicate pairs or malformed records do not qualify"
+        },
+        {
+          "name": "No expected-failure oracles",
+          "ok": true,
+          "detail": "Expected failures cannot qualify as successful oracle evidence"
+        },
+        {
+          "name": "No oracle retries",
+          "ok": true,
+          "detail": "Retry counts checked where browser/JUnit results are supplied"
+        },
+        {
+          "name": "Evidence matches the fixed benchmark protocol",
+          "ok": true,
+          "detail": "Case identities and counts checked against the versioned synthetic protocol"
+        },
+        {
+          "name": "Evidence belongs to this attempt",
+          "ok": true,
+          "detail": "All required source files were regenerated during this run"
+        }
+      ],
+      "metrics": [
+        {
+          "label": "Passed oracle checks",
+          "value": 4,
+          "unit": " / 4",
+          "note": ""
+        },
+        {
+          "label": "Seeded defects detected",
+          "value": 1,
+          "unit": " / 1",
+          "note": ""
+        },
+        {
+          "label": "Paired live-agent trials",
+          "value": 0,
+          "unit": "",
+          "note": ""
+        },
+        {
+          "label": "Scripted collector checks",
+          "value": 0,
+          "unit": "",
+          "note": ""
+        },
+        {
+          "label": "AI cost",
+          "value": null,
+          "unit": "",
+          "note": ""
+        }
+      ],
+      "limitations": [
+        "One deliberately seeded defect; not a general defect detection rate.",
+        "Browser runtime is not agent task completion time.",
+        "Agent comparisons require matched task, model/version and target groups; scripted validation is separate."
+      ],
+      "cases": [
+        {
+          "name": "viewer export denied in UI and API",
+          "status": "passed",
+          "attempts": 1,
+          "expectedStatus": "passed"
+        },
+        {
+          "name": "manager exports exact account fixture",
+          "status": "passed",
+          "attempts": 1,
+          "expectedStatus": "passed"
+        },
+        {
+          "name": "unauthenticated export denied",
+          "status": "passed",
+          "attempts": 1,
+          "expectedStatus": "passed"
+        },
+        {
+          "name": "manager direct admin route denied",
+          "status": "passed",
+          "attempts": 1,
+          "expectedStatus": "passed"
+        }
+      ],
+      "evidence": [
+        {
+          "file": "oracle.json",
+          "sha256": "f9bcb598f2e78fb6dc7acc722c961d6c802c681ecbaab0f92f2bc64d5a296a89",
+          "fileModifiedAt": "2026-10-11T15:47:25.304540+00:00"
+        },
+        {
+          "file": "mutation-summary.json",
+          "sha256": "f322e9ee5cf49594c2bcaf7e324eeb50a6ba2244b45cab04d125cd5be711c940",
+          "fileModifiedAt": "2026-10-11T15:47:26.774532+00:00"
+        },
+        {
+          "file": "mutant.json",
+          "sha256": "b00ad9af3168796019db366acfff9d653c74499d0a11b3b80b8f1edd3dd31b69",
+          "fileModifiedAt": "2026-10-11T15:47:26.762532+00:00"
+        }
+      ],
+      "runAt": "2026-10-11T15:47:23.217368+00:00",
+      "timeBasis": "benchmark attempt start",
+      "agentTrials": {
+        "liveTrials": 0,
+        "scriptedValidations": 0,
+        "pairedRepeats": 0,
+        "groups": [],
+        "invalidRecords": 0
+      },
+      "status": "passed",
+      "integrity": "verified",
+      "runId": "15d8c4fd1a1f6a53",
+      "execution": {
+        "startedAt": "2026-10-11T15:47:23.217368+00:00",
+        "finishedAt": "2026-10-11T15:47:26.811499+00:00",
+        "exitCode": 0,
+        "revision": "2ac1d1a13ddd3aab9282edbb91349c78d690cb35",
+        "dirtySource": false
+      },
+      "revision": "2ac1d1a13ddd3aab9282edbb91349c78d690cb35",
+      "dirtySource": false
     }
   ]
 }
