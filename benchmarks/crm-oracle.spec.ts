@@ -1,7 +1,9 @@
 import { test, expect } from '../fixtures/base.fixture';
 test.beforeEach(async ({ sampleCrmPage }) => { await sampleCrmPage.gotoLogin(); });
 test('viewer export denied in UI and API', async ({ page, sampleCrmPage, sampleCrmAssertions }) => {
-  await sampleCrmPage.signInAs('viewer'); await sampleCrmPage.gotoAccounts(); await sampleCrmAssertions.expectViewerAccountsReadOnly();
+  await sampleCrmPage.signInAs('viewer');
+  await expect(page.getByTestId('dashboard-page')).toBeVisible();
+  await sampleCrmPage.gotoAccounts(); await sampleCrmAssertions.expectViewerAccountsReadOnly();
   const response = await page.request.get('/api/accounts/export');
   expect(response.status()).toBe(403); expect(await response.json()).toEqual({ error: 'Access denied' });
 });
