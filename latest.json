@@ -1,0 +1,295 @@
+{
+  "schemaVersion": 1,
+  "project": "harness",
+  "updatedAt": "2026-10-11T14:50:17.679372+00:00",
+  "run": {
+    "project": "harness",
+    "title": "Agentic Playwright",
+    "repository": "https://github.com/balajiregt/playwright-harness-framework",
+    "protocol": "https://github.com/balajiregt/playwright-harness-framework/blob/main/benchmarks/README.md",
+    "checks": [
+      {
+        "name": "Mutation report hash",
+        "ok": true,
+        "detail": "Summary bound to source report"
+      },
+      {
+        "name": "Seeded defect observed",
+        "ok": true,
+        "detail": "Intentional viewer-export bypass must fail its oracle"
+      },
+      {
+        "name": "Trial records consistent",
+        "ok": true,
+        "detail": "Duplicate pairs or malformed records do not qualify"
+      },
+      {
+        "name": "No expected-failure oracles",
+        "ok": true,
+        "detail": "Expected failures cannot qualify as successful oracle evidence"
+      },
+      {
+        "name": "No oracle retries",
+        "ok": true,
+        "detail": "Retry counts checked where browser/JUnit results are supplied"
+      },
+      {
+        "name": "Evidence matches the fixed benchmark protocol",
+        "ok": true,
+        "detail": "Case identities and counts checked against the versioned synthetic protocol"
+      },
+      {
+        "name": "Evidence belongs to this attempt",
+        "ok": true,
+        "detail": "All required source files were regenerated during this run"
+      }
+    ],
+    "metrics": [
+      {
+        "label": "Passed oracle checks",
+        "value": 4,
+        "unit": " / 4",
+        "note": ""
+      },
+      {
+        "label": "Seeded defects detected",
+        "value": 1,
+        "unit": " / 1",
+        "note": ""
+      },
+      {
+        "label": "Paired live-agent trials",
+        "value": 0,
+        "unit": "",
+        "note": ""
+      },
+      {
+        "label": "Scripted collector checks",
+        "value": 1,
+        "unit": "",
+        "note": ""
+      },
+      {
+        "label": "AI cost",
+        "value": null,
+        "unit": "",
+        "note": ""
+      }
+    ],
+    "limitations": [
+      "One deliberately seeded defect; not a general defect detection rate.",
+      "Browser runtime is not agent task completion time.",
+      "Agent comparisons require matched task, model/version and target groups; scripted validation is separate."
+    ],
+    "cases": [
+      {
+        "name": "viewer export denied in UI and API",
+        "status": "passed",
+        "attempts": 1,
+        "expectedStatus": "passed"
+      },
+      {
+        "name": "manager exports exact account fixture",
+        "status": "passed",
+        "attempts": 1,
+        "expectedStatus": "passed"
+      },
+      {
+        "name": "unauthenticated export denied",
+        "status": "passed",
+        "attempts": 1,
+        "expectedStatus": "passed"
+      },
+      {
+        "name": "manager direct admin route denied",
+        "status": "passed",
+        "attempts": 1,
+        "expectedStatus": "passed"
+      }
+    ],
+    "evidence": [
+      {
+        "file": "oracle.json",
+        "sha256": "8ab3f9fb7b1b4aec62ddad50c4fd0f37eeff67b20c562a451512e9ed21a7f987",
+        "fileModifiedAt": "2026-10-11T14:46:17.331544+00:00"
+      },
+      {
+        "file": "mutation-summary.json",
+        "sha256": "83d76920995d9c5e3f3f8ca8eda28f711265b0dbc5858d885c22311f75821b77",
+        "fileModifiedAt": "2026-10-11T14:46:22.254977+00:00"
+      },
+      {
+        "file": "mutant.json",
+        "sha256": "37d5b8f5eb9d6481b9c5b8d9bd67c4bd3126a0b3732e67c8ae78f099d0a15dde",
+        "fileModifiedAt": "2026-10-11T14:46:22.148891+00:00"
+      }
+    ],
+    "runAt": "2026-10-11T14:46:12.970580+00:00",
+    "timeBasis": "benchmark attempt start",
+    "agentTrials": {
+      "liveTrials": 0,
+      "scriptedValidations": 1,
+      "pairedRepeats": 0,
+      "groups": [],
+      "invalidRecords": 0
+    },
+    "status": "passed",
+    "integrity": "verified",
+    "runId": "48decf0b0db27478",
+    "execution": {
+      "startedAt": "2026-10-11T14:46:12.970580+00:00",
+      "finishedAt": "2026-10-11T14:46:22.308417+00:00",
+      "exitCode": 0,
+      "revision": "4e8b8c6b3044f04077fdbddde3f52096b2cc43ba",
+      "dirtySource": true
+    },
+    "revision": "4e8b8c6b3044f04077fdbddde3f52096b2cc43ba",
+    "dirtySource": true
+  },
+  "history": [
+    {
+      "project": "harness",
+      "title": "Agentic Playwright",
+      "repository": "https://github.com/balajiregt/playwright-harness-framework",
+      "protocol": "https://github.com/balajiregt/playwright-harness-framework/blob/main/benchmarks/README.md",
+      "checks": [
+        {
+          "name": "Mutation report hash",
+          "ok": true,
+          "detail": "Summary bound to source report"
+        },
+        {
+          "name": "Seeded defect observed",
+          "ok": true,
+          "detail": "Intentional viewer-export bypass must fail its oracle"
+        },
+        {
+          "name": "Trial records consistent",
+          "ok": true,
+          "detail": "Duplicate pairs or malformed records do not qualify"
+        },
+        {
+          "name": "No expected-failure oracles",
+          "ok": true,
+          "detail": "Expected failures cannot qualify as successful oracle evidence"
+        },
+        {
+          "name": "No oracle retries",
+          "ok": true,
+          "detail": "Retry counts checked where browser/JUnit results are supplied"
+        },
+        {
+          "name": "Evidence matches the fixed benchmark protocol",
+          "ok": true,
+          "detail": "Case identities and counts checked against the versioned synthetic protocol"
+        },
+        {
+          "name": "Evidence belongs to this attempt",
+          "ok": true,
+          "detail": "All required source files were regenerated during this run"
+        }
+      ],
+      "metrics": [
+        {
+          "label": "Passed oracle checks",
+          "value": 4,
+          "unit": " / 4",
+          "note": ""
+        },
+        {
+          "label": "Seeded defects detected",
+          "value": 1,
+          "unit": " / 1",
+          "note": ""
+        },
+        {
+          "label": "Paired live-agent trials",
+          "value": 0,
+          "unit": "",
+          "note": ""
+        },
+        {
+          "label": "Scripted collector checks",
+          "value": 1,
+          "unit": "",
+          "note": ""
+        },
+        {
+          "label": "AI cost",
+          "value": null,
+          "unit": "",
+          "note": ""
+        }
+      ],
+      "limitations": [
+        "One deliberately seeded defect; not a general defect detection rate.",
+        "Browser runtime is not agent task completion time.",
+        "Agent comparisons require matched task, model/version and target groups; scripted validation is separate."
+      ],
+      "cases": [
+        {
+          "name": "viewer export denied in UI and API",
+          "status": "passed",
+          "attempts": 1,
+          "expectedStatus": "passed"
+        },
+        {
+          "name": "manager exports exact account fixture",
+          "status": "passed",
+          "attempts": 1,
+          "expectedStatus": "passed"
+        },
+        {
+          "name": "unauthenticated export denied",
+          "status": "passed",
+          "attempts": 1,
+          "expectedStatus": "passed"
+        },
+        {
+          "name": "manager direct admin route denied",
+          "status": "passed",
+          "attempts": 1,
+          "expectedStatus": "passed"
+        }
+      ],
+      "evidence": [
+        {
+          "file": "oracle.json",
+          "sha256": "8ab3f9fb7b1b4aec62ddad50c4fd0f37eeff67b20c562a451512e9ed21a7f987",
+          "fileModifiedAt": "2026-10-11T14:46:17.331544+00:00"
+        },
+        {
+          "file": "mutation-summary.json",
+          "sha256": "83d76920995d9c5e3f3f8ca8eda28f711265b0dbc5858d885c22311f75821b77",
+          "fileModifiedAt": "2026-10-11T14:46:22.254977+00:00"
+        },
+        {
+          "file": "mutant.json",
+          "sha256": "37d5b8f5eb9d6481b9c5b8d9bd67c4bd3126a0b3732e67c8ae78f099d0a15dde",
+          "fileModifiedAt": "2026-10-11T14:46:22.148891+00:00"
+        }
+      ],
+      "runAt": "2026-10-11T14:46:12.970580+00:00",
+      "timeBasis": "benchmark attempt start",
+      "agentTrials": {
+        "liveTrials": 0,
+        "scriptedValidations": 1,
+        "pairedRepeats": 0,
+        "groups": [],
+        "invalidRecords": 0
+      },
+      "status": "passed",
+      "integrity": "verified",
+      "runId": "48decf0b0db27478",
+      "execution": {
+        "startedAt": "2026-10-11T14:46:12.970580+00:00",
+        "finishedAt": "2026-10-11T14:46:22.308417+00:00",
+        "exitCode": 0,
+        "revision": "4e8b8c6b3044f04077fdbddde3f52096b2cc43ba",
+        "dirtySource": true
+      },
+      "revision": "4e8b8c6b3044f04077fdbddde3f52096b2cc43ba",
+      "dirtySource": true
+    }
+  ]
+}
