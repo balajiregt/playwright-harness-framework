@@ -20,3 +20,5 @@ Results, traces, trial records and reviewer notes stay ignored under `benchmark-
 The existing browser login now also establishes an HttpOnly demo server session using seeded `role@example.com` / `password` accounts. Logout removes that session. Existing localStorage still drives browser navigation; it is not the server authorization oracle. The API exports synthetic JSON accounts, not a production CSV system. Fault injection requires **both** `CRM_BENCHMARK_MODE=1` and `CRM_BENCHMARK_FAULT=viewer-export`; normal server startup rejects a fault setting. Never expose this demo beyond loopback.
 
 Measured 2026-10-11: four normal browser/API checks passed; one seeded viewer-export bypass was detected by the independent HTTP assertion even though the UI remained read-only. This proves detection of that specific defect only. No AI productivity, business savings or general mutation score is claimed.
+
+See [automatic dashboard publication](AUTOMATIC-PUBLICATION.md) for the canonical runner, CI, privacy controls and retry behaviour.

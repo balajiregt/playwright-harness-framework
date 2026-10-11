@@ -1,0 +1,26 @@
+{
+  "steps": [
+    [
+      "node",
+      "node_modules/@playwright/test/cli.js",
+      "test",
+      "--config=benchmarks/playwright.config.ts"
+    ],
+    [
+      "node",
+      "benchmarks/mutation.mjs"
+    ]
+  ],
+  "outputs": [
+    "benchmark-results/oracle.json",
+    "benchmark-results/mutant.json",
+    "benchmark-results/mutation-summary.json"
+  ],
+  "project": "harness",
+  "expectedCases": [
+    "manager direct admin route denied",
+    "manager exports exact account fixture",
+    "unauthenticated export denied",
+    "viewer export denied in UI and API"
+  ]
+}

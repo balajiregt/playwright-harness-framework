@@ -35,8 +35,11 @@
     "benchmark:collect": "node benchmarks/trials.mjs collect",
     "benchmark:summary": "node benchmarks/trials.mjs summary",
     "benchmark:test": "node --test benchmarks/*.test.mjs",
-    "benchmark:oracle": "playwright test --config=benchmarks/playwright.config.ts",
-    "benchmark:mutation": "node benchmarks/mutation.mjs"
+    "benchmark:oracle": "npm run benchmark",
+    "benchmark:mutation": "npm run benchmark",
+    "benchmark": "python3 benchmarks/dashboard/run.py",
+    "benchmark:publish": "python3 benchmarks/dashboard/publish.py",
+    "postbenchmark:collect": "python3 benchmarks/dashboard/publish.py --refresh-trials"
   },
   "devDependencies": {
     "@playwright/test": "1.62.1",
