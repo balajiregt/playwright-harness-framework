@@ -44,6 +44,8 @@ export class SampleCrmPage {
     await this.page.getByLabel('Email').fill(user.username);
     await this.page.getByLabel('Password').fill(user.password);
     await this.page.getByRole('button', { name: 'Sign in' }).click();
+    // Login creates the API cookie asynchronously before rendering the dashboard.
+    await this.dashboardPage.waitFor({ state: 'visible' });
   }
 
   async gotoDashboard() {
