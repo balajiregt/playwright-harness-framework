@@ -1,4 +1,8 @@
-# Automatic dashboard updates
+# Dashboard updates after an explicit benchmark run
+
+Playwright Agent CI runs this workflow only through manual dispatch. Publishing
+ordinary source changes does not start a benchmark or publish new metrics.
+The explicit local benchmark commands below retain their existing behavior.
 
 Run `npm run benchmark`. The complete fixed protocol runs, validates source evidence,
 and publishes sanitised aggregates to this repository's `benchmark-results` branch.

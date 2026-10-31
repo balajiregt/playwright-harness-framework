@@ -2,7 +2,7 @@
 
 ## Ownership
 
-The existing `playwright-harness-framework` repository is the canonical
+The renamed `playwright-agent` repository is the canonical
 **Playwright Agent** product. Its established directory stays
 `qa-projects/Playwright Agentic Framework` in the workspace.
 

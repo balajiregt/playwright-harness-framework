@@ -1,5 +1,9 @@
 # Evaluate your Playwright suite locally
 
+This evaluator is part of Playwright Agent. The commands below run inside its
+internal `quality/` package; the product root also exposes `npm run qa -- ...`
+with the same CLI and caller-relative paths.
+
 For paired Jev versus Laya evaluation and the private QA viewer, use the
 [Jev / Laya comparison guide](jev-laya-comparison.md). This page documents the
 existing local-only `qa run` workflow.
@@ -11,9 +15,11 @@ Laya and Qwen use separate local runtimes. No hosted AI key is needed.
 ## 1. Install once
 
 ```bash
-git clone https://github.com/balajiregt/playwright-decision-bench.git
-cd playwright-decision-bench
+git clone https://github.com/balajiregt/playwright-agent.git
+cd playwright-agent
 npm ci
+npm ci --prefix quality
+cd quality
 python3 -m venv .venv
 .venv/bin/python -m pip install -r python/requirements-import.txt
 ```
