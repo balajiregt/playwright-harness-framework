@@ -21,6 +21,37 @@ explain the native entry points. Decision providers and the existing Code Mode /
 mutation integration are optional; selecting the agent does not run a benchmark,
 publish results, connect global servers or require another runtime.
 
+## Configure it for your existing project
+
+Download the source ZIP or clone this repository once as your local toolkit.
+Your coding agent continues to work in your own Playwright project and reuse its
+existing tests, fixtures, page objects and configuration.
+
+From this toolkit directory:
+
+```sh
+npm ci
+npm ci --prefix quality
+npm run agent:configure -- --repo /path/to/your-playwright-project --client both
+```
+
+The command adds small project-local discovery shims for Codex and/or Copilot,
+a private relative-path configuration, and its ignore entry. It preserves your
+project's instructions and tests; existing conflicting files are never overwritten.
+Restart your coding-agent session to refresh discovery. Then use `$playwright-agent`
+in Codex or select **Playwright Agent** in Copilot and identify your ticket context.
+
+One workflow supports **write/update tests**, **acceptance review**, **test matrices**,
+**duplicate-test review**, and **behavioral mutation testing**. Ordinary authoring
+uses the host coding agent's native tools. Optional Code Mode exposes the bounded
+quality tools; it is not a separate test-writing model. Mutation work additionally
+needs a trusted local application, allowed source files and a configured observation
+probe. Static duplicate candidates require review before changing tests.
+
+[Adoption guide](docs/adoption.md) · [Task context and prompts](docs/playwright-agent.md).
+The community source ZIP excludes private task inputs, credentials, dependencies
+and local reports. The synthetic CRM demo and run evidence are supporting material.
+
 ## One product, shared capabilities
 
 | Capability | Implementation owner |
@@ -45,6 +76,39 @@ The existing `npm test` still runs browser tests. Quality tests are separate
 checks within the same product; neither command implicitly starts model inference
 or publishes metrics. Config/report paths passed to root commands resolve from
 the caller's working directory.
+
+## Reproduce the evidence demo
+
+The bundled CRM demonstration includes authored synthetic epic/ticket documents,
+one new invalid-login test, real MCP/Code Mode checks and two independently
+observed behavioral mutations. It deliberately retains one metric-value assertion
+gap so a green browser suite cannot be mistaken for complete acceptance.
+
+Use **Node 22.23.4** for the full demonstration and native Code Mode. This does not
+change the workspace's default runtime. From the product root:
+
+```sh
+npm ci
+npm ci --prefix quality
+npm ci --prefix quality/integrations/code-mode --ignore-scripts=false
+npx playwright install chromium
+npm run demo:prepare
+npm run demo:verify
+npm run demo:package
+```
+
+The native Code Mode dependency needs its normal compiler prerequisites when a
+prebuilt binary is unavailable. The repository normally disables dependency
+install scripts; the explicit override above applies only to this optional
+integration. No model, global MCP entry or autonomous hook is installed.
+
+[Demo walkthrough](examples/validation-demo/README.md) explains the six-test gate,
+source/test/coverage graphs, tool receipts, mutation evidence and limitations.
+Reports and screenshots remain under ignored `artifacts/validation-demo/`.
+The source ZIP and its hash manifest are written under ignored `artifacts/releases/`.
+Live Codex planning and local Laya assessment are separate opt-in verification
+flags; the default demo uses an authored fault catalogue and real Playwright
+execution without extra inference.
 
 ## What This Project Does
 

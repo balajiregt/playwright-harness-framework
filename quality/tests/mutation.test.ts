@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtemp,mkdir,writeFile,readFile,rm,symlink} from 'node:fs/promises';
+import {mkdtemp,mkdir,writeFile,readFile,rm,symlink,rename} from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import {Client} from '@modelcontextprotocol/sdk/client/index.js';
@@ -26,6 +26,21 @@ test('artifact context retains complete passive text, exact source quotes and st
   assert.throws(()=>validatePlan({...f.plan,contextHash:'0'.repeat(64)},f.ctx,f.c),/stale/);
   assert.throws(()=>validatePlan({...f.plan,requirements:[{...f.plan.requirements[0],source:{...f.plan.requirements[0].source,quote:'Invented criterion'}}]},f.ctx,f.c),/quote/);
   await writeFile(path.join(f.c.artifactDir,'other.pdf'),'unreadable');await assert.rejects(loadContext({...f.c,python:'/missing/python'}),/Cannot extract/);
+ }finally{await rm(f.dir,{recursive:true,force:true});}
+});
+test('selected project task folder supplies epic and ticket evidence with input-bound freshness',async()=>{
+ const f=await fixture();try{
+  const taskDir=path.join(f.c.repo,'contexts/tasks/LOGIN-123');
+  await mkdir(path.dirname(taskDir),{recursive:true});await rename(f.c.artifactDir,taskDir);
+  await writeFile(path.join(taskDir,'README.md'),'Epic: signed-in viewers must retain read-only access.');
+  await writeFile(path.join(taskDir,'ticket.json'),JSON.stringify({id:'LOGIN-123',summary:'Review viewer access.'}));
+  const config={...f.c,artifactDir:taskDir},context=await loadContext(config);
+  assert.deepEqual(context.artifacts.map(a=>a.file).sort(),['README.md','epic.md','ticket.json']);
+  assert.ok(context.artifacts.some(a=>a.text.includes('retain read-only access')));
+  const plan={...f.plan,contextHash:context.hash};validatePlan(plan,context,config);
+  await writeFile(path.join(taskDir,'README.md'),'Epic: changed acceptance criteria.');
+  const changed=await loadContext(config);assert.notEqual(changed.hash,context.hash);
+  assert.throws(()=>validatePlan(plan,changed,config),/stale/);
  }finally{await rm(f.dir,{recursive:true,force:true});}
 });
 test('mutation plan rejects test edits, ambiguous replacements, duplicate faults and external probe navigation',async()=>{

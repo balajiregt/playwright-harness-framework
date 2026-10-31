@@ -1,0 +1,22 @@
+{
+  "kind": "authored-synthetic-tickets",
+  "epic": "CRM-DEMO-001",
+  "tickets": [
+    {
+      "key": "LOGIN-INVALID",
+      "summary": "Reject the synthetic viewer's incorrect password",
+      "acceptanceCriterion": "An incorrect password must display Invalid credentials and keep the user on the login page."
+    },
+    {
+      "key": "VIEWER-READONLY",
+      "summary": "Keep viewer accounts read-only",
+      "acceptanceCriterion": "A viewer must see the read-only accounts banner and the Export accounts button must be disabled."
+    },
+    {
+      "key": "DASHBOARD-METRIC",
+      "summary": "Display the seeded open-pipeline value",
+      "acceptanceCriterion": "The synthetic dashboard open-pipeline metric must display $842k.",
+      "coverageNote": "Intentionally missing a value assertion in the current demonstration suite; do not mark acceptance fulfilled from a passing run."
+    }
+  ]
+}

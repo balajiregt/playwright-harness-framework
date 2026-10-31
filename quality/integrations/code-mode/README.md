@@ -63,8 +63,8 @@ Use `--read-only` to expose only context/evidence and existing plan inspection;
 model assessment, planning and fault execution are then unavailable through code.
 Calls to `qa.assess({})` run the local Laya workload. The sandbox can reach only
 this configured MCP catalogue; arbitrary manuals, shell/network/HTTP plugins and
-dynamic server registration are not exposed. Limits: 128 MiB isolate, 20,000
-code characters and 100,000 result characters. Timeout bounds the code chain;
+dynamic server registration are not exposed. Logged Code Mode execution failures are normalized to MCP errors; a null result alone is not treated as success. Limits: 128 MiB isolate, 20,000
+code characters and 100,000 result characters. The internal MCP request timeout is bounded at 900,000 ms to support long mutation runs. Timeout bounds the code chain;
 it does not cancel a tool operation already running in the host.
 
 Versions are pinned in package-lock.json: Code Mode 1.2.13 (MPL-2.0), SDK 1.1.0,

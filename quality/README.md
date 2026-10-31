@@ -32,7 +32,11 @@ The `src` modules and tests retain their existing interfaces and evidence rules.
 The `bench:*` commands, fixtures and study documents are historical experiment
 interfaces, not additional products. No model runs or publication are part of
 setup or ordinary offline verification. Generated reports stay under ignored
-`quality/artifacts`; private requirements stay in ignored `quality/context-inputs`.
+`quality/artifacts`; canonical private tickets, epics and PRDs belong in the
+parent `contexts/tasks/<work-item>/` folder. Select existing requirements explicitly
+for `qa` and mutation `artifactDir`; do not create a second import folder here.
+Mutation config paths resolve relative to the config file; CLI-supplied config
+paths resolve relative to the caller's working directory.
 
 Optional local-model environments are configured separately. Do not copy an old
 virtual environment, credentials or model cache into source control. Existing
@@ -40,6 +44,9 @@ public feeds retain their historical identity; future standard exports use the
 parent Playwright Agent identity and the unchanged platform-publish contract.
 
 Feature knowledge and work-item requirements remain in the parent `contexts/`
-and `contexts/tasks/` folders. `quality/contexts/task.yml` is an existing offline
-preview fixture, not a second active task context. Mutation configurations point
-to the selected requirements folder; do not duplicate feature documents here.
+and ignored `contexts/tasks/<work-item>/` folders; see
+[context ownership](../contexts/README.md). Root `npm run quality:context` reads
+`quality/fixtures/task-preview.yml`, an offline rubric-preview fixture rather
+than an active ticket. Mutation configurations point to the selected requirements
+folder; do not duplicate feature documents here. Selecting context does not
+enable providers, workloads or publication.

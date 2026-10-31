@@ -26,7 +26,7 @@ try{
  client.getTools=async()=>catalogue;
  client.callTool=async(name,arguments_)=>{
   const tool=catalogue.find(t=>t.name===name);if(!tool)throw Error('Tool is outside the configured mutation MCP');
-  const result=await mcp.callTool({name:name.slice(3),arguments:arguments_});
+  const result=await mcp.callTool({name:name.slice(3),arguments:arguments_},undefined,{timeout:900000});
   if(result.isError)throw Error('Local mutation tool failed');
   const block=result.content?.find(c=>c.type==='text');if(!block)throw Error('Missing JSON tool result');return JSON.parse(block.text);
  };
@@ -38,12 +38,13 @@ try{
   const start=performance.now();
   const classic=await client.callTool(contextTool.name,{});
   const result=await client.callToolChain(`return qa.${name}({});`,30000,128);
+  if(result.logs?.some(line=>line.startsWith('[ERROR] Code execution failed:')))throw Error('Code Mode execution failed');
   originalLog(JSON.stringify({mode:'code-mode-roundtrip',tools:tools.map(t=>t.name),sameResult:JSON.stringify(classic)===JSON.stringify(result.result),wallMs:performance.now()-start,result:result.result},null,2));
  }else{
   const server=new McpServer({name:'playwright-mutation-code-mode',version:'0.1.0'});
   server.registerTool('interfaces',{description:'Read interfaces for the configured local Playwright mutation tools.',inputSchema:{},annotations:{readOnlyHint:true,openWorldHint:false}},async()=>({content:[{type:'text',text:interfaces}]}));
   server.registerTool('call_tool_chain',{description:'Run bounded JavaScript over the configured local mutation MCP tools. Return only the summary needed.',annotations:{readOnlyHint:readOnly,openWorldHint:false},inputSchema:{code:z.string().min(1).max(20000),timeoutMs:z.number().int().min(1000).max(900000).default(30000)}},async({code,timeoutMs})=>{
-   try{const result=await client.callToolChain(code,timeoutMs,128);const text=JSON.stringify(result);if(text.length>100000)throw Error('Return a smaller summary');return {content:[{type:'text',text}]};}
+   try{const result=await client.callToolChain(code,timeoutMs,128);if(result.logs?.some(line=>line.startsWith('[ERROR] Code execution failed:')))throw Error('Code Mode execution failed');const text=JSON.stringify(result);if(text.length>100000)throw Error('Return a smaller summary');return {content:[{type:'text',text}]};}
    catch{return {isError:true,content:[{type:'text',text:'Code Mode execution failed; check interfaces, capability flags and execution limits.'}]};}
   });
   await server.connect(new StdioServerTransport());

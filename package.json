@@ -51,7 +51,13 @@
     "quality:context": "npm --prefix quality run context:resolve",
     "quality:preview": "npm --prefix quality run review:preview",
     "quality:code-mode": "node scripts/run-quality.mjs code-mode",
-    "quality:export": "node scripts/run-quality.mjs export"
+    "quality:export": "node scripts/run-quality.mjs export",
+    "demo:prepare": "node scripts/run-quality.mjs demo prepare",
+    "demo:verify": "node scripts/run-quality.mjs demo verify",
+    "demo:package": "python3 scripts/package-demo.py",
+    "demo:test": "node --test scripts/package-demo.test.mjs scripts/validation-graphs.test.mjs",
+    "agent:configure": "node scripts/configure-agent.mjs",
+    "agent:test": "node --test scripts/configure-agent.test.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.62.1",
@@ -62,5 +68,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/balajiregt/playwright-agent.git"
-  }
+  },
+  "license": "MIT"
 }

@@ -14,9 +14,17 @@ The renamed `playwright-agent` repository is the canonical
 | Prior provider comparisons and synthetic pilots | Historical protocols, fixtures and study documents inside `quality/` |
 | Public aggregate presentation | Build with Balaji platform, with legacy feed identities retained |
 
-Parent `contexts/` remains the framework/task input location. The imported
-`quality/contexts/task.yml` is only a historical offline-preview fixture; actual
-mutation configs reference the selected requirement documents.
+Parent `contexts/` remains the framework/task input location. Private tickets,
+epics and PRDs have one canonical location: ignored
+`contexts/tasks/<work-item>/`. Select the existing requirements file explicitly
+for `qa`, or that folder through mutation `artifactDir`, relative to its config.
+The former quality-module context-input folder is retired. See
+[context ownership](../contexts/README.md) and
+[document import guidance](../quality/docs/behavioral-mutations.md#use-your-own-exports-and-repository).
+
+The offline rubric-preview fixture now lives at `quality/fixtures/task-preview.yml`.
+Root `npm run quality:context` reads that fixture, not the active ticket. Selecting
+context does not enable providers, execute workloads or publish results.
 
 The `quality/` directory is a dependency-isolated internal package, not a second
 Git repository or user-facing product. Root `qa`, `mutation`, `quality:*`
@@ -34,9 +42,10 @@ The full source Git history was fetched into this repository as branch
 `archive/playwright-decision-bench-20261031`, without resetting or committing
 the product's working tree. It preserves the original historical paths; the new
 `quality/` paths are imported working files. The original checkout and local
-changes remain intact as a compatibility/archive location. It is removed from
-active workspace product registration and its operational npm scripts forward
-to this repository. Direct invocation of its old source is historical only.
+changes are retained intact under ignored
+`artifacts/focused-restructure-20261031/recovery/decision-bench/`. The old
+`evaluation/playwright-decision-bench/` working path and forwarding entrypoints
+are retired. Use this product directly; the preserved source is recovery only.
 
 A source snapshot, Git bundle and per-file import hashes are retained privately
 under workspace `artifacts/playwright-agent-consolidation-20261031/`. No
@@ -68,7 +77,7 @@ The original working README is retained as `quality/docs/legacy-decision-bench-r
 ## Verification
 
 Run module typecheck/tests and its required offline previews, root framework
-typecheck, CLI forwarding checks, workspace layout checks, skill validation,
+typecheck, canonical CLI checks, workspace layout checks, skill validation,
 and platform tests/build. Actual results and any skipped gates are recorded in
 the private delivery report under the workspace migration artifact directory.
 

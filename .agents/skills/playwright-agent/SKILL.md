@@ -16,11 +16,11 @@ for delegation. An agent definition does not grant new permissions.
    default for this skill is the Git repository containing this skill: the
    Playwright Agentic Framework. Read its `AGENTS.md`, `package.json` and actual
    Playwright configuration. Keep user changes and nested repositories intact.
-2. In the agentic workspace, read the current UI context and resolved UI context
-   when routing is relevant. If they name a different project, report that
-   distinction and follow the user's explicit target. Do not repoint workspace
-   context or write tests into the role-aware mockserver as a side effect.
-   A task explicitly targeting that slice uses its existing UI skill and paths.
+2. In the agentic workspace, use `workspace.projects.json` to locate the selected
+   project, then follow its local `AGENTS.md` and selected task context. Playwright
+   Agent uses its own `contexts/` and supplied task documents. A request targeting
+   the separate role-aware mockserver uses that project's local instructions and
+   UI workflow. Keep changes within the explicitly selected project.
 3. Determine intent: **create** missing coverage, **update** an existing test, or
    **assess** coverage/acceptance without changing tests. An analysis question
    stays read-only unless changes are requested. Normal targeted verification

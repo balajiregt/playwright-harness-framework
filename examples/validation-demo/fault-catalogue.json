@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "requirements": [
+    {
+      "id": "VIEWER-READONLY",
+      "criterion": "A viewer must see the read-only accounts banner and the Export accounts button must be disabled.",
+      "critical": true,
+      "source": {
+        "artifactFile": "epic.md",
+        "quote": "A viewer must see the read-only accounts banner and the Export accounts button must be disabled."
+      }
+    },
+    {
+      "id": "DASHBOARD-METRIC",
+      "criterion": "The synthetic dashboard open-pipeline metric must display $842k.",
+      "critical": false,
+      "source": {
+        "artifactFile": "epic.md",
+        "quote": "The synthetic dashboard open-pipeline metric must display $842k."
+      }
+    }
+  ],
+  "mutations": [
+    {
+      "id": "VIEWER-READONLY-OFF",
+      "requirementId": "VIEWER-READONLY",
+      "description": "Remove viewer read-only accounts behavior. Existing viewer assertions are expected to detect this fault; execution must establish the outcome.",
+      "file": "examples/sample-crm-app/public/assets/app.js",
+      "before": "const readOnly = state.user.role === 'viewer';",
+      "after": "const readOnly = false;",
+      "probe": {
+        "project": "chromium",
+        "path": "/crm/accounts",
+        "testId": "read-only-banner",
+        "kind": "count",
+        "expected": "1",
+        "roles": ["viewer"]
+      }
+    },
+    {
+      "id": "DASHBOARD-METRIC-ZERO",
+      "requirementId": "DASHBOARD-METRIC",
+      "description": "Change the open-pipeline metric to $0. The current suite has no metric-value assertion, so this is an intentional known coverage gap; survival requires observed evidence.",
+      "file": "examples/sample-crm-app/public/assets/app.js",
+      "before": "<strong>$842k</strong>",
+      "after": "<strong>$0</strong>",
+      "probe": {
+        "project": "chromium",
+        "path": "/crm/dashboard",
+        "testId": "metric-open-pipeline",
+        "kind": "text",
+        "expected": "$842kOpen pipeline",
+        "roles": ["viewer"]
+      }
+    }
+  ]
+}

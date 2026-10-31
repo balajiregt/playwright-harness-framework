@@ -2,7 +2,8 @@
 
 This module is owned by the parent Playwright Agent repository. Follow its
 AGENTS.md and keep evaluator changes inside quality/. The old standalone
-checkout is a compatibility/archive location, not a second implementation owner.
+checkout is retained only in ignored recovery artifacts. It is not an active
+working path or a second implementation owner.
 
 The primary workflow measures whether existing Playwright assertions detect
 requirement-breaking behavioral faults. An optional research benchmark independently compares local Laya and Codex assessment
@@ -22,9 +23,16 @@ Historical requirement coverage, smoke selection, Jev, OpenAI
 and Qwen pilots remain separate. Keep existing browser tests unchanged during evaluation. Test-authoring tasks
 are owned by the parent agent workflow and require their own explicit scope.
 
-Read `contexts/task.yml`, then run `npm run context:resolve`. Supplied evidence,
-assertions and completeness flags determine coverage; names, claimed links and
-passing run records are not proof. Preserve uncertainty and missing helpers.
+Select the parent product's task requirements explicitly from
+`../contexts/tasks/<work-item>/`; see `../contexts/README.md`. Pass the existing
+requirements file to `qa`, and point mutation `artifactDir` at the selected
+folder relative to its config file. Do not create a second input folder here.
+`fixtures/task-preview.yml` and module `npm run context:resolve` (root
+`npm run quality:context`) belong to the offline rubric preview, not an active
+ticket. Context selection does not enable providers or execute workloads.
+Supplied evidence, assertions and completeness flags determine coverage; names,
+claimed links and passing run records are not proof. Preserve uncertainty and
+missing helpers.
 
 The bench:* commands implement a bounded synthetic coverage/smoke pilot. Laya and
 Qwen run locally. OpenAI is optional and direct-only; never use old Gateway keys. `workflow.ts` retains general rubric
@@ -45,7 +53,11 @@ Run `npm run typecheck`, `npm test`, `npm run context:resolve`,
 `npm run benchmark:crm:preview` and `npm run bench:preview` after implementation changes. Previews and tests
 must not use network APIs. Documentation-only changes need link/reference checks.
 
-The public destination is framework-benchmarks-balaji.netlify.app. The result feed is benchmark-results/decision-bench.json. Keep raw reports, prompts, code, keys and reviewer notes private.
+Existing public feeds retain their historical identity, including
+`benchmark-results/decision-bench.json`; they are not new product identities.
+Future standard Playwright Agent exports use the bundled platform-publish
+contract, without changing historical metrics or publishing during ordinary work.
+Keep raw reports, prompts, code, keys and reviewer notes private.
 Do not reuse retired provider results under a new model name. Medium/LinkedIn
 remain drafts. Report changed files, verification and any skipped gates.
 

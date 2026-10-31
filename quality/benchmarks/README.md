@@ -1,27 +1,38 @@
-# Playwright Decision Bench — benchmark protocol
+# Playwright Agent — evaluation fixtures and historical protocols
 
-The intended comparison is local Laya versus OpenAI Decisions, with the existing
-agent + MD/skill workflow as a baseline. Two primary tasks: requirement-to-test
-coverage and smoke-suite selection. See [the experiment plan](../docs/evaluation-scope.md).
+This directory belongs to the internal `quality/` module of Playwright Agent.
+It contains evaluation fixtures and retained coverage/smoke experiment protocols;
+it does not define a separate Decision Bench product or an active task context.
+See [quality ownership](../README.md) and the current
+[mutation evidence workflow](../docs/behavioral-mutations.md).
+
+The [earlier experiment plan](../docs/evaluation-scope.md) proposed local Laya
+versus OpenAI Decisions, with the agent + MD/skill workflow as a baseline, for
+requirement-to-test coverage and smoke-suite selection. It is historical research
+scope, not the required workflow or roadmap for ordinary agent tasks.
 
 ## Current state
 
-No measured comparison results. `crm-inputs.json` and `crm-gold.json` are authored
-synthetic scaffold fixtures. They exercise planning, duplication and assertion
-review; they are not the final coverage/smoke dataset. Gold remains local.
+`crm-inputs.json` and `crm-gold.json` are authored synthetic scaffold fixtures.
+They exercise planning, duplication and assertion review; they are not the final
+coverage/smoke dataset, and a preview supplies no measured model comparison.
+Gold stays out of model evidence packets. Recorded studies retain their own
+protocol and limitations; see [pilot findings](../docs/pilot-findings.md) and
+[independent mutation validation](../docs/independent-mutation-validation.md).
 
 ```bash
 npm run benchmark:crm:preview
 ```
 
-This is offline and produces no model answers. Metrics utilities operate only on
-explicitly supplied reports. The project has no automatic live benchmark or
-publication command until verified adapters and the new protocol are ready.
+Run this command from `quality/`. It is offline and produces no model answers.
+Metrics utilities operate only on explicitly supplied reports. This preview does
+not run a model, execute a campaign or publish results.
 
-## Publishing
+## Historical result identity and future exports
 
-Destination: [Framework Benchmarks](https://framework-benchmarks-balaji.netlify.app/).
-The dashboard lists this experiment as not yet measured. A future versioned feed
-will contain only sanitized aggregates with model/protocol identity, denominators,
-run conditions and failures. The current scope update publishes no model results.
-Historical provider outputs are not renamed or reused as evidence for this experiment.
+Existing feeds retain their measured values, provider labels, denominators and
+historical identity. Future standard exports use the parent's unchanged
+platform-publish contract and the Playwright Agent identity. Export preparation
+does not authorize publication. Keep raw evidence private, report unavailable
+measurements explicitly, and do not rename historical provider outputs as new
+results.

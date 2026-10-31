@@ -15,8 +15,7 @@ function resolveCli() {
   if (process.env.PLAYWRIGHT_CLI) return process.env.PLAYWRIGHT_CLI;
   const fromPath = spawnSync('sh', ['-lc', 'command -v playwright-cli'], { encoding: 'utf8' }).stdout.trim();
   if (fromPath) return fromPath;
-  const localDefault = '/Users/balaji/.npm-global/bin/playwright-cli';
-  return localDefault;
+  return 'playwright-cli';
 }
 
 function appUrl(recipe, route) {

@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "requirements": [
+    { "id": "LOGIN-VALID", "criterion": "A seeded admin using the correct synthetic password must reach the CRM dashboard.", "journey": "login", "critical": true },
+    { "id": "LOGIN-INVALID", "criterion": "An incorrect password must display Invalid credentials and keep the user on the login page.", "journey": "login", "critical": true },
+    { "id": "VIEWER-READONLY", "criterion": "A viewer must see the read-only accounts banner and the Export accounts button must be disabled.", "journey": "accounts", "critical": true },
+    { "id": "MANAGER-ACCESS", "criterion": "A manager must have enabled Dashboard, Accounts, Opportunities and Reports navigation, with Leads and Admin users navigation disabled.", "journey": "role navigation", "critical": true },
+    { "id": "LEAD-CREATE", "criterion": "A sales user must see required-field validation before creating a lead with a name, email and source.", "journey": "leads", "critical": false },
+    { "id": "OPPORTUNITY-CREATE", "criterion": "A manager must be able to create an opportunity with a name and numeric value.", "journey": "opportunities", "critical": false },
+    { "id": "REPORT-RETRY", "criterion": "A manager must be able to retry a failed revenue report and see that the report is ready.", "journey": "reports", "critical": false },
+    { "id": "DASHBOARD-METRIC", "criterion": "The synthetic dashboard open-pipeline metric must display $842k.", "journey": "dashboard", "critical": false }
+  ]
+}

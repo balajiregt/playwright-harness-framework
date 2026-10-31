@@ -33,7 +33,7 @@ in the [team setup](team-quickstart.md). The target repository must already have
 its own Playwright dependencies and browser installed. No second browser framework
 is installed here.
 
-From this project directory:
+From the internal `quality/` package directory:
 
 ```bash
 npm ci
@@ -63,17 +63,33 @@ real customer documents are bundled. [Recorded results](behavioral-mutation-vali
 
 ## Use your own exports and repository
 
-Put downloaded Confluence/Jira artifacts in [context-inputs](../context-inputs/README.md),
-which is ignored by Git. Copy the sample config to `mutation.config.local.json`;
-set `repo`, `artifactDir`, `playwrightConfig`, explicit `sourceFiles` and projects.
-Paths resolve relative to the config file. Keep one coherent work item per folder.
+Put downloaded Confluence epics/PRDs and Jira tickets in the parent product's
+ignored `contexts/tasks/<work-item>/` folder; see
+[context ownership](../../contexts/README.md). Keep one coherent work item per
+folder, with no nested directories. Select the existing requirements file
+explicitly for `qa`; mutation imports read the selected folder via `artifactDir`.
+No customer artifacts are bundled or downloaded automatically, and choosing a
+folder does not start inference or a workload.
 
-PDF with selectable text, DOC/DOCX, HTML, JSON, CSV, TXT/Markdown and XLS/XLSX are
-accepted. PDF extraction uses pypdf; legacy DOC uses macOS textutil or antiword.
+Copy the sample config to `quality/mutation.config.local.json` when working
+from the product root; set `repo`, `artifactDir`, `playwrightConfig`, explicit
+`sourceFiles` and projects. Config-owned paths resolve relative to the config
+file. For that local config, `"artifactDir": "../contexts/tasks/ABC-123"` selects
+the product's `contexts/tasks/ABC-123/` folder. Recalculate the sample's relative
+paths when moving its config; do not reuse paths relative to
+`quality/examples/mutation/`. An explicit CLI config path is caller-relative.
+Keep `examples/mutation/context` as the explicitly synthetic demonstration.
+
+PDF with selectable text, DOC/DOCX, HTML, JSON, CSV, TXT/Markdown and XLS/XLSX with
+literal values are accepted as passive exports. PDF extraction uses pypdf from
+`python/requirements-artifacts.txt`; legacy DOC uses macOS textutil or antiword.
 Scans require separately supplied OCR text. Formula cells, oversized/unreadable
 documents and unsupported formats fail visibly. No document macros, embedded
-scripts or Atlassian APIs execute. Limits are 30 files, 10 MiB/file, 30 MiB total
-and 90,000 extracted context/source characters. Split oversized scope explicitly.
+scripts or Atlassian APIs execute. Limits are 30 regular files with no nested
+directories, 10 MiB/file, 30 MiB total and 90,000 extracted context/source
+characters. Split oversized scope explicitly. Original files and exact
+requirement quotes are hashed and linked in the private report; conflicts and
+missing acceptance criteria need review.
 
 Every planned criterion must quote the imported text exactly. Every mutation
 replaces one unique source match in an allowed application/mock file. Tests,

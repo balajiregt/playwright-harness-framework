@@ -20,8 +20,8 @@ output/
 
 # Local security reports and verified scanner binary
 /artifacts/
-/context-inputs/*
-!/context-inputs/README.md
+# Retired private import path stays ignored if accidentally recreated.
+/context-inputs/
 /mutation.config.local.json
 
 # Security and generated-output exclusions from the maintained checkout.

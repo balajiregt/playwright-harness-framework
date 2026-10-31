@@ -19,7 +19,7 @@ Artifacts + tests + fixed faults → frozen evidence catalogue
 ```
 
 [Independent workflow](docs/independent-mutation-analysis.md) ·
-[Artifact folder](context-inputs/README.md) ·
+[Artifact folder](../../contexts/README.md) ·
 [Code Mode integration](integrations/code-mode/README.md) ·
 [Measured comparison](docs/independent-mutation-validation.md)
 

@@ -1,5 +1,12 @@
 # Start with the Playwright problem, then compare decision APIs
 
+**Historical coverage/smoke research plan.** This document preserves the earlier
+experiment scope and its limitations inside Playwright Agent's internal quality
+module. It is not a separate product or the current agent roadmap. Use the
+[parent workflow](../../AGENTS.md) for normal tasks and
+[behavioral mutation evidence](behavioral-mutations.md) for that optional stage.
+No campaigns, provider calls or publication are authorized by this document.
+
 **Research question:** which review tasks in an agentic Playwright workflow benefit
 from a separate decision API, and how do local Laya and OpenAI Decisions compare for each task?
 
@@ -158,8 +165,10 @@ Keep model assessment time separate from actual Playwright suite runtime.
 - Shared view: successful-call p50/p95, reported cloud cost, local resource use,
   repeatability and unavailable measurements. Do not convert missing data to zero.
 
-The shared dashboard reads sanitized aggregates from
-`playwright-decision-bench/benchmark-results/decision-bench.json`.
+The historical feed identity is `benchmark-results/decision-bench.json` from the
+former `playwright-decision-bench` repository. That repository is archived;
+this is not an active checkout or a new publication destination. Future standard
+Playwright Agent exports use the unchanged platform-publish contract.
 Raw packets, responses and keys stay local. The first local pilot is documented in
 [pilot findings](pilot-findings.md); OpenAI has no valid measurements.
 

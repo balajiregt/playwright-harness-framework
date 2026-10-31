@@ -57,7 +57,7 @@ target/
 /contexts/tasks/
 /quality/artifacts/
 /quality/.venv
-/quality/context-inputs/*
-!/quality/context-inputs/README.md
+# Retired private import path stays ignored if accidentally recreated.
+/quality/context-inputs/
 /quality/mutation.config.local.json
 /quality/decision-bench.config.local.json

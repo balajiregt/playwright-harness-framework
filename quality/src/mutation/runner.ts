@@ -12,7 +12,7 @@ import {runProcess} from './process.js';
 import {saveMutationReport} from './report.js';
 
 export interface Execution {status:string;errors:number;tests:{id:string;title:string;file:string;line:number;project:string;expectedStatus:string;results:{status:string;retry:number;durationMs:number;assertionFailure:boolean;errors:string[]}[]}[];wallMs:number}
-export interface FaultResult {id:string;requirementId:string;status:'killed'|'survived'|'not_activated'|'invalid_mutation'|'inconclusive'|'not_run';reason?:string;baselineProbe?:string;mutantProbe?:string;attempts:Execution[];killingTests:string[]}
+export interface FaultResult {id:string;requirementId:string;status:'killed'|'survived'|'not_activated'|'invalid_mutation'|'inconclusive'|'not_run';reason?:string;baselineProbe?:string;mutantProbe?:string;probeScreenshots?:{baseline?:string;mutant?:string};attempts:Execution[];killingTests:string[]}
 export interface Campaign {version:1;kind:'playwright-behavioral-mutations';runId:string;createdAt:string;contextHash:string;repositoryHash?:string;planHash?:string;scopeHash?:string;plan:MutationPlan;baseline:Execution[];restored:Execution|null;faults:FaultResult[];originalUnchanged:boolean;assessments?:unknown;wallMs:number}
 const excluded=new Set(['node_modules','artifacts','test-results','playwright-report','output','dist','build','coverage','__pycache__']);
 export async function isolatedCopy(repo:string,destination:string){
@@ -69,7 +69,8 @@ test('independent requirement observation',async({page})=>{
  ${c.readiness?`await expect(page.getByTestId(${JSON.stringify(c.readiness.testId)})).toHaveText(${JSON.stringify(c.readiness.text)});`:''}
  const locator=page.getByTestId(${JSON.stringify(m.probe.testId)});
  const actual=${m.probe.kind==='count'?"String(await locator.count())":"await locator.textContent()"};
- writeFileSync(${JSON.stringify(out+'.observation')},JSON.stringify({actual}));});`;
+ writeFileSync(${JSON.stringify(out+'.observation')},JSON.stringify({actual}));
+ ${c.captureEvidence?`await page.screenshot({path:${JSON.stringify(out+'.png')},fullPage:true});`:''}});`;
  await writeFile(path.join(copy,'.decision-mutation','probe.spec.ts'),code);
  const execution=await execute(copy,c,'probe.config.ts',out,m.probe.project);
  let actual;try{actual=JSON.parse(await readFile(out+'.observation','utf8')).actual;}catch{}
@@ -90,6 +91,7 @@ export async function runCampaign(c:MutationConfig,input:unknown,assessments?:un
    const file=await insideRepo(copy,m.file),original=await readFile(file,'utf8');
    try{
     const normal=await probe(copy,c,m,path.join(dir,`${m.id}-baseline-probe.json`));result.baselineProbe=normal.actual;
+    if(c.captureEvidence&&healthy(normal.execution))result.probeScreenshots={baseline:`${m.id}-baseline-probe.json.png`};
     if(!healthy(normal.execution)||normal.actual!==m.probe.expected){result.status='inconclusive';result.reason='Independent probe does not establish baseline requirement';continue;}
     const modified=original.replace(m.before,m.after);
     if(/\.[cm]?[jt]sx?$/.test(file)){
@@ -98,6 +100,7 @@ export async function runCampaign(c:MutationConfig,input:unknown,assessments?:un
     }
     await writeFile(file,modified);
     const changed=await probe(copy,c,m,path.join(dir,`${m.id}-mutant-probe.json`));result.mutantProbe=changed.actual;
+    if(c.captureEvidence&&healthy(changed.execution))result.probeScreenshots={...result.probeScreenshots,mutant:`${m.id}-mutant-probe.json.png`};
     if(!healthy(changed.execution)){result.status='inconclusive';result.reason='Mutant probe could not reach a healthy observable state';continue;}
     if(changed.actual===undefined||changed.actual===normal.actual){result.status='not_activated';result.reason='Fault did not change the independently observed behavior';continue;}
     for(let n=0;n<2;n++)result.attempts.push(await execute(copy,c,'suite.config.ts',path.join(dir,`${m.id}-attempt-${n}.json`)));

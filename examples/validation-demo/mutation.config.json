@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "repo": "../..",
+  "artifactDir": "../../contexts/tasks/CRM-DEMO-001",
+  "output": "../../artifacts/validation-demo/mutations",
+  "playwrightConfig": "examples/validation-demo/playwright.config.ts",
+  "sourceFiles": [
+    "examples/sample-crm-app/public/assets/app.js"
+  ],
+  "projects": [
+    "chromium"
+  ],
+  "maxMutations": 2,
+  "baselineRuns": 2,
+  "testTimeoutMs": 30000,
+  "suiteTimeoutMs": 240000,
+  "env": {
+    "APP_URL": "http://127.0.0.1:4287",
+    "APP_PORT": "4287"
+  },
+  "probeSetup": {
+    "module": "examples/validation-demo/probe-setup.ts",
+    "export": "setupViewer"
+  },
+  "readiness": {
+    "testId": "active-user",
+    "text": "Vik Viewer \u00b7 viewer"
+  },
+  "analysis": {
+    "scope": "synthetic"
+  },
+  "captureEvidence": true
+}

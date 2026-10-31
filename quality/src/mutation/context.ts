@@ -11,7 +11,7 @@ export interface MutationContext {version:1;hash:string;artifacts:Artifact[];sou
 export async function loadContext(c:MutationConfig):Promise<MutationContext>{
  const root=await realpath(c.artifactDir),artifacts:Artifact[]=[];let bytes=0;
  for(const entry of (await readdir(root,{withFileTypes:true})).sort((a,b)=>a.name.localeCompare(b.name))){
-  if(entry.name.startsWith('.')||entry.name==='README.md'&&root===path.join(ROOT,'context-inputs').replace(/\/$/,''))continue;
+  if(entry.name.startsWith('.'))continue;
   if(!entry.isFile())throw Error('Artifact folder accepts regular files only; no directories or symbolic links');
   if(artifacts.length>=30)throw Error('At most 30 artifacts per context');
   const file=path.join(root,entry.name);if((await stat(file)).size>10*1024*1024)throw Error('Artifact exceeds 10 MiB');

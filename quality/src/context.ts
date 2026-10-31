@@ -19,7 +19,7 @@ export async function confinedFile(root: string, relative: string) {
   return target;
 }
 
-export async function resolveContext(taskFile = 'contexts/task.yml') {
+export async function resolveContext(taskFile = 'fixtures/task-preview.yml') {
   const taskPath = await confinedFile(ROOT, taskFile);
   const taskText = await readFile(taskPath, 'utf8');
   const task = taskSchema.parse(YAML.parse(taskText));
