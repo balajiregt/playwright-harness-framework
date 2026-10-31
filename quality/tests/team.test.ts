@@ -5,6 +5,7 @@ import {existsSync} from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {ROOT} from '../src/context.js';
+import {publishMetrics} from '../src/team/publish.js';
 import {configSchema,requirementsSchema,localEndpoint} from '../src/team/config.js';
 import {importRequirements} from '../src/team/requirements.js';
 import {sourceEvidence,applyHistory,projectDependencies,type Inventory,type TeamTest} from '../src/team/collect.js';
@@ -110,4 +111,11 @@ test('three consecutive provider failures stop inference without losing unassess
  let calls=0;const report=await evaluate(config(),reqs,inventory([sample('a'),sample('b'),sample('c')]),{metadata:{},close(){},async ask(){calls++;throw Error('offline');}});
  assert.equal(calls,3);const m=publicMetrics(report);assert.equal(m.counts.pairs,6);assert.equal(m.counts.errors,3);assert.equal(m.counts.notRun,3);
  assert.ok(report.coverage.every(r=>r.label==='needs_judgment'));
+});
+
+test('retired results publication fails before reading files or invoking Git',async()=>{
+ await assert.rejects(publishMetrics('missing-file.json'),/retired and read-only/);
+ await assert.rejects(publishMetrics('missing-file.json','balajiregt/playwright-decision-bench'),/retired and read-only/);
+ await assert.rejects(publishMetrics('missing-file.json','invalid target'),/Invalid GitHub repository/);
+ await assert.rejects(publishMetrics('missing-file.json','example-owner/explicit-results'),{code:'ENOENT'});
 });

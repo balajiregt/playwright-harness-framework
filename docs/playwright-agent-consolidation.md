@@ -54,7 +54,8 @@ The original working README is retained as `quality/docs/legacy-decision-bench-r
   product's Playwright dependency, so it also runs in a standalone clone.
   Neither check claims to validate the CRM login flow.
 - Historical result branches, project IDs and old public URLs remain valid.
-  Legacy `qa publish` keeps its schema-specific destination; use the standard
+  The retired shared repository is read-only; the legacy publisher rejects it.
+  Explicit adopter-owned legacy targets remain supported. Use the standard
   export path for new parent-product metrics, with publication separately authorized.
   The platform groups the legacy decision-bench identity under Playwright Agent.
 - New standard exports use project ID `agentic-playwright` and the parent
@@ -80,3 +81,12 @@ identities remain stable. Benchmark publication is manual-only; publishing this
 source migration does not start a benchmark campaign. The root Node version
 retains the upstream security baseline. Use Node 22 for the optional Code Mode
 native integration, rebuilding it explicitly for the selected Node runtime.
+
+## Retired product surfaces
+
+The old GitHub decision-bench repository is retained as archived history, with
+a successor notice pointing here. The public platform no longer exposes an
+Analyses section. The standalone `projects/qa-dashboard-viewer` was moved to
+ignored recovery artifacts and removed from active registration and launchers.
+Detailed quality reports belong to this product; reviewed public results belong
+to its Build with Balaji project page. No metrics were rerun or republished.

@@ -7,6 +7,7 @@ import {validateComparisonMetrics} from '../../shared/comparison-metrics.mjs';
 import {validateTeamMetrics} from './metrics.js';
 const exec=promisify(execFile);
 export async function publishMetrics(file:string,repository='balajiregt/playwright-decision-bench'){
+ if(repository==='balajiregt/playwright-decision-bench')throw Error('The standalone results repository is retired and read-only. Use platform-publish for Playwright Agent results, or explicitly select your own legacy results repository.');
  if(!/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository))throw Error('Invalid GitHub repository');
  const text=await readFile(file,'utf8');if(text.length>30000)throw Error('Metrics file exceeds size limit');
  const parsed=JSON.parse(text),validate=parsed.schemaVersion===2?validateComparisonMetrics:validateTeamMetrics;

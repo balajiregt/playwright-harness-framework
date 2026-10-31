@@ -4,7 +4,7 @@ This evaluator is part of Playwright Agent. The commands below run inside its
 internal `quality/` package; the product root also exposes `npm run qa -- ...`
 with the same CLI and caller-relative paths.
 
-For paired Jev versus Laya evaluation and the private QA viewer, use the
+For optional paired Jev versus Laya evaluation and local reports, use the
 [Jev / Laya comparison guide](jev-laya-comparison.md). This page documents the
 existing local-only `qa run` workflow.
 
@@ -157,21 +157,19 @@ Open the dashboard's [Team suite evaluations](https://framework-benchmarks-balaj
 panel and select `metrics.json`. This validates and displays the file **in your
 browser only**; it does not upload private artifacts or persist a shared result.
 
-For shared publication, configure Git HTTPS authentication with write access to
-the results repository (the same credential helper used for `git push`), then:
+The standalone results repository is retired as read-only history. New reviewed
+Playwright Agent results use the standard `$platform-publish` workflow. Importing
+existing legacy metrics in this browser remains supported; it does not publish.
 
 ```bash
 npm run qa -- validate-metrics --metrics /path/to/run/metrics.json
-npm run qa -- publish --metrics /path/to/run/metrics.json
 ```
 
-The command uses a temporary Git checkout and updates only `team-metrics.json` on the existing `benchmark-results` branch
-of `balajiregt/playwright-decision-bench`; the dashboard refreshes it. It keeps the
-latest 100 run aggregates. `--repository owner/repo` supports a team's own results
-repository, provided its `benchmark-results` branch exists. The shared dashboard
-reads the configured shared repository, not arbitrary private repositories. Teams
-without shared-repository access can import locally or contribute a metrics file
-for a maintainer to publish. There is no anonymous upload endpoint.
+The legacy publisher no longer targets the retired shared repository. An adopter
+maintaining its own existing legacy feed can explicitly use
+`npm run qa -- publish --metrics FILE --repository owner/repo`; the target must
+already have the `benchmark-results` branch. This retains the old schema and is
+not the standard parent-product publication path.
 
 Only closed-schema counts, timing/token/resource measurements, model-configuration
 hash and broad hardware metadata are accepted. Extra fields anywhere are rejected.

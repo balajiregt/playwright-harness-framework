@@ -29,7 +29,7 @@ publish results, connect global servers or require another runtime.
 | Acceptance matrix and coverage review | Agent workflow plus `quality/src/team` evidence/assessment modules |
 | Behavioral mutation execution and reports | `quality/src/mutation` |
 | Optional Laya, Jev and other configured decisions | `quality` adapters; advisory results remain separate from observed execution |
-| Historical model comparisons and pilots | `quality/docs`, fixtures and benchmark protocols; surfaced as analyses |
+| Historical model comparisons and pilots | Retained protocols and fixtures inside `quality`; active reports belong to this product |
 
 ```sh
 npm ci

@@ -85,9 +85,9 @@ assessed by both; whole-workload counts show the excluded denominator.
 
 ## Read and review results
 
-Open `index.html`, or import **`comparison.json`** into the
-[QA Metrics Viewer](https://agentic-qa-metrics-viewer.netlify.app/).
-It stays in browser memory; there is no backend upload, login or persistence.
+Open the generated local `index.html` report alongside `comparison.json`.
+The standalone QA Metrics Viewer is retired. Review detailed evidence within
+Playwright Agent; keep these private reports local.
 The report shows evidence, provider disagreements, execution outcomes, historical
 pass rate and selected-label probability. Do not compare the vendors' separate
 `confidence` fields as if they were calibrated to one scale.
