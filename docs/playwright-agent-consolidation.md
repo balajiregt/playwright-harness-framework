@@ -47,6 +47,8 @@ The original working README is retained as `quality/docs/legacy-decision-bench-r
 ## Compatibility and deliberate changes
 
 - Existing evaluator source interfaces and closed metric schemas are retained.
+- The plain-text Word example is named `acceptance-word-template.txt` so Python
+  dependency discovery does not mistake its business criteria for a pip manifest.
 - The role-aware fixture configuration resolves its selected external demo from
   the new module location. The synthetic integration test uses the parent
   product's Playwright dependency, so it also runs in a standalone clone.
