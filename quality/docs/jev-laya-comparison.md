@@ -136,16 +136,19 @@ marking coverage or release approval. No tags or test code are modified.
 
 ## Share only aggregate metrics
 
-Import **`metrics.json`** into
-[Framework Benchmarks](https://framework-benchmarks-balaji.netlify.app/#jev-laya-comparison)
-for browser-only viewing. To publish a shared aggregate using your Git access:
+The separate public comparison/Analyses page is retired. Inspect this workflow's
+local HTML report and keep detailed `comparison.json` private. Validate its
+metrics export locally with:
 
 ```bash
 npm run qa -- validate-metrics --metrics /path/to/metrics.json
-npm run qa -- publish --metrics /path/to/metrics.json
 ```
 
-The versioned comparison feed is `comparison-metrics.json` on `benchmark-results`.
+New reviewed public results belong to Playwright Agent through `$platform-publish`.
+The old shared results repository is read-only. An adopter explicitly maintaining
+an existing legacy comparison feed can use
+`npm run qa -- publish --metrics FILE --repository owner/repo`; its versioned
+`comparison-metrics.json` stays on that adopter's `benchmark-results` branch.
 The strict schema rejects extra fields, source, requirement text and reviewer
 notes. Model configuration and input hashes allow provenance checks; users of the
 public dashboard cannot independently verify local source evidence.
