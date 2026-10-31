@@ -1,0 +1,427 @@
+[
+  {
+    "id": "viewer-denial",
+    "title": "Sample CRM authorization review",
+    "sources": [
+      {
+        "id": "scope",
+        "kind": "ticket",
+        "content": "A viewer cannot export accounts: GET /api/accounts/export returns 403 with JSON {error: \"Access denied\"}; UI permission alone is insufficient."
+      }
+    ],
+    "criteria": [
+      {
+        "id": "ac",
+        "text": "A viewer cannot export accounts: GET /api/accounts/export returns 403 with JSON {error: \"Access denied\"}; UI permission alone is insufficient.",
+        "sourceIds": [
+          "scope"
+        ]
+      }
+    ],
+    "inventoryComplete": true,
+    "scenarios": [
+      {
+        "id": "s1",
+        "title": "CRM permission flow",
+        "origin": "proposed",
+        "criterionIds": [
+          "ac"
+        ],
+        "role": "viewer",
+        "preconditions": [
+          "Signed in using POST /api/session with seeded demo credentials"
+        ],
+        "actions": [
+          "Send GET /api/accounts/export"
+        ],
+        "expectedOutcomes": [
+          "HTTP 403 and JSON error Access denied"
+        ]
+      }
+    ],
+    "approvedScenarioIds": [
+      "s1"
+    ],
+    "implementationEvidenceComplete": true,
+    "implementations": [
+      {
+        "id": "impl",
+        "scenarioIds": [
+          "s1"
+        ],
+        "location": "authored-crm-example.ts",
+        "code": "const r = await page.request.get('/api/accounts/export'); expect(r.status()).toBe(403); expect(await r.json()).toEqual({error:'Access denied'});",
+        "helpers": [],
+        "run": {
+          "status": "not_run",
+          "evidence": "Authored synthetic evidence; no browser execution claimed."
+        }
+      }
+    ]
+  },
+  {
+    "id": "hidden-only",
+    "title": "Sample CRM authorization review",
+    "sources": [
+      {
+        "id": "scope",
+        "kind": "ticket",
+        "content": "A viewer cannot export accounts: GET /api/accounts/export returns 403 with JSON {error: \"Access denied\"}; UI permission alone is insufficient."
+      }
+    ],
+    "criteria": [
+      {
+        "id": "ac",
+        "text": "A viewer cannot export accounts: GET /api/accounts/export returns 403 with JSON {error: \"Access denied\"}; UI permission alone is insufficient.",
+        "sourceIds": [
+          "scope"
+        ]
+      }
+    ],
+    "inventoryComplete": true,
+    "scenarios": [
+      {
+        "id": "s1",
+        "title": "CRM permission flow",
+        "origin": "proposed",
+        "criterionIds": [
+          "ac"
+        ],
+        "role": "viewer",
+        "preconditions": [
+          "Signed in using POST /api/session with seeded demo credentials"
+        ],
+        "actions": [
+          "Send GET /api/accounts/export"
+        ],
+        "expectedOutcomes": [
+          "HTTP 403 and JSON error Access denied"
+        ]
+      }
+    ],
+    "approvedScenarioIds": [
+      "s1"
+    ],
+    "implementationEvidenceComplete": true,
+    "implementations": [
+      {
+        "id": "impl",
+        "scenarioIds": [
+          "s1"
+        ],
+        "location": "authored-crm-example.ts",
+        "code": "await expect(page.getByTestId('export-accounts')).toBeDisabled();",
+        "helpers": [],
+        "run": {
+          "status": "not_run",
+          "evidence": "Authored synthetic evidence; no browser execution claimed."
+        }
+      }
+    ]
+  },
+  {
+    "id": "status-only",
+    "title": "Sample CRM authorization review",
+    "sources": [
+      {
+        "id": "scope",
+        "kind": "ticket",
+        "content": "A manager exports accounts: status 200 and exactly account IDs a1 and a2."
+      }
+    ],
+    "criteria": [
+      {
+        "id": "ac",
+        "text": "A manager exports accounts: status 200 and exactly account IDs a1 and a2.",
+        "sourceIds": [
+          "scope"
+        ]
+      }
+    ],
+    "inventoryComplete": true,
+    "scenarios": [
+      {
+        "id": "s1",
+        "title": "CRM permission flow",
+        "origin": "proposed",
+        "criterionIds": [
+          "ac"
+        ],
+        "role": "manager",
+        "preconditions": [
+          "Signed in using POST /api/session with seeded demo credentials"
+        ],
+        "actions": [
+          "GET /api/accounts/export"
+        ],
+        "expectedOutcomes": [
+          "HTTP 200 and exact IDs a1 and a2"
+        ]
+      }
+    ],
+    "approvedScenarioIds": [
+      "s1"
+    ],
+    "implementationEvidenceComplete": true,
+    "implementations": [
+      {
+        "id": "impl",
+        "scenarioIds": [
+          "s1"
+        ],
+        "location": "authored-crm-example.ts",
+        "code": "const r=await page.request.get('/api/accounts/export'); expect(r.status()).toBe(200);",
+        "helpers": [],
+        "run": {
+          "status": "not_run",
+          "evidence": "Authored synthetic evidence; no browser execution claimed."
+        }
+      }
+    ]
+  },
+  {
+    "id": "missing-export",
+    "title": "Sample CRM authorization review",
+    "sources": [
+      {
+        "id": "scope",
+        "kind": "ticket",
+        "content": "A viewer cannot export accounts: GET /api/accounts/export returns 403 with JSON {error: \"Access denied\"}; UI permission alone is insufficient."
+      }
+    ],
+    "criteria": [
+      {
+        "id": "ac",
+        "text": "A viewer cannot export accounts: GET /api/accounts/export returns 403 with JSON {error: \"Access denied\"}; UI permission alone is insufficient.",
+        "sourceIds": [
+          "scope"
+        ]
+      }
+    ],
+    "inventoryComplete": true,
+    "scenarios": [],
+    "approvedScenarioIds": [],
+    "implementationEvidenceComplete": true,
+    "implementations": []
+  },
+  {
+    "id": "missing-helper",
+    "title": "Sample CRM authorization review",
+    "sources": [
+      {
+        "id": "scope",
+        "kind": "ticket",
+        "content": "A viewer cannot export accounts: GET /api/accounts/export returns 403 with JSON {error: \"Access denied\"}; UI permission alone is insufficient."
+      }
+    ],
+    "criteria": [
+      {
+        "id": "ac",
+        "text": "A viewer cannot export accounts: GET /api/accounts/export returns 403 with JSON {error: \"Access denied\"}; UI permission alone is insufficient.",
+        "sourceIds": [
+          "scope"
+        ]
+      }
+    ],
+    "inventoryComplete": true,
+    "scenarios": [
+      {
+        "id": "s1",
+        "title": "CRM permission flow",
+        "origin": "proposed",
+        "criterionIds": [
+          "ac"
+        ],
+        "role": "viewer",
+        "preconditions": [
+          "Signed in using POST /api/session with seeded demo credentials"
+        ],
+        "actions": [
+          "Send GET /api/accounts/export"
+        ],
+        "expectedOutcomes": [
+          "HTTP 403 and JSON error Access denied"
+        ]
+      }
+    ],
+    "approvedScenarioIds": [
+      "s1"
+    ],
+    "implementationEvidenceComplete": false,
+    "implementations": [
+      {
+        "id": "impl",
+        "scenarioIds": [
+          "s1"
+        ],
+        "location": "authored-crm-example.ts",
+        "code": "await assertViewerExportDenied(page);",
+        "helpers": [],
+        "run": {
+          "status": "not_run",
+          "evidence": "Authored synthetic evidence; no browser execution claimed."
+        }
+      }
+    ]
+  },
+  {
+    "id": "duplicate-denial",
+    "title": "Sample CRM authorization review",
+    "sources": [
+      {
+        "id": "scope",
+        "kind": "ticket",
+        "content": "A viewer cannot export accounts: GET /api/accounts/export returns 403 with JSON {error: \"Access denied\"}; UI permission alone is insufficient."
+      }
+    ],
+    "criteria": [
+      {
+        "id": "ac",
+        "text": "A viewer cannot export accounts: GET /api/accounts/export returns 403 with JSON {error: \"Access denied\"}; UI permission alone is insufficient.",
+        "sourceIds": [
+          "scope"
+        ]
+      }
+    ],
+    "inventoryComplete": true,
+    "scenarios": [
+      {
+        "id": "s1",
+        "title": "CRM permission flow",
+        "origin": "proposed",
+        "criterionIds": [
+          "ac"
+        ],
+        "role": "viewer",
+        "preconditions": [
+          "Signed in using POST /api/session with seeded demo credentials"
+        ],
+        "actions": [
+          "Send GET /api/accounts/export"
+        ],
+        "expectedOutcomes": [
+          "HTTP 403 and JSON error Access denied"
+        ]
+      },
+      {
+        "id": "s2",
+        "title": "Viewer direct export request restricted",
+        "origin": "proposed",
+        "criterionIds": [
+          "ac"
+        ],
+        "role": "viewer",
+        "preconditions": [
+          "Signed in using POST /api/session with seeded demo credentials"
+        ],
+        "actions": [
+          "Send GET /api/accounts/export"
+        ],
+        "expectedOutcomes": [
+          "HTTP 403 and JSON error Access denied"
+        ]
+      }
+    ],
+    "approvedScenarioIds": [
+      "s1",
+      "s2"
+    ],
+    "implementationEvidenceComplete": true,
+    "implementations": [
+      {
+        "id": "impl",
+        "scenarioIds": [
+          "s1",
+          "s2"
+        ],
+        "location": "authored-crm-example.ts",
+        "code": "const r=await page.request.get('/api/accounts/export'); expect(r.status()).toBe(403); expect(await r.json()).toEqual({error:'Access denied'});",
+        "helpers": [],
+        "run": {
+          "status": "not_run",
+          "evidence": "Authored synthetic evidence; no browser execution claimed."
+        }
+      }
+    ]
+  },
+  {
+    "id": "distinct-boundary",
+    "title": "Sample CRM authorization review",
+    "sources": [
+      {
+        "id": "scope",
+        "kind": "ticket",
+        "content": "A viewer cannot export. Missing authentication returns 401; authenticated viewer returns 403."
+      }
+    ],
+    "criteria": [
+      {
+        "id": "ac",
+        "text": "A viewer cannot export. Missing authentication returns 401; authenticated viewer returns 403.",
+        "sourceIds": [
+          "scope"
+        ]
+      }
+    ],
+    "inventoryComplete": true,
+    "scenarios": [
+      {
+        "id": "s1",
+        "title": "CRM permission flow",
+        "origin": "proposed",
+        "criterionIds": [
+          "ac"
+        ],
+        "role": "viewer",
+        "preconditions": [
+          "Signed in using POST /api/session with seeded demo credentials"
+        ],
+        "actions": [
+          "GET /api/accounts/export with viewer cookie"
+        ],
+        "expectedOutcomes": [
+          "HTTP 403"
+        ]
+      },
+      {
+        "id": "s2",
+        "title": "CRM permission flow",
+        "origin": "proposed",
+        "criterionIds": [
+          "ac"
+        ],
+        "role": "anonymous",
+        "preconditions": [
+          "Signed in using POST /api/session with seeded demo credentials"
+        ],
+        "actions": [
+          "GET /api/accounts/export without cookie"
+        ],
+        "expectedOutcomes": [
+          "HTTP 401"
+        ]
+      }
+    ],
+    "approvedScenarioIds": [
+      "s1",
+      "s2"
+    ],
+    "implementationEvidenceComplete": true,
+    "implementations": [
+      {
+        "id": "impl",
+        "scenarioIds": [
+          "s1",
+          "s2"
+        ],
+        "location": "authored-crm-example.ts",
+        "code": "const viewer=await page.request.get('/api/accounts/export'); expect(viewer.status()).toBe(403); const anonymous=await isolatedRequest.get('/api/accounts/export'); expect(anonymous.status()).toBe(401);",
+        "helpers": [],
+        "run": {
+          "status": "not_run",
+          "evidence": "Authored synthetic evidence; no browser execution claimed."
+        }
+      }
+    ]
+  }
+]

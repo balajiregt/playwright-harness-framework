@@ -1,0 +1,86 @@
+{
+  "version": "decision-pilot-v1",
+  "status": "author-labeled-unreviewed",
+  "labels": [
+    {
+      "id": "viewer-delete",
+      "label": "covered",
+      "rationale": "Both denial and preservation are asserted."
+    },
+    {
+      "id": "refund-total",
+      "label": "partial",
+      "rationale": "Status is checked; the paid/refunded amount is not."
+    },
+    {
+      "id": "export-rows",
+      "label": "uncovered",
+      "rationale": "A heading assertion verifies none of the export behavior."
+    },
+    {
+      "id": "login-helper",
+      "label": "needs_judgment",
+      "rationale": "The required helper implementation is missing."
+    },
+    {
+      "id": "cart-total",
+      "label": "covered",
+      "rationale": "Quantity and total are both asserted after adding items."
+    },
+    {
+      "id": "reset-expiry",
+      "label": "partial",
+      "rationale": "The error is asserted but the unchanged password is not verified."
+    },
+    {
+      "id": "search-filter",
+      "label": "uncovered",
+      "rationale": "Typing and heading visibility do not verify search filtering."
+    },
+    {
+      "id": "invoice-inventory",
+      "label": "needs_judgment",
+      "rationale": "Inventory is incomplete, so absence of an adequate test cannot be concluded."
+    },
+    {
+      "id": "checkout-suite:auth-setup",
+      "label": "include",
+      "rationale": "Verifies a mandatory journey or supplies required setup; local optimization handles redundancy."
+    },
+    {
+      "id": "checkout-suite:sign-in",
+      "label": "include",
+      "rationale": "Verifies a mandatory journey or supplies required setup; local optimization handles redundancy."
+    },
+    {
+      "id": "checkout-suite:checkout-fast",
+      "label": "include",
+      "rationale": "Verifies a mandatory journey or supplies required setup; local optimization handles redundancy."
+    },
+    {
+      "id": "checkout-suite:checkout-long",
+      "label": "include",
+      "rationale": "Verifies a mandatory journey or supplies required setup; local optimization handles redundancy."
+    },
+    {
+      "id": "checkout-suite:theme",
+      "label": "exclude",
+      "rationale": "No mandated journey or setup."
+    },
+    {
+      "id": "transfer-suite:account",
+      "label": "include",
+      "rationale": "Verifies a mandatory journey or supplies required setup; local optimization handles redundancy."
+    },
+    {
+      "id": "transfer-suite:transfer",
+      "label": "needs_judgment",
+      "rationale": "Critical flaky transfer requires repair."
+    },
+    {
+      "id": "transfer-suite:avatar",
+      "label": "exclude",
+      "rationale": "No mandated journey or setup."
+    }
+  ]
+}

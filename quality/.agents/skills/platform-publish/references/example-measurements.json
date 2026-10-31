@@ -1,0 +1,23 @@
+{
+  "observedAt": "2026-10-31T00:00:00.000Z",
+  "revision": null,
+  "dirty": true,
+  "status": "completed",
+  "values": {
+    "passed-cases": {
+      "value": 5,
+      "state": "measured",
+      "sampleSize": 5
+    },
+    "duration": {
+      "value": 1200,
+      "state": "measured",
+      "sampleSize": 1
+    },
+    "accuracy": {
+      "value": null,
+      "state": "unavailable",
+      "sampleSize": null
+    }
+  }
+}

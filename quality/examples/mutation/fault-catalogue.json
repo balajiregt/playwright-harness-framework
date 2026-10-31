@@ -1,0 +1,88 @@
+{
+  "version": 1,
+  "requirements": [
+    {
+      "id": "AUTH-2",
+      "criterion": "A viewer must not see the admin-console action.",
+      "critical": true,
+      "source": {
+        "artifactFile": "epic.md",
+        "quote": "A viewer must not see the admin-console action."
+      }
+    },
+    {
+      "id": "COUNT-1",
+      "criterion": "For a viewer with three workspace action cards, the action count must read \"3 actions\".",
+      "critical": false,
+      "source": {
+        "artifactFile": "epic.md",
+        "quote": "For a viewer with three workspace action cards, the action count must read \"3 actions\"."
+      }
+    },
+    {
+      "id": "TITLE-1",
+      "criterion": "A viewer's workspace title must read \"Read-Only Viewer Workspace\".",
+      "critical": true,
+      "source": {
+        "artifactFile": "epic.md",
+        "quote": "A viewer's workspace title must read \"Read-Only Viewer Workspace\"."
+      }
+    }
+  ],
+  "mutations": [
+    {
+      "id": "M1",
+      "requirementId": "AUTH-2",
+      "description": "Append the admin-console action to the viewer workspace, exposing a prohibited action.",
+      "file": "mockserver/src/backend/endpoints/v1/workspace.js",
+      "before": "...actionCatalog[primaryRole],",
+      "after": "...actionCatalog[primaryRole],\n      actions: primaryRole === 'viewer' ? [...actionCatalog.viewer.actions, actionCatalog.admin.actions[0]] : actionCatalog[primaryRole].actions,",
+      "probe": {
+        "project": "viewer",
+        "path": "/",
+        "testId": "action-admin-console",
+        "kind": "count",
+        "expected": "0",
+        "roles": [
+          "viewer"
+        ]
+      }
+    },
+    {
+      "id": "M2",
+      "requirementId": "COUNT-1",
+      "description": "Overstate the displayed action count by one. This is a missing-assertion opportunity to evaluate, without claiming survival before execution.",
+      "file": "app/public/app.js",
+      "before": "elements.actionCount.textContent = `${workspace.actions.length} actions`;",
+      "after": "elements.actionCount.textContent = `${workspace.actions.length + 1} actions`;",
+      "probe": {
+        "project": "viewer",
+        "path": "/",
+        "testId": "action-count",
+        "kind": "text",
+        "expected": "3 actions",
+        "roles": [
+          "viewer"
+        ]
+      }
+    },
+    {
+      "id": "M3",
+      "requirementId": "TITLE-1",
+      "description": "Return an incorrect viewer workspace title.",
+      "file": "mockserver/src/backend/endpoints/v1/workspace.js",
+      "before": "title: 'Read-Only Viewer Workspace',",
+      "after": "title: 'Viewer Workspace',",
+      "probe": {
+        "project": "viewer",
+        "path": "/",
+        "testId": "workspace-title",
+        "kind": "text",
+        "expected": "Read-Only Viewer Workspace",
+        "roles": [
+          "viewer"
+        ]
+      }
+    }
+  ]
+}

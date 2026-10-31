@@ -1,8 +1,8 @@
 {
-  "name": "playwright-agentic-framework",
+  "name": "playwright-agent",
   "version": "0.1.0",
   "private": true,
-  "description": "MCP-optional agentic Playwright harness for standardized AI-assisted UI automation with CLI evidence, capture workflows, context graphs, and trace-first debugging.",
+  "description": "Playwright Agent: requirement-guided test authoring, acceptance assessment and behavioral mutation verification.",
   "type": "module",
   "scripts": {
     "source:manifest": "node scripts/sync-source-manifest.mjs --write",
@@ -43,12 +43,24 @@
     "benchmark:trials": "python3 benchmarks/controlled-trials.py",
     "security:staged": "node scripts/security-gate.mjs",
     "security:hooks": "node scripts/install-security-hook.mjs",
-    "security:check": "python3 scripts/security_audit.py"
+    "security:check": "python3 scripts/security_audit.py",
+    "qa": "node scripts/run-quality.mjs qa",
+    "mutation": "node scripts/run-quality.mjs mutation",
+    "quality:typecheck": "npm --prefix quality run typecheck",
+    "quality:test": "npm --prefix quality test && node --test scripts/run-quality.test.mjs",
+    "quality:context": "npm --prefix quality run context:resolve",
+    "quality:preview": "npm --prefix quality run review:preview",
+    "quality:code-mode": "node scripts/run-quality.mjs code-mode",
+    "quality:export": "node scripts/run-quality.mjs export"
   },
   "devDependencies": {
     "@playwright/test": "1.62.1",
     "@types/node": "^22.0.0",
     "typescript": "^5.6.0",
     "yaml": "^2.9.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/balajiregt/playwright-agent.git"
   }
 }

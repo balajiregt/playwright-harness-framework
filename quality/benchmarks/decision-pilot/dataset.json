@@ -1,0 +1,262 @@
+{
+  "version": "decision-pilot-v1",
+  "synthetic": true,
+  "coverage": [
+    {
+      "id": "viewer-delete",
+      "group": "viewer-delete",
+      "split": "development",
+      "requirement": "Viewer deletion is denied and the customer remains stored.",
+      "inventoryComplete": true,
+      "requirementsClear": true,
+      "tests": [
+        {
+          "id": "test-a",
+          "source": "synthetic/viewer-delete.spec.ts",
+          "code": "await viewer.deleteCustomer('C1'); expect(response.status()).toBe(403); expect(await api.customerExists('C1')).toBe(true);",
+          "helpersComplete": true
+        }
+      ]
+    },
+    {
+      "id": "refund-total",
+      "group": "refund-total",
+      "split": "development",
+      "requirement": "Refunding an order returns its full paid amount and changes status to refunded.",
+      "inventoryComplete": true,
+      "requirementsClear": true,
+      "tests": [
+        {
+          "id": "test-a",
+          "source": "synthetic/refund-total.spec.ts",
+          "code": "await page.getByRole('button', {name:'Refund'}).click(); await expect(page.getByTestId('order-status')).toHaveText('refunded');",
+          "helpersComplete": true
+        }
+      ]
+    },
+    {
+      "id": "export-rows",
+      "group": "export-rows",
+      "split": "development",
+      "requirement": "Export includes all matching customers in the CSV.",
+      "inventoryComplete": true,
+      "requirementsClear": true,
+      "tests": [
+        {
+          "id": "test-a",
+          "source": "synthetic/export-rows.spec.ts",
+          "code": "await expect(page.getByRole('heading',{name:'Customers'})).toBeVisible();",
+          "helpersComplete": true
+        }
+      ]
+    },
+    {
+      "id": "login-helper",
+      "group": "login-helper",
+      "split": "development",
+      "requirement": "An active user can sign in and reach the account page.",
+      "inventoryComplete": true,
+      "requirementsClear": true,
+      "tests": [
+        {
+          "id": "test-a",
+          "source": "synthetic/login-helper.spec.ts",
+          "code": "await signInAndVerifyAccount(page); // helper source not provided",
+          "helpersComplete": false
+        }
+      ]
+    },
+    {
+      "id": "cart-total",
+      "group": "cart-total",
+      "split": "heldout",
+      "requirement": "Adding two items priced 10 each shows quantity 2 and total 20.",
+      "inventoryComplete": true,
+      "requirementsClear": true,
+      "tests": [
+        {
+          "id": "test-a",
+          "source": "synthetic/cart-total.spec.ts",
+          "code": "await page.getByRole('button',{name:'Add item'}).click({clickCount:2}); await expect(page.getByTestId('quantity')).toHaveText('2'); await expect(page.getByTestId('total')).toHaveText('20');",
+          "helpersComplete": true
+        }
+      ]
+    },
+    {
+      "id": "reset-expiry",
+      "group": "reset-expiry",
+      "split": "heldout",
+      "requirement": "Expired reset links show an expired message and leave the password unchanged.",
+      "inventoryComplete": true,
+      "requirementsClear": true,
+      "tests": [
+        {
+          "id": "test-a",
+          "source": "synthetic/reset-expiry.spec.ts",
+          "code": "await page.goto(expiredResetUrl); await expect(page.getByRole('alert')).toHaveText('Link expired');",
+          "helpersComplete": true
+        }
+      ]
+    },
+    {
+      "id": "search-filter",
+      "group": "search-filter",
+      "split": "heldout",
+      "requirement": "Searching Alice returns only customers whose name contains Alice.",
+      "inventoryComplete": true,
+      "requirementsClear": true,
+      "tests": [
+        {
+          "id": "test-a",
+          "source": "synthetic/search-filter.spec.ts",
+          "code": "await page.getByPlaceholder('Search').fill('Alice'); await expect(page.getByRole('heading',{name:'Customers'})).toBeVisible();",
+          "helpersComplete": true
+        }
+      ]
+    },
+    {
+      "id": "invoice-inventory",
+      "group": "invoice-inventory",
+      "split": "heldout",
+      "requirement": "An invoice download contains the order total.",
+      "inventoryComplete": false,
+      "requirementsClear": true,
+      "tests": [
+        {
+          "id": "test-a",
+          "source": "synthetic/invoice-inventory.spec.ts",
+          "code": "await expect(page.getByRole('heading',{name:'Orders'})).toBeVisible();",
+          "helpersComplete": true
+        }
+      ]
+    }
+  ],
+  "suites": [
+    {
+      "id": "checkout-suite",
+      "group": "checkout-suite",
+      "split": "development",
+      "inventoryComplete": true,
+      "policy": "Retain sign-in and successful checkout. Setup dependencies must be included. Reliable duplicate tests can be pruned by the suite optimizer.",
+      "mandatoryJourneys": [
+        "sign-in",
+        "checkout"
+      ],
+      "budgetMs": 16000,
+      "minPassRate": 0.98,
+      "candidates": [
+        {
+          "id": "auth-setup",
+          "source": "synthetic/smoke/auth-setup.spec.ts",
+          "code": "await api.createActiveUser(); expect(await api.userActive()).toBe(true);",
+          "helpersComplete": true,
+          "journeys": [],
+          "dependencies": [],
+          "durationMs": 1000,
+          "passRate": 1
+        },
+        {
+          "id": "sign-in",
+          "source": "synthetic/smoke/sign-in.spec.ts",
+          "code": "await login(page); await expect(page.getByRole('heading',{name:'Account'})).toBeVisible(); // login helper fills credentials and submits",
+          "helpersComplete": true,
+          "journeys": [
+            "sign-in"
+          ],
+          "dependencies": [
+            "auth-setup"
+          ],
+          "durationMs": 4000,
+          "passRate": 1
+        },
+        {
+          "id": "checkout-fast",
+          "source": "synthetic/smoke/checkout-fast.spec.ts",
+          "code": "await checkout(page); await expect(page.getByTestId('order-status')).toHaveText('Confirmed'); // helper adds an item, pays with test card and submits",
+          "helpersComplete": true,
+          "journeys": [
+            "checkout"
+          ],
+          "dependencies": [
+            "auth-setup"
+          ],
+          "durationMs": 9000,
+          "passRate": 1
+        },
+        {
+          "id": "checkout-long",
+          "source": "synthetic/smoke/checkout-long.spec.ts",
+          "code": "await checkout(page); await expect(page.getByTestId('order-status')).toHaveText('Confirmed'); // same checkout with extra navigation",
+          "helpersComplete": true,
+          "journeys": [
+            "checkout"
+          ],
+          "dependencies": [
+            "auth-setup"
+          ],
+          "durationMs": 14000,
+          "passRate": 1
+        },
+        {
+          "id": "theme",
+          "source": "synthetic/smoke/theme.spec.ts",
+          "code": "await toggleTheme(page); await expect(page.locator('body')).toHaveClass('dark');",
+          "helpersComplete": true,
+          "journeys": [],
+          "dependencies": [],
+          "durationMs": 2000,
+          "passRate": 1
+        }
+      ]
+    },
+    {
+      "id": "transfer-suite",
+      "group": "transfer-suite",
+      "split": "heldout",
+      "inventoryComplete": true,
+      "policy": "Retain account sign-in and money transfer. A critical flaky test needs repair or a reliable replacement, not silent removal.",
+      "mandatoryJourneys": [
+        "sign-in",
+        "transfer"
+      ],
+      "budgetMs": 10000,
+      "minPassRate": 0.98,
+      "candidates": [
+        {
+          "id": "account",
+          "source": "synthetic/smoke/account.spec.ts",
+          "code": "await login(page); await expect(page.getByRole('heading',{name:'Account'})).toBeVisible(); // login helper submits valid credentials",
+          "helpersComplete": true,
+          "journeys": [
+            "sign-in"
+          ],
+          "dependencies": [],
+          "durationMs": 4000,
+          "passRate": 1
+        },
+        {
+          "id": "transfer",
+          "source": "synthetic/smoke/transfer.spec.ts",
+          "code": "await transfer(page,10); await expect(page.getByTestId('balance')).toHaveText('90'); // helper submits a transfer from a balance of 100",
+          "helpersComplete": true,
+          "journeys": [
+            "transfer"
+          ],
+          "dependencies": [],
+          "durationMs": 8000,
+          "passRate": 0.75
+        },
+        {
+          "id": "avatar",
+          "source": "synthetic/smoke/avatar.spec.ts",
+          "code": "await uploadAvatar(page); await expect(page.getByRole('img',{name:'Avatar'})).toBeVisible();",
+          "helpersComplete": true,
+          "journeys": [],
+          "dependencies": [],
+          "durationMs": 1500,
+          "passRate": 1
+        }
+      ]
+    }
+  ]
+}

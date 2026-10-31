@@ -1,10 +1,50 @@
-# Agentic Playwright Harness
+# Playwright Agent
 
-> A visual-first, enterprise-ready standardization layer for AI-assisted
-> Playwright automation with Copilot, official Playwright Agents, Playwright
-> CLI evidence, and source-aware graph intelligence.
+Repository: [balajiregt/playwright-agent](https://github.com/balajiregt/playwright-agent) (formerly `playwright-harness-framework`).
+
+> One workflow for requirement-guided Playwright test creation, acceptance
+> assessment and mutation verification. The existing harness supplies framework
+> conventions; the internal quality module supplies evaluation and reporting.
 
 ![Graph metrics](docs/blog/assets/graph-metrics.png)
+
+## Use the agent
+
+Use `$playwright-agent` in Codex, or select **Playwright Agent** from Copilot's
+custom-agent dropdown. The shared workflow creates, updates or assesses tests
+against supplied requirements, builds an acceptance matrix, reuses existing
+coverage and reports actual verification evidence. A named Codex custom agent
+is available for explicit delegation as well.
+
+[Agent setup, prompts and context-folder responsibilities](docs/playwright-agent.md)
+explain the native entry points. Decision providers and the existing Code Mode /
+mutation integration are optional; selecting the agent does not run a benchmark,
+publish results, connect global servers or require another runtime.
+
+## One product, shared capabilities
+
+| Capability | Implementation owner |
+| --- | --- |
+| Task context, planning and test creation/update | Native Playwright Agent workflow and existing framework layers |
+| Acceptance matrix and coverage review | Agent workflow plus `quality/src/team` evidence/assessment modules |
+| Behavioral mutation execution and reports | `quality/src/mutation` |
+| Optional Laya, Jev and other configured decisions | `quality` adapters; advisory results remain separate from observed execution |
+| Historical model comparisons and pilots | `quality/docs`, fixtures and benchmark protocols; surfaced as analyses |
+
+```sh
+npm ci
+npm ci --prefix quality
+npm run qa -- help
+npm run mutation -- help
+npm run quality:typecheck
+npm run quality:test
+```
+
+[Quality module](quality/README.md) · [Consolidation and preserved history](docs/playwright-agent-consolidation.md).
+The existing `npm test` still runs browser tests. Quality tests are separate
+checks within the same product; neither command implicitly starts model inference
+or publishes metrics. Config/report paths passed to root commands resolve from
+the caller's working directory.
 
 ## What This Project Does
 
@@ -463,10 +503,29 @@ Core rules:
 
 ## Longer Explanations
 
-- Blog draft: [`docs/blog/agentic-playwright-harness-medium-draft.md`](docs/blog/agentic-playwright-harness-medium-draft.md)
 - Overview deck: [`Agentic-Playwright-Harness-Copilot-CLI.pptx`](Agentic-Playwright-Harness-Copilot-CLI.pptx)
 - Agent instructions: [`AGENTS.md`](AGENTS.md)
 - Copilot instructions: [`.github/copilot-instructions.md`](.github/copilot-instructions.md)
+
+## Optional Jev credentials
+
+Store your Vercel AI Gateway key as `AI_GATEWAY_API_KEY` in `.env.local` in this
+project. The local file is ignored by Git; `.env.example` contains only a blank
+placeholder. Keep the key in the Node.js process, outside browser code.
+
+The planned TypeScript integration uses `experimental_evaluate` from the `ai`
+package with model `typesafe-ai/jev`. Vercel AI SDK reads `AI_GATEWAY_API_KEY`
+from the Node.js environment and routes this model through AI Gateway.
+Its question types are `boolean`, `choice`, and `score`; `boolean` corresponds
+to the yes/no probability called `noul` in the native TypeSafe API.
+
+Load `.env.local` into the Node.js process before calling `evaluate`; this
+credential setup does not install the SDK or automatically load the file into
+existing Playwright commands. Reuse your existing Gateway key; creating another
+key through the Vercel CLI is unnecessary if you already have one.
+
+See [Vercel's AI SDK integration](https://vercel.com/docs/ai-gateway/sdks-and-apis/ai-sdk)
+and [current Jev pricing](https://vercel.com/ai-gateway/models/jev).
 
 ## References
 

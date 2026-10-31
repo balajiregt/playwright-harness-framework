@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "publisherVersion": "1.0.0",
+  "projectId": "example-project",
+  "repository": "https://github.com/example-owner/example-project",
+  "branch": "platform-results",
+  "feedPath": "metrics.json",
+  "scope": "synthetic",
+  "methodologyUrl": "https://github.com/example-owner/example-project/blob/main/benchmarks/README.md",
+  "limitations": [
+    "Synthetic fixture for integration testing; these values are not project results."
+  ],
+  "metrics": [
+    {
+      "id": "passed-cases",
+      "label": "Passed cases",
+      "unit": "count"
+    },
+    {
+      "id": "duration",
+      "label": "Execution duration",
+      "unit": "ms"
+    },
+    {
+      "id": "accuracy",
+      "label": "Reviewed accuracy",
+      "unit": "ratio"
+    }
+  ]
+}

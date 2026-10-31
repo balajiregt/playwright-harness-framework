@@ -1,0 +1,266 @@
+{
+  "schemaVersion": 1,
+  "publisherVersion": "1.0.0",
+  "projectId": "agentic-playwright",
+  "repository": "https://github.com/balajiregt/playwright-agent",
+  "branch": "platform-results",
+  "feedPath": "metrics.json",
+  "scope": "synthetic",
+  "methodologyUrl": "https://github.com/balajiregt/playwright-agent/blob/main/quality/docs/independent-mutation-analysis.md",
+  "limitations": [
+    "Authored role-aware demo requirements and selected behavioral faults; this is not customer or production coverage.",
+    "Laya and Codex use identical frozen packets through Code Mode; workflow and context-window overhead differ.",
+    "Prediction agreement is checked against observed assertions, not independent reviewed requirement-coverage labels.",
+    "Unknown, unactivated and unstable executions are not detection successes; model uncertainty remains visible.",
+    "Codex uses its CLI default unless configured; its resolved model name may be unavailable.",
+    "Reported tokens cover completed responses; failed requests can have unreported usage. Probabilities are uncalibrated.",
+    "Actual billed API cost, local energy and human review effort are unmeasured. Source revision is unknown for this imported checkout."
+  ],
+  "metrics": [
+    {
+      "id": "faults-requested",
+      "label": "Faults requested",
+      "unit": "count"
+    },
+    {
+      "id": "faults-killed",
+      "label": "Activated faults detected twice",
+      "unit": "count"
+    },
+    {
+      "id": "faults-survived",
+      "label": "Activated faults surviving twice",
+      "unit": "count"
+    },
+    {
+      "id": "faults-unknown",
+      "label": "Faults with unknown execution outcome",
+      "unit": "count"
+    },
+    {
+      "id": "mutation-runtime",
+      "label": "Shared mutation execution duration",
+      "unit": "ms"
+    },
+    {
+      "id": "common-pairs",
+      "label": "Common assessed pairs with runtime evidence",
+      "unit": "count"
+    },
+    {
+      "id": "model-disagreements",
+      "label": "Prediction disagreements on common pairs",
+      "unit": "count"
+    },
+    {
+      "id": "laya-requested",
+      "label": "Laya: Requested pairs",
+      "unit": "count"
+    },
+    {
+      "id": "laya-completed",
+      "label": "Laya: Completed predictions",
+      "unit": "count"
+    },
+    {
+      "id": "laya-excluded",
+      "label": "Laya: Excluded pairs",
+      "unit": "count"
+    },
+    {
+      "id": "laya-errors",
+      "label": "Laya: Assessment errors",
+      "unit": "count"
+    },
+    {
+      "id": "laya-not-run",
+      "label": "Laya: Unassessed pairs",
+      "unit": "count"
+    },
+    {
+      "id": "laya-uncertain",
+      "label": "Laya: Uncertain model decisions",
+      "unit": "count"
+    },
+    {
+      "id": "laya-common-match-rate",
+      "label": "Laya: Runtime agreement on common pairs",
+      "unit": "ratio"
+    },
+    {
+      "id": "laya-false-detected",
+      "label": "Laya: False detection claims on common pairs",
+      "unit": "count"
+    },
+    {
+      "id": "laya-precision",
+      "label": "Laya: Detection precision on common pairs",
+      "unit": "ratio"
+    },
+    {
+      "id": "laya-recall",
+      "label": "Laya: Detection recall on common pairs",
+      "unit": "ratio"
+    },
+    {
+      "id": "laya-whole-match-rate",
+      "label": "Laya: Runtime agreement on all comparable pairs",
+      "unit": "ratio"
+    },
+    {
+      "id": "laya-startup",
+      "label": "Laya: Measured engine startup",
+      "unit": "ms"
+    },
+    {
+      "id": "laya-duration",
+      "label": "Laya: Whole analysis duration",
+      "unit": "ms"
+    },
+    {
+      "id": "laya-p50",
+      "label": "Laya: Per-pair latency p50",
+      "unit": "ms"
+    },
+    {
+      "id": "laya-p95",
+      "label": "Laya: Per-pair latency p95",
+      "unit": "ms"
+    },
+    {
+      "id": "laya-input-tokens",
+      "label": "Laya: Reported input tokens for completed predictions",
+      "unit": "count"
+    },
+    {
+      "id": "laya-output-tokens",
+      "label": "Laya: Reported output tokens for completed predictions",
+      "unit": "count"
+    },
+    {
+      "id": "laya-cached-input-tokens",
+      "label": "Laya: Reported cached input tokens",
+      "unit": "count"
+    },
+    {
+      "id": "laya-agent-tool-calls",
+      "label": "Laya: Completed outer agent MCP calls",
+      "unit": "count"
+    },
+    {
+      "id": "laya-context-bytes",
+      "label": "Laya: Context bytes returned to the local orchestrator",
+      "unit": "bytes"
+    },
+    {
+      "id": "laya-actual-cost",
+      "label": "Laya: Actual billed API cost",
+      "unit": "USD"
+    },
+    {
+      "id": "codex-requested",
+      "label": "Codex: Requested pairs",
+      "unit": "count"
+    },
+    {
+      "id": "codex-completed",
+      "label": "Codex: Completed predictions",
+      "unit": "count"
+    },
+    {
+      "id": "codex-excluded",
+      "label": "Codex: Excluded pairs",
+      "unit": "count"
+    },
+    {
+      "id": "codex-errors",
+      "label": "Codex: Assessment errors",
+      "unit": "count"
+    },
+    {
+      "id": "codex-not-run",
+      "label": "Codex: Unassessed pairs",
+      "unit": "count"
+    },
+    {
+      "id": "codex-uncertain",
+      "label": "Codex: Uncertain model decisions",
+      "unit": "count"
+    },
+    {
+      "id": "codex-common-match-rate",
+      "label": "Codex: Runtime agreement on common pairs",
+      "unit": "ratio"
+    },
+    {
+      "id": "codex-false-detected",
+      "label": "Codex: False detection claims on common pairs",
+      "unit": "count"
+    },
+    {
+      "id": "codex-precision",
+      "label": "Codex: Detection precision on common pairs",
+      "unit": "ratio"
+    },
+    {
+      "id": "codex-recall",
+      "label": "Codex: Detection recall on common pairs",
+      "unit": "ratio"
+    },
+    {
+      "id": "codex-whole-match-rate",
+      "label": "Codex: Runtime agreement on all comparable pairs",
+      "unit": "ratio"
+    },
+    {
+      "id": "codex-startup",
+      "label": "Codex: Measured engine startup",
+      "unit": "ms"
+    },
+    {
+      "id": "codex-duration",
+      "label": "Codex: Whole analysis duration",
+      "unit": "ms"
+    },
+    {
+      "id": "codex-p50",
+      "label": "Codex: Per-pair latency p50",
+      "unit": "ms"
+    },
+    {
+      "id": "codex-p95",
+      "label": "Codex: Per-pair latency p95",
+      "unit": "ms"
+    },
+    {
+      "id": "codex-input-tokens",
+      "label": "Codex: Reported input tokens for completed predictions",
+      "unit": "count"
+    },
+    {
+      "id": "codex-output-tokens",
+      "label": "Codex: Reported output tokens for completed predictions",
+      "unit": "count"
+    },
+    {
+      "id": "codex-cached-input-tokens",
+      "label": "Codex: Reported cached input tokens",
+      "unit": "count"
+    },
+    {
+      "id": "codex-agent-tool-calls",
+      "label": "Codex: Completed outer agent MCP calls",
+      "unit": "count"
+    },
+    {
+      "id": "codex-context-bytes",
+      "label": "Codex: Context bytes returned to the local orchestrator",
+      "unit": "bytes"
+    },
+    {
+      "id": "codex-actual-cost",
+      "label": "Codex: Actual billed API cost",
+      "unit": "USD"
+    }
+  ]
+}

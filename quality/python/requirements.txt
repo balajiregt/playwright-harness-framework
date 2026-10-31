@@ -1,0 +1,7 @@
+laya==0.4.12
+# Keep the inference runtime isolated and reproducible; model weights stay unchanged.
+torch==2.15.0
+transformers==5.22.1
+safetensors==0.8.0
+PyYAML==6.0.3
+-r requirements-import.txt

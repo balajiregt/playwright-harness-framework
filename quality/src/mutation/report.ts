@@ -1,0 +1,38 @@
+import {mkdir,writeFile} from 'node:fs/promises';
+import path from 'node:path';
+import type {Campaign} from './runner.js';
+import type {Assessments} from './laya.js';
+const esc=(v:unknown)=>String(v??'Unavailable').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
+export function predictionResults(r:Campaign){
+ const a=r.assessments as Assessments|undefined;
+ return (a?.cells??[]).map(cell=>{
+  const f=r.faults.find(f=>f.id===cell.mutationId);let observed:string|null=null;
+  if(f&&['killed','survived'].includes(f.status)&&f.attempts.length===2){
+   const matches=f.attempts.map(e=>e.tests.filter(t=>t.project===cell.project&&t.file.replace(/\\/g,'/').endsWith('/'+cell.testFile)&&t.title.endsWith(' › '+cell.testTitle)));
+   if(matches.every(m=>m.length===1)){
+    const outcomes=matches.map(m=>m[0].results[0]);
+    if(outcomes.every(o=>o.status==='passed'))observed='missed';
+    else if(outcomes.every(o=>o.status==='failed'&&o.assertionFailure))observed='detected';
+   }
+  }
+  const predicted=cell.answer?.label??null,comparable=cell.status==='evaluated'&&!cell.reason&&predicted!=='needs_judgment'&&observed!==null;
+  return {...cell,observed,comparable,matches:comparable?predicted===observed:null};
+ });
+}
+export function campaignMetrics(r:Campaign){
+ const count=(status:string)=>r.faults.filter(f=>f.status===status).length;
+ const killed=count('killed'),survived=count('survived');
+ const predictions=predictionResults(r),comparable=predictions.filter(p=>p.comparable),a=r.assessments as Assessments|undefined;
+ return {schemaVersion:1,protocol:'behavioral-mutations-v1',runId:r.runId,createdAt:r.createdAt,contextHash:r.contextHash,requested:r.faults.length,killed,survived,notActivated:count('not_activated'),invalid:count('invalid_mutation'),inconclusive:count('inconclusive'),notRun:count('not_run'),observedDetectionRate:killed+survived?killed/(killed+survived):null,wallMs:r.wallMs,originalUnchanged:r.originalUnchanged,laya:a?{requested:a.cells.length,evaluated:a.cells.filter(c=>c.status==='evaluated').length,excluded:a.cells.filter(c=>c.status==='excluded').length,errors:a.cells.filter(c=>c.status==='error').length,comparable:comparable.length,matches:comparable.filter(p=>p.matches).length,predictionMatchRate:comparable.length?comparable.filter(p=>p.matches).length/comparable.length:null,wallMs:a.wallMs}:null,approved:false};
+}
+export function renderMutationReport(r:Campaign){
+ const m=campaignMetrics(r),a=r.assessments as Assessments|undefined;
+ return `<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Playwright behavioral fault report</title><style>body{font:16px system-ui;color:#183044;background:#f5f8fb;max-width:1200px;margin:auto;padding:24px}article,section{background:white;padding:20px;border:1px solid #d9e2ec;border-radius:12px;margin:16px 0}.cards{display:flex;gap:16px;flex-wrap:wrap}.cards article{flex:1;min-width:140px}strong.metric{display:block;font-size:32px}table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid #d9e2ec;text-align:left;padding:12px;vertical-align:top}.table{overflow:auto}pre{white-space:pre-wrap;overflow-wrap:anywhere}.killed{color:#167042}.survived{color:#ac3d19}.notice{background:#fff1cf;padding:16px}.bar{display:flex;height:24px;background:#ddd;border-radius:8px;overflow:hidden}.bar i{background:#228455}.bar b{background:#cc5834}small{color:#576a7d}summary{cursor:pointer}</style>
+<h1>Do our Playwright assertions catch requirement-breaking faults?</h1><p>Requirement-guided behavioral mutation pilot · ${esc(r.createdAt)}</p><p class="notice">Observed detection is measured by Playwright. Codex proposals and Laya probabilities remain model outputs. A surviving, activated fault is a reviewable test gap; it does not establish overall application quality.</p>
+<div class="cards">${[['Faults requested',m.requested],['Detected twice',m.killed],['Survived twice',m.survived],['Unknown / invalid',m.requested-m.killed-m.survived]].map(([label,value])=>`<article>${label}<strong class="metric">${value}</strong></article>`).join('')}</div>
+<div class="bar" aria-label="Detected and surviving activated faults"><i style="width:${m.requested?100*m.killed/m.requested:0}%"></i><b style="width:${m.requested?100*m.survived/m.requested:0}%"></b></div>
+<p>Observed detection: ${m.observedDetectionRate===null?'Unavailable':(100*m.observedDetectionRate).toFixed(1)+'%'} of ${m.killed+m.survived} activated, conclusive faults. ${r.baseline.length} baseline runs; restored check ${esc(r.restored?.status??'not run')}. Original source unchanged: ${r.originalUnchanged?'yes':'unverified'}.</p>
+<section><h2>Requirements → faults → assertions</h2><div class="table"><table><thead><tr><th>Requirement</th><th>Fault</th><th>Independent observation</th><th>Playwright outcome</th><th>Assertion evidence</th></tr></thead><tbody>${r.faults.map(f=>{const mutation=r.plan.mutations.find(m=>m.id===f.id)!,req=r.plan.requirements.find(q=>q.id===f.requirementId)!;return `<tr><td><b>${esc(req.id)}</b><p>${esc(req.criterion)}</p><small>Artifact ${esc(req.source.artifactId)}: ${esc(req.source.quote)}</small></td><td>${esc(f.id)}<p>${esc(mutation.description)}</p><details><summary>Inspect patch</summary><pre>${esc(mutation.file)}\nBEFORE\n${esc(mutation.before)}\nAFTER\n${esc(mutation.after)}</pre></details></td><td>Baseline: ${esc(f.baselineProbe)}<br>Mutant: ${esc(f.mutantProbe)}</td><td class="${esc(f.status)}"><b>${esc(f.status)}</b><p>${esc(f.reason??'Observed in two executions')}</p></td><td>${f.killingTests.map(esc).join('<br>')||'No repeatable assertion kill'}<details><summary>Execution evidence</summary><pre>${esc(JSON.stringify(f.attempts,null,2))}</pre></details></td></tr>`;}).join('')}</tbody></table></div></section>
+<section><h2>Laya assessment</h2><p>${a?`${a.cells.filter(c=>c.status==='evaluated').length}/${a.cells.length} bounded predictions completed. Probabilities are uncalibrated; excluded requests remain unknown. ${m.laya!.comparable} predictions have comparable runtime evidence; ${m.laya!.matches} match. This measures prediction agreement, not requirement-coverage accuracy.`:'Not run. No local model result inferred.'}</p>${a?`<div class="table"><table><thead><tr><th>Fault / test</th><th>Predicted detection</th><th>Selected-label probability</th><th>Observed assertion detection</th></tr></thead><tbody>${predictionResults(r).map(p=>`<tr><td>${esc(p.mutationId)} · ${esc(p.project)}<br>${esc(p.testTitle)}</td><td>${esc(p.answer?.label??p.status)}<br>${esc(p.reason??'')}</td><td>${p.answer?.probabilities?((p.answer.probabilities[p.answer.label]??0)*100).toFixed(1)+'%':'Unavailable'}</td><td>${esc(p.observed??'Unknown')}</td></tr>`).join('')}</tbody></table></div><details><summary>Predictions and model metadata</summary><pre>${esc(JSON.stringify(a,null,2))}</pre></details>`:''}</section><p><small>Run ${esc(r.runId)} · Input ${esc(r.contextHash)} · ${(r.wallMs/1000).toFixed(1)} seconds. Private local report; no automatic publication or release approval.</small></p></html>`;
+}
+export async function saveMutationReport(dir:string,r:Campaign){await mkdir(dir,{recursive:true});await writeFile(path.join(dir,'campaign.json'),JSON.stringify(r,null,2));await writeFile(path.join(dir,'metrics.json'),JSON.stringify(campaignMetrics(r),null,2));await writeFile(path.join(dir,'index.html'),renderMutationReport(r));}

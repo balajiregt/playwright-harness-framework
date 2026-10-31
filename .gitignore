@@ -52,3 +52,12 @@ target/
 
 # Reviewed local security archives are source inputs, not build output.
 !**/scripts/security/*.tgz
+
+# Playwright Agent task inputs and internal quality runtime
+/contexts/tasks/
+/quality/artifacts/
+/quality/.venv
+/quality/context-inputs/*
+!/quality/context-inputs/README.md
+/quality/mutation.config.local.json
+/quality/decision-bench.config.local.json

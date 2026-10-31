@@ -1,0 +1,82 @@
+[
+  {
+    "checkId": "viewer-denial:planning:ac",
+    "finding": "supported",
+    "rationale": "Scenario/code explicitly verifies the stated criterion."
+  },
+  {
+    "checkId": "viewer-denial:implementation:ac",
+    "finding": "supported",
+    "rationale": "Scenario/code explicitly verifies the stated criterion."
+  },
+  {
+    "checkId": "hidden-only:planning:ac",
+    "finding": "supported",
+    "rationale": "Scenario/code explicitly verifies the stated criterion."
+  },
+  {
+    "checkId": "hidden-only:implementation:ac",
+    "finding": "assertion_gap",
+    "rationale": "Code omits the necessary denial/content assertion."
+  },
+  {
+    "checkId": "status-only:planning:ac",
+    "finding": "supported",
+    "rationale": "Scenario/code explicitly verifies the stated criterion."
+  },
+  {
+    "checkId": "status-only:implementation:ac",
+    "finding": "assertion_gap",
+    "rationale": "Code omits the necessary denial/content assertion."
+  },
+  {
+    "checkId": "missing-export:planning:ac",
+    "finding": "coverage_gap",
+    "rationale": "Complete scenario inventory omits the required behavior."
+  },
+  {
+    "checkId": "missing-export:implementation:ac",
+    "finding": "insufficient_evidence",
+    "rationale": "No approved scenario plan exists; the implementation rubric requires insufficient evidence rather than guessing."
+  },
+  {
+    "checkId": "missing-helper:planning:ac",
+    "finding": "supported",
+    "rationale": "Scenario/code explicitly verifies the stated criterion."
+  },
+  {
+    "checkId": "missing-helper:implementation:ac",
+    "finding": "insufficient_evidence",
+    "rationale": "Required helper/code evidence is incomplete."
+  },
+  {
+    "checkId": "duplicate-denial:planning:ac",
+    "finding": "supported",
+    "rationale": "Scenario/code explicitly verifies the stated criterion."
+  },
+  {
+    "checkId": "duplicate-denial:implementation:ac",
+    "finding": "supported",
+    "rationale": "Scenario/code explicitly verifies the stated criterion."
+  },
+  {
+    "checkId": "duplicate-denial:duplication:s1:s2",
+    "finding": "duplicate_candidate",
+    "rationale": "Same role, preconditions, action and outcome; only title differs."
+  },
+  {
+    "checkId": "distinct-boundary:planning:ac",
+    "finding": "supported",
+    "rationale": "Scenario/code explicitly verifies the stated criterion."
+  },
+  {
+    "checkId": "distinct-boundary:implementation:ac",
+    "finding": "supported",
+    "rationale": "Scenario/code explicitly verifies the stated criterion."
+  },
+  {
+    "checkId": "distinct-boundary:duplication:s1:s2",
+    "finding": "distinct",
+    "rationale": "Authentication and authorization are distinct boundary conditions."
+  }
+]

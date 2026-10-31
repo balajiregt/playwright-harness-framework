@@ -1,0 +1,15 @@
+{
+  "name": "platform-publish",
+  "version": "1.0.0",
+  "files": {
+    "SKILL.md": "e2efdfbecce5a3013c82275cdef6ce53b40932183d962922f6579d120563c952",
+    "agents/openai.yaml": "83fd862638a6668120a0397a22217bb0fd27189d2d8b2fcc8adfb430bc692b52",
+    "references/example-measurements.json": "f04fe1f7ac867dabd8bf27720f5763074519d42940a3c54436e08db0770ca9f0",
+    "references/example-policy.json": "3af8c82c5783cfa69ef7367a5fc1999b2f41aef01a53075b498362a8809a71a2",
+    "references/integration.md": "bcffd3be232056b795bdb2edd7d5256335622abe5f1fcc6368f8294496b19c53",
+    "references/metrics-v1.schema.json": "73f2c171ee143c369a5711c43e9d99b1292347eea3ecda953b928e89129ac268",
+    "scripts/cli.mjs": "3e1f84933a7f2be9d015e9f5b95b5cdf001f37a306156b707c00d7759defd042",
+    "scripts/contract.mjs": "69c3570e137497ae53357d104368a7e86d6cfa62053798aa3ef7559eaa1de8d8",
+    "scripts/publisher.mjs": "78384b5692331e93e5d3fc6531c715f2150719a097cbf091c2b3b0ac83676546"
+  }
+}

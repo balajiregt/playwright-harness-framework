@@ -1,7 +1,7 @@
 """Export allowlisted public aggregate evidence; raw reports never enter the site."""
 import argparse, datetime, hashlib, json, pathlib, math, re
 ROOT=pathlib.Path(__file__).resolve().parents[1]
-REPOS={'mockserver':('Role-Aware Mockserver','plawright-role-aware-mockserver'),'harness':('Agentic Playwright','playwright-harness-framework'),'api':('Agentic API','agentic-workspace'),'jev':('JEV Review','jev-scope-qa')}
+REPOS={'mockserver':('Role-Aware Mockserver','plawright-role-aware-mockserver'),'harness':('Agentic Playwright','playwright-agent'),'api':('Agentic API','agentic-workspace'),'jev':('JEV Review','jev-scope-qa')}
 def sha(raw):return hashlib.sha256(raw).hexdigest()
 def iso(ts):return datetime.datetime.fromtimestamp(ts,datetime.timezone.utc).isoformat()
 def load(root,name):

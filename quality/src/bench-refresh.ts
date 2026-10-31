@@ -1,0 +1,21 @@
+import {readFile,writeFile,readdir} from 'node:fs/promises';
+import path from 'node:path';
+import {ROOT,digest} from './context.js';
+import {buildPackets,validateDataset,validateGold} from './bench-domain.js';
+import {summarize} from './bench-metrics.js';
+import {renderBenchReport} from './bench-report.js';
+const root=path.join(ROOT,'artifacts/decision-bench');
+const dirs=(await readdir(root)).sort().reverse();
+let report:any,dir='';
+for(const d of dirs){try{const r=JSON.parse(await readFile(path.join(root,d,'report.json'),'utf8'));if(r.mode==='live'){report=r;dir=path.join(root,d);break;}}catch{}}
+if(!report)throw Error('No live report found.');
+const input=await readFile(path.join(ROOT,'benchmarks/decision-pilot/dataset.json'),'utf8');
+const labels=await readFile(path.join(ROOT,'benchmarks/decision-pilot/gold.json'),'utf8');
+if(digest(input)!==report.datasetHash||digest(labels)!==report.goldHash)throw Error('Frozen dataset/gold changed; refuse to rescore.');
+const dataset=validateDataset(JSON.parse(input)),packets=buildPackets(dataset),gold=validateGold(JSON.parse(labels),packets);
+report.metrics=summarize(packets,report.rows,gold,dataset,report.repeats);
+await writeFile(path.join(dir,'report.json'),JSON.stringify(report,null,2));
+const html=renderBenchReport(report);await writeFile(path.join(dir,'index.html'),html);await writeFile(path.join(ROOT,'artifacts/decision-bench.html'),html);
+const pub=JSON.parse(await readFile(path.join(dir,'public.json'),'utf8'));pub.metrics=report.metrics;
+await writeFile(path.join(dir,'public.json'),JSON.stringify(pub,null,2));await writeFile(path.join(ROOT,'artifacts/decision-public.json'),JSON.stringify(pub,null,2));
+console.log('Rebuilt report from unchanged recorded responses; no model calls.');

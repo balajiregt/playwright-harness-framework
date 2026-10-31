@@ -1,0 +1,4 @@
+interface:
+  display_name: "Platform Publish"
+  short_description: "Integrate reviewed project metrics with the platform"
+  default_prompt: "Use $platform-publish to prepare this repository for publishing reviewed metrics to Build with Balaji."

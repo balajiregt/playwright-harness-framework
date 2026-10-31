@@ -1,0 +1,4 @@
+name: review-scaffold-preview
+description: Offline evidence and rubric preview; not a completed coverage or smoke-selection benchmark.
+inputs: examples/lead-review.json
+gold: fixtures/workflow-gold.json

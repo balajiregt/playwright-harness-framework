@@ -1,5 +1,15 @@
 # Playwright Agentic Framework Instructions
 
+## Product ownership
+
+This repository is **Playwright Agent**: requirement-guided test authoring,
+acceptance assessment, and mutation verification in one product. Existing
+fixtures, page objects, capture workflows and graphs provide the framework.
+The internal `quality/` module owns evaluator code, decision adapters, mutation
+execution and reports; read `quality/AGENTS.md` for changes there. Use root
+`npm run qa` / `npm run mutation` entry points. The old standalone decision-bench
+checkout is retained for compatibility and recovery, not active development.
+
 ## Project Intent
 
 This project is an isolated prototype for an enterprise Playwright agent

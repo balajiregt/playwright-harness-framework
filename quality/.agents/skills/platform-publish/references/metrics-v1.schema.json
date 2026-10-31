@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://framework-benchmarks-balaji.netlify.app/contracts/metrics-v1.schema.json",
+  "title": "Platform public metrics v1",
+  "description": "Structural interchange schema. Use the bundled validator for reviewed-policy matching, real timestamps, unique metric IDs and unit constraints.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "projectId", "runId", "policyHash", "observedAt", "source", "status", "scope", "methodologyUrl", "limitations", "metrics"],
+  "properties": {
+    "schemaVersion": {"const": 1},
+    "projectId": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$", "maxLength": 64},
+    "runId": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "policyHash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "observedAt": {"type": "string", "format": "date-time", "pattern": "^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\d\\.\\d{3}Z$"},
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["repository", "revision", "dirty"],
+      "properties": {
+        "repository": {"type": "string", "pattern": "^https://github\\.com/[A-Za-z0-9_-]+/[A-Za-z0-9_.-]+$"},
+        "revision": {"anyOf": [{"type": "null"}, {"type": "string", "pattern": "^[a-f0-9]{40}([a-f0-9]{24})?$"}]},
+        "dirty": {"type": "boolean"}
+      }
+    },
+    "status": {"enum": ["completed", "partial", "failed", "blocked", "unavailable"]},
+    "scope": {"enum": ["synthetic", "local", "production"]},
+    "methodologyUrl": {"type": "string", "format": "uri", "pattern": "^https://"},
+    "limitations": {"type": "array", "maxItems": 20, "items": {"type": "string", "minLength": 1, "maxLength": 300}},
+    "metrics": {
+      "type": "array", "minItems": 1, "maxItems": 100,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["id", "label", "unit", "value", "state", "sampleSize"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$", "maxLength": 64},
+          "label": {"type": "string", "minLength": 1, "maxLength": 100},
+          "unit": {"enum": ["count", "ms", "s", "bytes", "ratio", "percent", "USD", "score"]},
+          "value": {"type": ["number", "null"]},
+          "state": {"enum": ["measured", "estimated", "unavailable"]},
+          "sampleSize": {"type": ["integer", "null"], "minimum": 0}
+        },
+        "allOf": [
+          {"if": {"properties": {"state": {"const": "unavailable"}}}, "then": {"properties": {"value": {"type": "null"}}}, "else": {"properties": {"value": {"type": "number"}}}},
+          {"if": {"properties": {"unit": {"const": "ratio"}}}, "then": {"properties": {"value": {"minimum": 0, "maximum": 1}}}},
+          {"if": {"properties": {"unit": {"const": "percent"}}}, "then": {"properties": {"value": {"minimum": 0, "maximum": 100}}}},
+          {"if": {"properties": {"unit": {"not": {"const": "score"}}}}, "then": {"properties": {"value": {"minimum": 0}}}},
+          {"if": {"properties": {"state": {"const": "measured"}}}, "then": {"properties": {"sampleSize": {"not": {"const": 0}}}}}
+        ]
+      }
+    }
+  },
+  "allOf": [
+    {"if": {"properties": {"status": {"enum": ["blocked", "unavailable"]}}}, "then": {"properties": {"metrics": {"items": {"properties": {"state": {"const": "unavailable"}}}}}}}
+  ]
+}

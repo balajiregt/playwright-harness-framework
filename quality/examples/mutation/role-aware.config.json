@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "repo": "../../../../ui-automation/role-aware-mockserver",
+  "artifactDir": "./context",
+  "output": "../../artifacts/behavioral-mutations",
+  "python": "../../.venv/bin/python",
+  "playwrightConfig": "playwright/playwright.config.ts",
+  "sourceFiles": [
+    "app/public/app.js",
+    "mockserver/src/backend/endpoints/v1/workspace.js"
+  ],
+  "projects": [
+    "viewer"
+  ],
+  "maxMutations": 3,
+  "env": {
+    "APP_URL": "http://127.0.0.1:5273",
+    "APP_PORT": "5273",
+    "MOCKSERVER_URL": "http://127.0.0.1:3433",
+    "MOCKSERVER_PORT": "3433"
+  },
+  "probeSetup": {
+    "module": "playwright/helpers/api-mock.ts",
+    "export": "mockAgentRoles"
+  },
+  "readiness": {
+    "testId": "connection-status",
+    "text": "Mockserver connected"
+  },
+  "laya": {
+    "device": "auto",
+    "maxPairs": 30
+  },
+  "analysis": {
+    "scope": "synthetic"
+  }
+}

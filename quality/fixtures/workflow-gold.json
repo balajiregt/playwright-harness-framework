@@ -1,0 +1,67 @@
+[
+  {
+    "checkId": "CRM-REVIEW:planning:AC1",
+    "finding": "supported",
+    "rationale": "Both viewer scenarios explicitly include direct-route denial and retained customer."
+  },
+  {
+    "checkId": "CRM-REVIEW:implementation:AC1",
+    "finding": "assertion_gap",
+    "rationale": "The full test only asserts a heading, despite its reported pass."
+  },
+  {
+    "checkId": "CRM-REVIEW:planning:AC2",
+    "finding": "supported",
+    "rationale": "Admin creation scenario includes the resulting customer row."
+  },
+  {
+    "checkId": "CRM-REVIEW:implementation:AC2",
+    "finding": "supported",
+    "rationale": "The inline test submits Ada and asserts the Ada row."
+  },
+  {
+    "checkId": "CRM-REVIEW:planning:AC3",
+    "finding": "coverage_gap",
+    "rationale": "The declared complete inventory has no editor update scenario."
+  },
+  {
+    "checkId": "CRM-REVIEW:implementation:AC3",
+    "finding": "assertion_gap",
+    "rationale": "The complete supplied implementation set has no editor update assertions."
+  },
+  {
+    "checkId": "CRM-REVIEW:planning:AC4",
+    "finding": "ambiguous_scope",
+    "rationale": "Export permissions remain undefined."
+  },
+  {
+    "checkId": "CRM-REVIEW:implementation:AC4",
+    "finding": "ambiguous_scope",
+    "rationale": "No definitive export permission rule exists to assess."
+  },
+  {
+    "checkId": "CRM-REVIEW:duplication:S1:S2",
+    "finding": "duplicate_candidate",
+    "rationale": "Same viewer, precondition, direct URL and denial/preservation expectation."
+  },
+  {
+    "checkId": "CRM-REVIEW:duplication:S1:S3",
+    "finding": "distinct",
+    "rationale": "Viewer denial and administrator creation cover different behavior."
+  },
+  {
+    "checkId": "CRM-REVIEW:duplication:S2:S3",
+    "finding": "distinct",
+    "rationale": "Viewer denial and administrator creation cover different behavior."
+  },
+  {
+    "checkId": "HELPER-REVIEW:planning:AC1",
+    "finding": "supported",
+    "rationale": "Scenario fully describes role, direct navigation and denial outcome."
+  },
+  {
+    "checkId": "HELPER-REVIEW:implementation:AC1",
+    "finding": "insufficient_evidence",
+    "rationale": "A helper implementation is missing; its name and passing record prove nothing."
+  }
+]

@@ -1,0 +1,45 @@
+{
+  "name": "@playwright-agent/quality",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Internal Playwright Agent module for requirement assessment, decision adapters, behavioral mutations and historical evaluation protocols.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "report:serve": "python3 -m http.server 8791 --bind 127.0.0.1 --directory artifacts",
+    "review:preview": "node --import tsx src/workflow-cli.ts preview",
+    "benchmark:crm:preview": "node --import tsx src/workflow-cli.ts preview --input benchmarks/crm-inputs.json",
+    "benchmark:metrics": "node --import tsx src/benchmark-metrics.ts",
+    "compare:preview": "node --import tsx src/comparison-cli.ts preview",
+    "context:resolve": "node --import tsx src/workflow-cli.ts resolve",
+    "bench:preview": "node --import tsx src/bench-cli.ts preview",
+    "bench:preflight": "node --import tsx src/bench-cli.ts preflight",
+    "bench:live": "node --import tsx src/bench-cli.ts live",
+    "bench:report": "node --import tsx src/bench-refresh.ts",
+    "qa": "node --import tsx src/team-cli.ts",
+    "security:staged": "node scripts/security-gate.mjs",
+    "security:hooks": "node scripts/install-security-hook.mjs",
+    "security:check": "python3 scripts/security_audit.py",
+    "mutation": "node --import tsx src/mutation-cli.ts",
+    "benchmark:export": "node --import tsx src/mutation-cli.ts export",
+    "platform:publish": "node .agents/skills/platform-publish/scripts/cli.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "yaml": "^2.9.0",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/balajiregt/playwright-agent.git"
+  }
+}

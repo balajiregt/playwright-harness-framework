@@ -1,9 +1,6 @@
 name: Publish benchmark evidence
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths: ["benchmarks/**", "package*.json", ".github/workflows/benchmark.yml", "examples/sample-crm-app/**", "tests/**"]
 permissions:
   contents: read
 concurrency:

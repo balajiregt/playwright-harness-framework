@@ -1,0 +1,4 @@
+interface:
+  display_name: "Playwright Agent"
+  short_description: "Create tests and assess acceptance with evidence"
+  default_prompt: "Use $playwright-agent for the selected feature and supplied requirements; inspect existing coverage before making changes."

@@ -1,0 +1,36 @@
+node_modules/
+artifacts/
+.env
+.env.*
+!.env.example
+
+contexts/*.local.yml
+.DS_Store
+
+node_modules
+benchmark-results/
+benchmarks/dashboard/__pycache__/
+.venv/
+__pycache__/
+*.pyc
+
+decision-bench.config.local.json
+.playwright-cli/
+output/
+
+# Local security reports and verified scanner binary
+/artifacts/
+/context-inputs/*
+!/context-inputs/README.md
+/mutation.config.local.json
+
+# Security and generated-output exclusions from the maintained checkout.
+# Security tooling and generated runtime state
+.next/
+dist/
+target/
+*.tsbuildinfo
+!.env.sample
+!.env.template
+# Reviewed local security archives are source inputs, not build output.
+!**/scripts/security/*.tgz

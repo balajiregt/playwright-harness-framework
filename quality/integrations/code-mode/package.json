@@ -1,0 +1,25 @@
+{
+  "name": "playwright-mutation-code-mode",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node --no-node-snapshot server.mjs",
+    "check": "node --no-node-snapshot server.mjs --check"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "@utcp/code-mode": "1.2.13",
+    "@utcp/sdk": "1.1.0",
+    "isolated-vm": "6.2.0",
+    "zod": "4.6.7"
+  },
+  "overrides": {
+    "@utcp/sdk": {
+      "zod": "4.6.7"
+    }
+  }
+}

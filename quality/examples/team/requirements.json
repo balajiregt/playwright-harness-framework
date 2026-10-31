@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "requirements": [
+    {
+      "id": "ORDER-1",
+      "criterion": "After checkout, the order status is Confirmed.",
+      "journey": "checkout",
+      "critical": true
+    },
+    {
+      "id": "REFUND-1",
+      "criterion": "A full refund returns the entire paid amount.",
+      "journey": "refund",
+      "critical": true
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "provenance": "Synthetic authored Jira-like export for the local demo; no external account data",
+  "tickets": [
+    {"key": "AUTH-2", "acceptanceCriterion": "A viewer must not see the admin-console action.", "critical": true},
+    {"key": "COUNT-1", "acceptanceCriterion": "For a viewer with three workspace action cards, the action count must read \"3 actions\".", "critical": false},
+    {"key": "TITLE-1", "acceptanceCriterion": "A viewer's workspace title must read \"Read-Only Viewer Workspace\".", "critical": true}
+  ]
+}

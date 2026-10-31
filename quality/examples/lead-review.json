@@ -1,0 +1,213 @@
+[
+  {
+    "id": "CRM-REVIEW",
+    "title": "Customer access and maintenance \u2014 synthetic review exercise",
+    "sources": [
+      {
+        "id": "EPIC",
+        "kind": "epic",
+        "content": "Customer management supports administrators, viewers and editors. Authorization behavior must be verified by role."
+      },
+      {
+        "id": "TICKET",
+        "kind": "ticket",
+        "content": "Viewers opening /customers/42/delete directly must see Access denied and the customer must remain. Admins can create a customer named Ada and see Ada in the customer list. Editors can change a customer phone number and the new number must persist after reload. CSV export permissions are awaiting product clarification."
+      },
+      {
+        "id": "TEAM",
+        "kind": "instructions",
+        "content": "Tests must assert the acceptance outcome. A page loading or a passing test alone does not establish coverage. Similar tests with different roles or boundaries may be justified."
+      },
+      {
+        "id": "SCOPE",
+        "kind": "developer_scope",
+        "content": "Implement viewer denial, admin creation and editor updates. Export permissions remain undecided."
+      }
+    ],
+    "criteria": [
+      {
+        "id": "AC1",
+        "text": "A viewer navigating directly to /customers/42/delete sees Access denied; the customer remains undeleted.",
+        "sourceIds": [
+          "TICKET"
+        ]
+      },
+      {
+        "id": "AC2",
+        "text": "An admin creates a customer named Ada and sees Ada in the customer list.",
+        "sourceIds": [
+          "TICKET"
+        ]
+      },
+      {
+        "id": "AC3",
+        "text": "An editor changes a customer phone number and sees the new value persist after reload.",
+        "sourceIds": [
+          "TICKET"
+        ]
+      },
+      {
+        "id": "AC4",
+        "text": "CSV export must follow the agreed role permissions, which have not yet been defined.",
+        "sourceIds": [
+          "TICKET",
+          "SCOPE"
+        ]
+      }
+    ],
+    "inventoryComplete": true,
+    "scenarios": [
+      {
+        "id": "S1",
+        "title": "Viewer direct delete is denied",
+        "origin": "existing",
+        "criterionIds": [
+          "AC1"
+        ],
+        "role": "viewer",
+        "preconditions": [
+          "Customer 42 exists; viewer is signed in"
+        ],
+        "actions": [
+          "Navigate directly to /customers/42/delete"
+        ],
+        "expectedOutcomes": [
+          "Access denied is displayed",
+          "Customer 42 still exists"
+        ]
+      },
+      {
+        "id": "S2",
+        "title": "Read-only user cannot remove a customer through a URL",
+        "origin": "proposed",
+        "criterionIds": [
+          "AC1"
+        ],
+        "role": "viewer",
+        "preconditions": [
+          "Customer 42 exists; viewer is signed in"
+        ],
+        "actions": [
+          "Open /customers/42/delete directly"
+        ],
+        "expectedOutcomes": [
+          "Access denied is displayed",
+          "Customer 42 remains in the customer list"
+        ]
+      },
+      {
+        "id": "S3",
+        "title": "Administrator creates customer",
+        "origin": "proposed",
+        "criterionIds": [
+          "AC2"
+        ],
+        "role": "admin",
+        "preconditions": [
+          "Admin is signed in; Ada does not exist"
+        ],
+        "actions": [
+          "Open New customer",
+          "Fill name Ada",
+          "Submit form"
+        ],
+        "expectedOutcomes": [
+          "Customer list contains Ada"
+        ]
+      }
+    ],
+    "approvedScenarioIds": [
+      "S1",
+      "S3"
+    ],
+    "implementationEvidenceComplete": true,
+    "implementations": [
+      {
+        "id": "T1",
+        "scenarioIds": [
+          "S1"
+        ],
+        "location": "synthetic/customer.spec.ts:1",
+        "code": "test('viewer cannot delete customer', async ({ page }) => {\n  // Fixture is signed in as a viewer; customer 42 exists.\n  await page.goto('/customers/42/delete');\n  await expect(page.getByRole('heading', { name: 'Customers' })).toBeVisible();\n});",
+        "helpers": [],
+        "run": {
+          "status": "passed",
+          "evidence": "Synthetic supplied run record for illustration, not an executed browser test: The test passed."
+        }
+      },
+      {
+        "id": "T2",
+        "scenarioIds": [
+          "S3"
+        ],
+        "location": "synthetic/customer.spec.ts:8",
+        "code": "test('admin creates Ada', async ({ page }) => {\n  // Fixture is signed in as admin; Ada does not exist.\n  await page.goto('/customers/new');\n  await page.getByLabel('Name', { exact: true }).fill('Ada');\n  await page.getByRole('button', { name: 'Create' }).click();\n  await expect(page.getByRole('row').filter({ hasText: 'Ada' })).toBeVisible();\n});",
+        "helpers": [],
+        "run": {
+          "status": "passed",
+          "evidence": "Synthetic supplied run record for illustration, not an executed browser test: The test passed."
+        }
+      }
+    ]
+  },
+  {
+    "id": "HELPER-REVIEW",
+    "title": "Referenced assertion helper \u2014 synthetic evidence exercise",
+    "sources": [
+      {
+        "id": "TICKET",
+        "kind": "ticket",
+        "content": "Viewers who directly open /reports/private must see Access denied."
+      }
+    ],
+    "criteria": [
+      {
+        "id": "AC1",
+        "text": "A viewer opening /reports/private directly sees Access denied.",
+        "sourceIds": [
+          "TICKET"
+        ]
+      }
+    ],
+    "inventoryComplete": true,
+    "scenarios": [
+      {
+        "id": "S1",
+        "title": "Viewer restricted report",
+        "origin": "proposed",
+        "criterionIds": [
+          "AC1"
+        ],
+        "role": "viewer",
+        "preconditions": [
+          "Signed in as viewer"
+        ],
+        "actions": [
+          "Open /reports/private directly"
+        ],
+        "expectedOutcomes": [
+          "Access denied appears"
+        ]
+      }
+    ],
+    "approvedScenarioIds": [
+      "S1"
+    ],
+    "implementationEvidenceComplete": false,
+    "implementations": [
+      {
+        "id": "T1",
+        "scenarioIds": [
+          "S1"
+        ],
+        "location": "synthetic/report.spec.ts:1",
+        "code": "test('viewer denial', async ({ page }) => {\n  // Viewer fixture.\n  await page.goto('/reports/private');\n  await assertRestrictedReport(page);\n});",
+        "helpers": [],
+        "run": {
+          "status": "passed",
+          "evidence": "Synthetic supplied run record only; implementation of assertRestrictedReport was not supplied."
+        }
+      }
+    ]
+  }
+]

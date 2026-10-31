@@ -1,0 +1,9 @@
+Id: ORDER-1
+Criterion: After checkout, the order status is Confirmed.
+Journey: checkout
+Critical: true
+
+Id: REFUND-1
+Criterion: A full refund returns the entire paid amount.
+Journey: refund
+Critical: true
