@@ -12,6 +12,7 @@ import {runProcess} from './mutation/process.js';
 import {mutationTools} from './mutation/tools.js';
 import {auditMcp,completeAssessment} from './demo/mcp-audit.js';
 import {prepareTask} from './demo/task-context.js';
+import {exportDemoMetrics} from './demo/platform.js';
 
 const product=path.resolve(ROOT,'..');
 const demo=path.join(product,'examples/validation-demo');
@@ -112,6 +113,17 @@ async function main(){
  const [command,...args]=process.argv.slice(2);
  if(command==='prepare')console.log(JSON.stringify(await prepare(),null,2));
  else if(command==='verify')await verify(args);
- else throw Error('Use demo prepare or demo verify [--live-codex] [--live-laya]');
+ else if(command==='export'){
+  const flags:Record<string,string>={};
+  while(args.length){
+   const key=args.shift()!;
+   if(!['--evidence','--output','--policy'].includes(key)||Object.hasOwn(flags,key))throw Error('Use demo export --evidence RUN_DIRECTORY --output PREPARED.json [--policy POLICY.json]. Export never publishes.');
+   const value=args.shift();if(!value||value.startsWith('--'))throw Error('Demo export requires a value for '+key);
+   flags[key]=value;
+  }
+  if(!flags['--evidence']||!flags['--output'])throw Error('Demo export requires --evidence and --output.');
+  console.log(JSON.stringify(await exportDemoMetrics({evidenceDir:path.resolve(flags['--evidence']),outputFile:path.resolve(flags['--output']),policyFile:path.resolve(flags['--policy']??path.join(demo,'platform-policy.json'))}),null,2));
+ }
+ else throw Error('Use demo prepare, demo verify [--live-codex] [--live-laya], or demo export --evidence RUN_DIRECTORY --output PREPARED.json');
 }
 main().catch(e=>{console.error(e instanceof Error?e.message:'Demo failed');process.exitCode=1;});

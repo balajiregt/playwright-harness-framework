@@ -110,6 +110,33 @@ Live Codex planning and local Laya assessment are separate opt-in verification
 flags; the default demo uses an authored fault catalogue and real Playwright
 execution without extra inference.
 
+## Published validation findings
+
+[Community validation findings](docs/community-validation.md) contains the reviewed
+acceptance matrix, MCP audit, mutation outcomes and graph/duplicate review for the
+31 October 2026 synthetic release. The
+[Playwright Agent platform page](https://framework-benchmarks-balaji.netlify.app/projects/agentic-playwright)
+displays reviewed aggregate results. Private task documents and raw tool logs stay local.
+
+Prepare an existing successful demo run for review without rerunning it:
+
+```sh
+npm run demo:export -- --evidence artifacts/validation-demo/YOUR_RUN --output artifacts/prepared-demo-metrics.json
+```
+
+Export validates the saved browser, tool, frozen workload, mutation and graph
+receipts. It preserves the observation timestamp and reports partial acceptance
+when a required assertion is missing. Skipped model checks remain unavailable.
+Publishing is a separate authorised `$platform-publish` step using
+`examples/validation-demo/platform-policy.json`; export does not publish.
+
+For a real ticket, select `contexts/tasks/<work-item>/` and ask the agent to
+produce criterion → scenario/role/state → test/assertion → assessment/action →
+runtime evidence. The agent reviews source and assertions, creates or updates
+tests when requested, then records execution. Mutation sensitivity and static
+duplicate candidates provide additional evidence. This workflow needs a fresh
+review for each project; the synthetic matrix is not a general acceptance engine.
+
 ## What This Project Does
 
 ```mermaid

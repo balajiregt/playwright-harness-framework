@@ -30,3 +30,8 @@ test('new exports use the parent product policy unless the caller selects an exp
 test('unknown entry points cannot select arbitrary executable files',()=>{
   assert.throws(()=>qualityInvocation('../arbitrary-script'),/Unknown quality command/);
 });
+test('demo export refuses publication flags before opening evidence',()=>{
+  const result=spawnSync(process.execPath,[fileURLToPath(new URL('./run-quality.mjs',import.meta.url)),'demo','export','--confirm-publication'],{encoding:'utf8',timeout:20000});
+  assert.equal(result.status,1);
+  assert.match(result.stderr,/Export never publishes/);
+});
