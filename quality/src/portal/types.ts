@@ -4,7 +4,7 @@ import type {AgentAnalysis} from './analysis.js';
 export interface PortalRun {
  id:string;createdAt:string;goal:string;intakeHash:string;draftHash:string;
  draft:IntakeDraft;documents:IntakeSource[];openQuestions:number;blockingDocuments:number;
- reviewed:boolean;accepted:boolean;brief:string;
+ reviewed:boolean;accepted:boolean;
  stale?:string;mappings?:IntakeMappings;
  matrix?:Record<string,string>[];
  analysis?:AgentAnalysis;

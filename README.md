@@ -6,15 +6,17 @@ Repository: [balajiregt/playwright-agent](https://github.com/balajiregt/playwrig
 
 Attach the ticket and supporting documents, identify your existing project and
 ask `$playwright-agent` to **create**, **update** or **assess** tests. The agent
-prepares the source-linked criteria, matrix and findings, then opens the selected
-work item in the local workbench when its tools permit. Test authoring continues
-in that same chat; the portal does not start another model.
+reviews source-linked criteria and ambiguities in chat, inspects assertions,
+performs the requested test work and saves actual evidence. It opens the selected
+task in the read-only report viewer last, including incomplete or blocked work.
+Authoring and execution use that same host session's tools.
 
 ```text
 Use $playwright-agent in my existing project for LOGIN-123.
 Use the attached requirements to create the missing login tests.
-Inspect existing assertions, prepare the criteria and matrix, open the workbench,
-then make the focused changes and run the relevant checks.
+Review the criteria and questions with me in chat, inspect existing assertions,
+make the focused changes and run the relevant checks.
+Save the matrix, findings and actual reports, then open the report viewer.
 Show unclear requirements before treating them as accepted criteria.
 ```
 
@@ -23,18 +25,21 @@ or text. It reports unavailable attachments instead of claiming to have read
 them. [Document intake](docs/document-intake.md) explains source preservation and
 the separate review needed to accept an interpretation.
 
-## Open the local workbench directly
+## Inspect saved results
 
 ```sh
-npm run portal -- --repo /path/to/your-playwright-project
+npm run portal -- serve --repo /path/to/your-playwright-project --task LOGIN-123
 ```
 
-Open the printed loopback URL to review the agent's analysis, criteria,
-traceability and recorded test/mutation reports. It starts read-only for
-execution. When execution is requested, the agent can register the project's
-actual configurations and enable **Run Playwright**, **Run mutations** and
-**Stop**; opening the portal itself never runs them. Manual document and report
-imports remain available. The [portal guide](docs/portal.md) covers these controls.
+Open the printed loopback URL to inspect saved documents, criteria, traceability,
+analysis and recorded test/mutation reports. The portal provides detail views,
+filters and downloads. Intake, criterion review/acceptance, test editing and
+execution stay in the native chat and existing CLIs. The [viewer guide](docs/portal.md)
+covers evidence recording and inspection.
+
+Workflow accuracy, setup effort, review cost and usability still require
+[comparison validation](docs/workflow-validation.md). Runtime/unit checks alone
+do not establish those outcomes.
 
 > One workflow for requirement-guided Playwright test creation, acceptance
 > assessment and mutation verification. The existing harness supplies framework
@@ -89,7 +94,7 @@ and local reports. The synthetic CRM demo and run evidence are supporting materi
 ## Start with the tester's documents
 
 Supply downloaded tickets, technical PDFs, flow documents and Excel RTMs to the
-agent in chat, or select them in the portal. The
+agent in chat. The
 [document-intake workflow](docs/document-intake.md) preserves selected
 originals, extracts page/sheet/row evidence and drafts structured criteria. The
 agent handles JSON and column mapping; the tester reviews the meaning and gaps.
@@ -114,6 +119,7 @@ parsers; it does not start another model, run tests or publish documents.
 | Acceptance matrix and coverage review | Agent workflow plus `quality/src/team` evidence/assessment modules |
 | Behavioral mutation execution and reports | `quality/src/mutation` |
 | Optional Laya, Jev and other configured decisions | `quality` adapters; advisory results remain separate from observed execution |
+| Read-only local report viewer | `quality/src/portal`; saved analysis, matrix, documents and actual test/mutation reports |
 | Historical model comparisons and pilots | Retained protocols and fixtures inside `quality`; active reports belong to this product |
 
 ```sh

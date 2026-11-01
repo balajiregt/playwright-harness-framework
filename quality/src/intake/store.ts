@@ -131,7 +131,7 @@ async function loadRun(runPath:string,verifySources=true){
  if(verifySources)await currentSources(s);
  return {run,s};
 }
-/** Read-only view for the local workbench. Stale snapshots remain labelled evidence. */
+/** Read-only report view. Stale snapshots remain labelled evidence. */
 export async function inspectIntake(options:{run:string;allowStale?:boolean}){
  const {run,s}=await loadRun(options.run,!options.allowStale),draft=validateDraft(s,await readJson(path.join(run,'draft.json')));
  let stale:string|undefined;

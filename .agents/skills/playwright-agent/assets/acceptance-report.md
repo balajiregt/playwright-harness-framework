@@ -2,7 +2,8 @@
 
 - Request and mode:
 - Selected repository and source revision/working-tree state:
-- Requirements and application evidence reviewed:
+- Requirement source files/quotations and intake/draft version, if used:
+- Application source and test/helper/config revisions or working-tree references:
 - Browser/tool path used:
 
 ## Acceptance matrix
@@ -13,6 +14,11 @@
 Coverage assessment: supported, partial, missing, or unknown. Runtime evidence:
 passed, failed, skipped, or not run, with the actual command/report reference.
 Implementation-derived scenarios are identified separately from supplied criteria.
+Connect every supported judgment to the concrete assertion and relevant helper
+location. Match runtime evidence to the reviewed requirement, test/config and
+application revisions. Unmatched or missing evidence remains unknown/not run.
+For an existing intake `matrix.csv`, preserve its headers and put longer revision
+and action references in this analysis instead of inventing a parallel schema.
 
 ## Verification
 
@@ -30,4 +36,9 @@ Implementation-derived scenarios are identified separately from supplied criteri
 
 State which requested criteria are supported by which observed checks, which
 remain unresolved, changed files, skipped gates and the next concrete blocker.
-Do not call the task accepted while required evidence is missing.
+Keep requirements-interpretation approval separate from test/product acceptance.
+Do not report fulfillment while the relevant assertion or runtime evidence is missing.
+
+After retaining the matrix, analysis and actual reports, open the selected
+project's read-only report viewer last. Include assess-only and partial/blocked
+outcomes. The viewer inspects evidence; it does not author, approve or execute.

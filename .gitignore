@@ -24,6 +24,8 @@ graphs/data/*.json
 .env.*
 !.env.example
 .DS_Store
+__pycache__/
+*.pyc
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -35,7 +37,6 @@ node_modules
 
 # Private benchmark execution and publication state
 benchmark-results/
-benchmarks/dashboard/__pycache__/
 
 # Security tooling and generated runtime state
 artifacts/

@@ -5,24 +5,24 @@ import {attachReport} from './portal/reports.js';
 import {projectRoot,validTask,validRun,registeredRun} from './portal/project.js';
 import {recordAgentAnalysis} from './portal/analysis.js';
 
-const help=`Playwright Agent local workbench
-  portal [serve] --repo PROJECT [--task LOGIN-123] [--port 8792] [--python PATH]
-    [--allow-run --run-config PROJECT_RELATIVE_JSON]
+const help=`Playwright Agent local report viewer
+  portal [serve] --repo PROJECT [--task LOGIN-123] [--port 8792]
   portal analysis --repo PROJECT --task LOGIN-123 --run UUID --file analysis.md
   portal attach --repo PROJECT --task LOGIN-123 --kind playwright|mutation --file REPORT.json
 
-Runs only on 127.0.0.1. Upload and review documents, inspect traceability,
-and attach recorded test/mutation reports. The coding agent can record its
-hash-bound assessment and open the task URL after document analysis. No model,
-test, mutation campaign, publication or deployment starts when the portal opens.
-Execution buttons require --allow-run and a reviewed project-local run config.
---run-config resolves inside PROJECT; --file paths are caller-relative.
+Runs only on 127.0.0.1. The browser is read-only: inspect the agent's saved
+analysis, source-linked criteria, traceability and recorded test/mutation results.
+Finish the requested work in your coding agent and project CLI, then open its
+task report. Partial and assess-only reports preserve missing/not-run evidence.
+The analysis and attach commands prepare local artifacts outside the browser;
+they do not execute tests, approve criteria or invoke another model.
+--file paths are caller-relative.
 `;
 async function main(){
  const args=process.argv.slice(2);if(args.includes('--help')||args[0]==='help'){console.log(help);return;}
  const command=args[0]&&!args[0].startsWith('--')?args.shift()!:'serve';if(!['serve','attach','analysis'].includes(command))throw Error('Use portal help');
- const names=command==='serve'?['--repo','--task','--port','--python','--allow-run','--run-config']:command==='analysis'?['--repo','--task','--run','--file']:['--repo','--task','--kind','--file'],flags:Record<string,string>={};
- while(args.length){const key=args.shift()!;if(!names.includes(key)||Object.hasOwn(flags,key))throw Error('Invalid portal arguments; use portal help');if(key==='--allow-run'){flags[key]='true';continue;}const value=args.shift();if(!value||value.startsWith('--'))throw Error('Invalid portal arguments; use portal help');flags[key]=value;}
+ const names=command==='serve'?['--repo','--task','--port']:command==='analysis'?['--repo','--task','--run','--file']:['--repo','--task','--kind','--file'],flags:Record<string,string>={};
+ while(args.length){const key=args.shift()!;if(command==='serve'&&['--allow-run','--run-config','--python'].includes(key))throw Error('The portal is now a read-only report viewer. Use the intake and project test/mutation CLI commands in your coding agent.');if(!names.includes(key)||Object.hasOwn(flags,key))throw Error('Invalid portal arguments; use portal help');const value=args.shift();if(!value||value.startsWith('--'))throw Error('Invalid portal arguments; use portal help');flags[key]=value;}
  if(!flags['--repo'])throw Error('--repo is required');
  const repo=await projectRoot(flags['--repo']);
  if(command==='analysis'){
@@ -37,9 +37,9 @@ async function main(){
  }
  const port=flags['--port']?Number(flags['--port']):8792;if(!Number.isInteger(port)||port<1024||port>65535)throw Error('--port must be between 1024 and 65535');
  const task=flags['--task']?validTask(flags['--task']):undefined;
- const app=await startPortal({repo,port,python:flags['--python']?path.resolve(flags['--python']):undefined,allowRun:flags['--allow-run']==='true',executionConfig:flags['--run-config']?path.resolve(repo,flags['--run-config']):undefined});
+ const app=await startPortal({repo,port});
  const url=new URL(app.origin);if(task)url.hash=new URLSearchParams({task,tab:'overview'}).toString();
- console.log(`Playwright Agent workbench: ${url}\nProject: ${repo}\nExecution: ${flags['--allow-run']==='true'?'registered actions only; use the portal controls':'disabled (review and imported reports only)'}\nKeep this process running while using the local portal. Ctrl+C stops it.`);
+ console.log(`Playwright Agent report viewer: ${url}\nProject: ${repo}\nRead-only: saved evidence, no browser uploads, edits or execution.\nKeep this process running while viewing reports. Ctrl+C stops it.`);
  for(const signal of ['SIGINT','SIGTERM'] as const)process.once(signal,()=>{void app.close().then(()=>process.exit(0),()=>process.exit(1));});
 }
-main().catch(error=>{console.error(error instanceof Error?error.message:'Cannot start the local workbench');process.exitCode=1;});
+main().catch(error=>{console.error(error instanceof Error?error.message:'Cannot start the local report viewer');process.exitCode=1;});

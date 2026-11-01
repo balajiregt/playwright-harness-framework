@@ -2,7 +2,8 @@
 
 The dedicated agent uses the coding tool you already have. Its shared workflow
 is [the Playwright Agent skill](../.agents/skills/playwright-agent/SKILL.md).
-There is no second orchestration service or mandatory decision provider.
+There is no second orchestration service or mandatory decision provider. Native
+tools perform the work; the read-only portal shows the saved result last.
 
 ## Choose an entry point
 
@@ -45,9 +46,9 @@ claim to have preserved an unavailable PDF, workbook or original export.
 Use $playwright-agent in my existing project for LOGIN-123.
 Use the attached ticket and supporting documents to create the missing tests.
 Inspect existing assertions, prepare source-linked criteria and a test matrix,
-record your findings, and open this task in the local workbench.
-Then create or strengthen only the missing coverage and run targeted checks.
-Show unclear requirements before treating them as accepted criteria.
+and review the proposed interpretation and questions with me in chat.
+Create or strengthen only the requested missing coverage and run targeted checks.
+Save the actual findings and reports, then open this task in the report viewer.
 ```
 
 For an assessment that must not change tests:
@@ -56,8 +57,8 @@ For an assessment that must not change tests:
 Use $playwright-agent to assess login coverage against the attached documents
 for LOGIN-123 in my existing project.
 Keep source and tests unchanged. Produce an acceptance matrix and identify the
-checks that still need execution. Show the analysis in the local workbench.
-Do not run tests or enable portal execution in this assessment.
+checks that still need execution. Save the analysis, then open the report viewer.
+Do not run tests or mutations in this assessment.
 ```
 
 The task folder is optional when the prompt already supplies sufficient context.
@@ -72,31 +73,38 @@ The chat-first workflow is:
 
 1. The host agent selects only the accessible documents and prepares
    [local intake](document-intake.md) in the selected project's private task.
-2. It reads source segments and actual tests, drafts quoted criteria, flags
-   questions and records the acceptance matrix and findings.
-3. It records that analysis for the selected intake version and launches or
-   reuses that project's [local workbench](portal.md), returning the task URL.
-   It opens a browser only when the host permits; otherwise the URL is the
-   handoff. An occupied port does not authorize stopping another process.
-4. It continues the requested test creation or changes in the same chat. The
-   portal displays the analysis and results; it does not author tests or invoke
-   another model.
-5. For requested execution, it registers trusted project configurations and
-   enables the portal run controls, or uses the existing native test commands.
-   Read-only assessments leave execution disabled. Mutation execution also
-   requires an existing reviewed, fresh source-bound plan.
-6. Native CLI runs are followed by attaching their fresh JSON results to this
-   task. Portal jobs already attach valid fresh reports automatically. The agent
-   updates runtime cells only from matching execution evidence and refreshes
-   the report view without discarding unsaved criteria edits.
+2. It proposes quoted criteria and ambiguities in chat, then reviews actual
+   source, tests, helpers and assertions. Business requirements and
+   implementation-derived observations stay distinct.
+3. It records the initial matrix and makes only the requested test additions
+   or changes in the same host session. Assess-only work leaves source and tests
+   unchanged. Clear, authorized changes do not need repeated approval.
+4. It runs authorized project checks through native tools. If behavioral
+   mutation is requested, it reviews selected source-bound faults, executes the
+   existing runner and retains activation, repeatability and restoration evidence.
+5. It saves its analysis, matrix and fresh actual reports in the existing task
+   artifact paths. Criterion/source references are retained through actual
+   assertions to execution commands, reports and source/test revisions. Missing
+   or skipped evidence remains explicit.
+6. It launches or reuses that project's [report viewer](portal.md) last and
+   returns the task URL, including for blocked or partial work. The viewer only
+   inspects saved evidence and downloads. It does not prepare inputs, approve
+   criteria, edit tests, run jobs or invoke another model. If browser/process
+   access is unavailable, provide the artifacts and launch command without
+   claiming the page was opened. Do not stop unrelated processes for a port.
 
 The agent handles JSON, field mapping and recorded matrix cells. The tester
 reviews readable criteria, references and questions. Accepting that exact
-interpretation remains an explicit review action. This does not add a second
+interpretation happens through chat review and the intake CLI. It remains an
+explicit review action. This does not add a second
 approval gate for focused test changes already requested against clear supplied
 requirements. Unresolved ambiguities remain visible rather than becoming
 invented policy. Private originals stay unchanged; preparing or opening a task
 does not start providers or execute tests.
+
+The [workflow validation protocol](workflow-validation.md) covers the pending
+comparison of accuracy, setup effort, review cost and usability. A working
+viewer or passing runtime/unit checks do not establish those workflow outcomes.
 
 ## Context ownership across the workspace and project
 

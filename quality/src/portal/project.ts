@@ -22,7 +22,7 @@ export async function guarded(root:string,relative:string,kind:'file'|'directory
 export async function projectRoot(value:string){const requested=path.resolve(value),info=await lstat(requested);if(info.isSymbolicLink()||!info.isDirectory())throw Error('Select a real project directory');return realpath(requested);}
 export function runRelative(task:string,run:string){return `artifacts/agent-tasks/${validTask(task)}/intake/${validRun(run)}`;}
 export async function registeredRun(repo:string,task:string,run:string){return (await guarded(repo,runRelative(task,run),'directory'))!;}
-async function jsonFile(file:string){const stat=await lstat(file);if(stat.size>4*1024*1024)throw Error('Saved intake metadata exceeds the workbench limit');return JSON.parse(await readFile(file,'utf8'));}
+async function jsonFile(file:string){const stat=await lstat(file);if(stat.size>4*1024*1024)throw Error('Saved intake metadata exceeds the viewer limit');return JSON.parse(await readFile(file,'utf8'));}
 function matrixRows(text:string):Record<string,string>[] {
  const rows:string[][]=[];let row:string[]=[],cell='',quoted=false;
  for(let i=0;i<text.length;i++){
@@ -52,12 +52,11 @@ export async function taskDetail(repo:string,task:string,selected?:string):Promi
  const id=selected??runs[0]?.id;if(!id)return {taskId:task,runs,run:null,reports};
  if(!runs.some(r=>r.id===id))throw Error('Selected intake version is not registered for this work item');
  const root=await registeredRun(repo,task,id),value=await inspectIntake({run:root,allowStale:true});
- const briefFile=await guarded(repo,`${runRelative(task,id)}/agent-brief.md`,'file',true);
  const matrixFile=await guarded(repo,`${runRelative(task,id)}/matrix.csv`,'file',true);
- if(matrixFile&&(await lstat(matrixFile)).size>4*1024*1024)throw Error('Traceability CSV exceeds the workbench limit');
+ if(matrixFile&&(await lstat(matrixFile)).size>4*1024*1024)throw Error('Traceability CSV exceeds the viewer limit');
  const matrix=matrixFile?matrixRows(await readFile(matrixFile,'utf8')):[];
  const analysis=await readAgentAnalysis(root,{intakeHash:value.snapshot.intakeHash,draftHash:value.draftHash,stale:Boolean(value.stale)});
- return {taskId:task,runs,reports,run:{id,createdAt:value.snapshot.createdAt,goal:value.snapshot.goal,intakeHash:value.snapshot.intakeHash,draftHash:value.draftHash,draft:value.draft,documents:value.snapshot.sources,openQuestions:value.draft.questions.filter(q=>!q.resolution).length,blockingDocuments:value.snapshot.sources.filter(s=>s.extraction.issues.some(i=>i.severity==='blocking')).length,reviewed:value.reviewed,accepted:value.accepted,brief:briefFile?await readFile(briefFile,'utf8'):'',stale:value.stale,mappings:value.snapshot.mappings,matrix,...(analysis?{analysis}:{})}};
+ return {taskId:task,runs,reports,run:{id,createdAt:value.snapshot.createdAt,goal:value.snapshot.goal,intakeHash:value.snapshot.intakeHash,draftHash:value.draftHash,draft:value.draft,documents:value.snapshot.sources,openQuestions:value.draft.questions.filter(q=>!q.resolution).length,blockingDocuments:value.snapshot.sources.filter(s=>s.extraction.issues.some(i=>i.severity==='blocking')).length,reviewed:value.reviewed,accepted:value.accepted,stale:value.stale,mappings:value.snapshot.mappings,matrix,...(analysis?{analysis}:{})}};
 }
 export async function taskList(repo:string):Promise<PortalTaskSummary[]>{
  const root=await guarded(repo,'artifacts/agent-tasks','directory',true);if(!root)return [];

@@ -55,6 +55,12 @@ test('isolated copy omits credentials and artifacts and preserves original sourc
   const before=await treeHash(f.c.repo),destination=path.join(f.dir,'copy');await isolatedCopy(f.c.repo,destination);
   await assert.rejects(readFile(path.join(destination,'.env.local')));
   await writeFile(path.join(destination,'app.js'),'const admin = true;');assert.equal(await treeHash(f.c.repo),before);
+  const nested=path.join(f.c.repo,'artifacts/owned/tmp/copy');await isolatedCopy(f.c.repo,nested);
+  assert.equal(await readFile(path.join(nested,'app.js'),'utf8'),'const admin = false;');
+  await assert.rejects(readFile(path.join(nested,'.env.local')));
+  await assert.rejects(readFile(path.join(nested,'artifacts/old-report.json')));
+  await assert.rejects(isolatedCopy(f.c.repo,path.join(f.c.repo,'src/recursive-copy')),/excluded artifact/);
+  assert.equal(await treeHash(f.c.repo),before);
   await symlink('/tmp',path.join(f.c.repo,'unsafe'));await assert.rejects(isolatedCopy(f.c.repo,path.join(f.dir,'copy2')),/symlink/);
  }finally{await rm(f.dir,{recursive:true,force:true});}
 });
