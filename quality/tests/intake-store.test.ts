@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,writeFile,readFile,readdir,rm,symlink} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
+import {existsSync} from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import {ROOT} from '../src/context.js';
@@ -11,7 +12,8 @@ import {importRequirements} from '../src/team/requirements.js';
 import {loadContext} from '../src/mutation/context.js';
 import {configSchema} from '../src/mutation/schema.js';
 
-const python=path.join(ROOT,'.venv/bin/python');
+const bundledPython=path.join(ROOT,process.platform==='win32'?'.venv/Scripts/python.exe':'.venv/bin/python');
+const python=process.env.PLAYWRIGHT_AGENT_TEST_PYTHON??(existsSync(bundledPython)?bundledPython:process.platform==='win32'?'python':'python3');
 async function fixture(t:{after:(fn:()=>Promise<void>)=>void}){
  const root=await mkdtemp(path.join(os.tmpdir(),'intake with spaces-'));
  t.after(()=>rm(root,{recursive:true,force:true}));

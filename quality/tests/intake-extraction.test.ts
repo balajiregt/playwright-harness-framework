@@ -8,7 +8,8 @@ import path from 'node:path';
 import {ROOT} from '../src/context.js';
 import type {Extraction} from '../src/intake/types.js';
 
-const python=existsSync(path.join(ROOT,'.venv/bin/python'))?path.join(ROOT,'.venv/bin/python'):'python3';
+const bundledPython=path.join(ROOT,process.platform==='win32'?'.venv/Scripts/python.exe':'.venv/bin/python');
+const python=existsSync(bundledPython)?bundledPython:process.platform==='win32'?'python':'python3';
 const script=path.join(ROOT,'python/intake_artifact.py');
 const available=(module:string)=>spawnSync(python,['-c',`import importlib.util; raise SystemExit(0 if importlib.util.find_spec(${JSON.stringify(module)}) else 1)`]).status===0;
 function extract(file:string,flags:string[]=[],sheet?:string):Extraction{
