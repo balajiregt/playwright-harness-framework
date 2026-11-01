@@ -65,6 +65,13 @@ test('runtime detection needs two complete repeatable assertion failures; startu
  for(const attempts of [[failure,base],[execution('failed'),execution('failed')],[execution('timedOut',true),failure],[{...failure,errors:1},failure],[{...failure,tests:[]},failure]])assert.equal(classify(attempts,base).status,'inconclusive');
  assert.equal(healthy({...base,tests:[]}),false);
 });
+test('all-skipped suites cannot establish a healthy baseline or a conclusive mutation outcome',()=>{
+ const base=execution(),skipped=execution();skipped.tests[0].expectedStatus='skipped';skipped.tests[0].results[0].status='skipped';
+ assert.equal(healthy(skipped),false);
+ assert.equal(classify([skipped,skipped],skipped).status,'inconclusive');
+ assert.equal(classify([skipped,skipped],base).status,'inconclusive');
+ assert.equal(healthy({...base,tests:[...base.tests,...skipped.tests]}),true);
+});
 test('reports keep unactivated faults outside score denominators and escape artifact/code content',async()=>{
  const f=await fixture();try{
   const r:Campaign={version:1,kind:'playwright-behavioral-mutations',runId:'fixture',createdAt:new Date().toISOString(),contextHash:f.ctx.hash,plan:f.plan,baseline:[execution(),execution()],restored:execution(),faults:[{id:'M1',requirementId:'AUTH',status:'not_activated',attempts:[],killingTests:[]}],wallMs:5,originalUnchanged:true};

@@ -34,8 +34,9 @@ export async function treeHash(root:string):Promise<string>{
  }}await walk(root);return digest(JSON.stringify(entries));
 }
 const testKey=(t:Execution['tests'][number])=>JSON.stringify([t.project,t.title]);
-export function healthy(e:Execution){return e.status==='passed'&&e.errors===0&&e.tests.length>0&&e.tests.every(t=>t.expectedStatus==='skipped'?t.results.every(r=>r.status==='skipped'):t.expectedStatus==='passed'&&t.results.length===1&&t.results[0].status==='passed');}
+export function healthy(e:Execution){return e.status==='passed'&&e.errors===0&&e.tests.some(t=>t.expectedStatus==='passed')&&e.tests.every(t=>t.expectedStatus==='skipped'?t.results.every(r=>r.status==='skipped'):t.expectedStatus==='passed'&&t.results.length===1&&t.results[0].status==='passed');}
 export function classify(attempts:Execution[],baseline:Execution):Pick<FaultResult,'status'|'reason'|'killingTests'>{
+ if(!healthy(baseline))return {status:'inconclusive',reason:'Baseline has no healthy executed assertions',killingTests:[]};
  const tests=baseline.tests.filter(t=>t.expectedStatus==='passed'),keys=new Set(baseline.tests.map(testKey));
  if(attempts.length!==2||attempts.some(e=>e.errors||!['passed','failed'].includes(e.status)||e.tests.length!==baseline.tests.length||e.tests.some(t=>!keys.has(testKey(t)))||e.tests.some(t=>t.results.length!==1||!['passed','failed','skipped'].includes(t.results[0].status))))return {status:'inconclusive',reason:'Incomplete, interrupted, timeout or infrastructure execution',killingTests:[]};
  const killed=attempts.map(e=>new Set(e.tests.filter(t=>t.results[0].status==='failed'&&t.results[0].assertionFailure).map(testKey)));

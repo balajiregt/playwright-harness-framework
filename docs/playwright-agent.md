@@ -58,7 +58,8 @@ The agent does not connect to Confluence/Jira or execute document instructions
 just because an exported document mentions them.
 
 For downloaded PRDs, Jira/RTM exports, spreadsheets or narrative documents, use
-[local document intake](document-intake.md): select the target project and files,
+[local document intake](document-intake.md) through the CLI or
+[private local workbench](portal.md): select the target project and files,
 have the current coding agent draft source-linked criteria, review its readable
 matrix/questions, then explicitly accept the exact criteria. The agent prepares
 mapping/draft files; the tester does not write JSON. Extraction and normalized

@@ -49,6 +49,7 @@ test('reviewed acceptance produces legacy-compatible requirements and inspectabl
  await assert.rejects(acceptIntake({run:p.run,reviewedBy:'',confirmReviewed:false}),/confirmation/);
  await assert.rejects(accept(p.run)); // Exact review receipt is required first.
  const review=await reviewIntake({run:p.run});assert.equal(review.openQuestions,0);
+ await assert.rejects(acceptIntake({run:p.run,reviewedBy:'Synthetic fixture reviewer',confirmReviewed:true,expectedDraftHash:'0'.repeat(64)}),/changed since confirmation/);
  const result=await accept(p.run);assert.equal(result.productAccepted,false);
  assert.deepEqual(await importRequirements(result.requirements,python),f.data);
  const evidence=JSON.parse(await readFile(result.provenance,'utf8'));

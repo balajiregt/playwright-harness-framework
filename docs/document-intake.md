@@ -6,9 +6,10 @@ files. Intake preserves the originals, extracts source-addressable segments and
 prepares a readable requirements review. You do not need to write JSON or
 configure a decision model.
 
-This is a local CLI workflow. It does not connect to Jira or Confluence, provide
-an upload portal, perform OCR, call providers, execute tests or publish data.
-Extraction does not establish full understanding of your business requirements.
+Use the [private local workbench](portal.md) for a browser view of this workflow,
+or the CLI below. Neither connects to Jira or Confluence, performs OCR, calls
+providers, executes tests on upload or publishes data. Extraction does not
+establish full understanding of your business requirements.
 
 Intake uses Node 22+ and Python. It prefers the toolkit's `quality/.venv`
 interpreter, then system Python; `--python PATH` selects an existing interpreter.

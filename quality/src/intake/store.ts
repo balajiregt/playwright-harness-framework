@@ -72,7 +72,7 @@ async function protectPrivatePaths(repo:string,id:string){
 
 }
 
-export async function prepareIntake(options:{repo:string;task:string;files:string[];goal?:'create'|'update'|'assess';python?:string;mappings?:IntakeMappings}){
+export async function prepareIntake(options:{repo:string;task:string;files:string[];goal?:'create'|'update'|'assess';python?:string;mappings?:IntakeMappings;sourceNames?:Record<string,string>}){
  const repo=await repoRoot(options.repo),id=taskId(options.task),taskDirectory=await directory(repo,`contexts/tasks/${id}`);
  await directory(repo,`artifacts/agent-tasks/${id}/intake`);
  if(!options.files.length||options.files.length>30)throw Error('Select between 1 and 30 source documents');
@@ -84,12 +84,12 @@ export async function prepareIntake(options:{repo:string;task:string;files:strin
  const temp=await mkdtemp(path.join(os.tmpdir(),'playwright-intake-'));
  try{
   for(const input of options.files){
-   const file=path.resolve(input),info=await regular(file),name=path.basename(file);
+   const file=path.resolve(input),info=await regular(file),storedName=path.basename(file),name=options.sourceNames?.[file]??storedName;
    leaf.parse(name);if(!supported.has(path.extname(name).toLowerCase()))throw Error('Unsupported intake document type: '+path.extname(name));
    if(info.size>10*1024*1024)throw Error('Each intake document must be at most 10 MiB');
    const bytes=await readFile(file);total+=bytes.length;if(bytes.length>10*1024*1024||total>30*1024*1024)throw Error('Selected intake documents exceed the 30 MiB batch limit');
    const digest=sha(bytes),inTask=path.dirname(file)===taskDirectory;
-   const stored=inTask?name:`input-${digest.slice(0,12)}-${name}`;leaf.parse(stored);
+   const stored=inTask?storedName:`input-${digest.slice(0,12)}-${name}`;leaf.parse(stored);
    if(names.has(stored))throw Error('The same document was selected more than once');names.add(stored);
    const destination=path.join(taskDirectory,stored),existing=await exists(destination);
    if(existing){await regular(destination);if(sha(await readFile(destination))!==digest)throw Error('Existing task document differs; no document was overwritten');}
@@ -121,14 +121,31 @@ export async function prepareIntake(options:{repo:string;task:string;files:strin
  return {run,taskDirectory,intakeHash:snapshot.intakeHash,requirements:draft.requirements.length,questions:draft.questions.length,blockingDocuments:sources.filter(s=>s.extraction.issues.some(i=>i.severity==='blocking')).length,artifactFiles:sources.map(s=>s.file),status:'needs-review',published:false};
 }
 
-async function loadRun(runPath:string){
+async function currentSources(s:IntakeSnapshot){for(const source of s.sources){const file=path.join(s.taskDirectory,source.file),info=await regular(file);if(info.size!==source.bytes||info.size>10*1024*1024||sha(await readFile(file))!==source.sha256)throw Error('A selected source document changed. Prepare a new intake before review or acceptance.');}}
+async function loadRun(runPath:string,verifySources=true){
  const run=await realpath(path.resolve(runPath)),s=snapshotSchema.parse(await readJson(path.join(run,'intake.json')));
  const repo=await repoRoot(s.repo);taskId(s.taskId);
  if(repo!==s.repo||s.taskDirectory!==path.join(repo,'contexts/tasks',s.taskId)||run!==path.join(repo,'artifacts/agent-tasks',s.taskId,'intake',s.runId)||payloadHash(s)!==s.intakeHash)throw Error('Intake snapshot identity or content changed');
  await directory(repo,`contexts/tasks/${s.taskId}`);await directory(repo,`artifacts/agent-tasks/${s.taskId}/intake/${s.runId}`);
  if(new Set(s.sources.map(x=>x.id)).size!==s.sources.length||new Set(s.sources.map(x=>x.file)).size!==s.sources.length)throw Error('Duplicate source identity in snapshot');
- for(const source of s.sources){const file=path.join(s.taskDirectory,source.file);await regular(file);if(sha(await readFile(file))!==source.sha256)throw Error('A selected source document changed. Prepare a new intake before review or acceptance.');}
+ if(verifySources)await currentSources(s);
  return {run,s};
+}
+/** Read-only view for the local workbench. Stale snapshots remain labelled evidence. */
+export async function inspectIntake(options:{run:string;allowStale?:boolean}){
+ const {run,s}=await loadRun(options.run,!options.allowStale),draft=validateDraft(s,await readJson(path.join(run,'draft.json')));
+ let stale:string|undefined;
+ if(options.allowStale)try{await currentSources(s);}catch{stale='Selected documents changed or are unavailable. Reimport before reviewing or accepting this version.';}
+ const draftHash=sha(json(draft));let reviewed=false,accepted=false;
+ if(await exists(path.join(run,'review-receipt.json'))){const receipt=await readJson(path.join(run,'review-receipt.json')) as {intakeHash?:string;draftHash?:string};reviewed=receipt.intakeHash===s.intakeHash&&receipt.draftHash===draftHash;}
+ if(await exists(path.join(run,'accepted.json'))){const receipt=await readJson(path.join(run,'accepted.json')) as {intakeHash?:string;draftHash?:string};accepted=receipt.intakeHash===s.intakeHash&&receipt.draftHash===draftHash;}
+ return {run,snapshot:s,draft,draftHash,reviewed,accepted,stale};
+}
+export async function saveIntakeDraft(options:{run:string;draft:unknown}){
+ const {run,s}=await loadRun(options.run);
+ if(await exists(path.join(run,'accepted.json')))throw Error('This version has already been accepted. Reimport to prepare a new version before changing criteria.');
+ const draft=validateDraft(s,options.draft);await generated(path.join(run,'draft.json'),json(draft));
+ return reviewIntake({run});
 }
 function validateDraft(s:IntakeSnapshot,input:unknown){
  const draft=draftSchema.parse(input);
@@ -154,7 +171,7 @@ export async function reviewIntake(options:{run:string;draft?:string}){
  await generated(path.join(run,'review-receipt.json'),json({version:1,intakeHash:s.intakeHash,draftHash:sha(json(draft))}));
  return {run,review:path.join(run,'review.md'),matrix:path.join(run,'matrix.csv'),draftHash:sha(json(draft)),requirements:draft.requirements.length,openQuestions:draft.questions.filter(q=>!q.resolution).length,blockingDocuments:s.sources.filter(v=>v.extraction.issues.some(i=>i.severity==='blocking')).length,status:'needs-review',accepted:false};
 }
-export async function acceptIntake(options:{run:string;draft?:string;reviewedBy:string;confirmReviewed:boolean;replaceReviewed?:boolean}){
+export async function acceptIntake(options:{run:string;draft?:string;reviewedBy:string;confirmReviewed:boolean;replaceReviewed?:boolean;expectedDraftHash?:string}){
  if(!options.confirmReviewed||!options.reviewedBy.trim()||options.reviewedBy.length>120)throw Error('Explicit confirmation and a declared reviewer are required for the reviewed interpretation');
  const {run,s}=await loadRun(options.run),draft=validateDraft(s,await readJson(path.resolve(options.draft??path.join(run,'draft.json'))));
  if(s.sources.some(source=>source.extraction.issues.some(issue=>issue.severity==='blocking')))throw Error('Unreadable or unsupported source content remains blocked. Correct the source or select the confirmed scope and prepare a new intake.');
@@ -163,6 +180,7 @@ export async function acceptIntake(options:{run:string;draft?:string;reviewedBy:
  const name=s.sources.some(source=>source.file==='requirements.json')?'requirements.reviewed.json':'requirements.json';
  const requirementsFile=path.join(s.taskDirectory,name),sourcesFile=path.join(s.taskDirectory,name.replace(/\.json$/,'.sources.json'));
  const content=json(requirements),draftHash=sha(json(draft));
+ if(options.expectedDraftHash&&options.expectedDraftHash!==draftHash)throw Error('The criteria changed since confirmation. Review the exact new version before accepting.');
  const reviewed=await readJson(path.join(run,'review-receipt.json')) as {intakeHash?:string;draftHash?:string};
  if(reviewed.intakeHash!==s.intakeHash||reviewed.draftHash!==draftHash)throw Error('The draft changed after the last review. Review the exact new criteria before accepting.');
  const provenance={version:1,kind:'playwright-reviewed-requirements',intakeHash:s.intakeHash,runId:s.runId,draftHash,requirementsHash:sha(content),reviewedAt:new Date().toISOString(),reviewedBy:options.reviewedBy.trim(),reviewerIdentity:'declared-not-authenticated',scope:'requirement-interpretation-only',mappings:s.mappings??{sources:{}},sources:s.sources.map(({extraction,...source})=>({...source,selection:extraction.selection??null})),artifactFiles:s.sources.map(source=>source.file),criteria:draft.requirements.map(r=>({id:r.id,sources:r.sources.map(ref=>({...ref,locator:s.sources.find(source=>source.id===ref.sourceId)!.extraction.segments.find(segment=>segment.id===ref.segmentId)!.locator})),suppliedLinks:r.suppliedLinks??[]})),clarifications:draft.questions};

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Workbench · Playwright Agent</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#workspace">Skip to work item</a>
+  <aside class="sidebar" id="sidebar" aria-label="Project and work items">
+    <button type="button" class="icon-button nav-close" id="nav-close" aria-label="Close work item navigation">×</button>
+    <a class="brand" href="/" aria-label="Playwright Agent workbench home"><span class="brand-mark" aria-hidden="true">pa</span><span>Playwright Agent<small>WORKBENCH</small></span></a>
+    <div class="project-label">CURRENT PROJECT</div>
+    <div id="project-name" class="project-name">Connecting…</div>
+    <details class="project-path"><summary>Project location</summary><code id="project-root"></code></details>
+    <button type="button" class="button sidebar-new" id="new-task" disabled><span aria-hidden="true">＋</span> New work item</button>
+    <div class="list-heading"><h2>Work items</h2><span id="task-count" class="sidebar-count">0</span></div>
+    <nav id="task-list" aria-label="Work items"><p class="sidebar-empty">Loading your project…</p></nav>
+    <div class="sidebar-foot"><span class="local-dot" aria-hidden="true"></span> Local workspace<p>Documents and reviews stay<br>with this project.</p></div>
+  </aside>
+  <div class="sidebar-scrim" id="sidebar-scrim" hidden></div>
+  <div class="app-shell">
+    <header class="topbar">
+      <button type="button" class="icon-button menu-toggle" id="menu-toggle" aria-controls="sidebar" aria-expanded="false" aria-label="Open work item navigation">☰</button>
+      <div class="topbar-title">Your project<span aria-hidden="true"> / </span><strong>Evidence workbench</strong></div>
+      <div class="topbar-actions"><span class="local-badge"><span class="local-dot" aria-hidden="true"></span> Project local</span><button type="button" class="preview-toggle" id="preview-toggle" aria-pressed="false">Layout preview</button><button type="button" class="icon-button" id="refresh" aria-label="Refresh work items and selected results" title="Refresh">↻</button></div>
+    </header>
+    <main id="workspace" tabindex="-1">
+      <div id="error-banner" class="notice danger" role="alert" hidden></div>
+      <div id="work-item-header"></div>
+      <div id="tab-bar" class="tab-bar" role="tablist" aria-label="Work item views" hidden></div>
+      <div class="workspace-grid" id="workspace-grid">
+        <section id="view-panel" class="view-panel" aria-label="Work item content"></section>
+        <aside id="context-panel" class="context-panel" aria-label="Review context" hidden></aside>
+      </div>
+    </main>
+    <footer class="app-footer"><span>Playwright Agent</span><span>Requirements → tests → observed evidence</span></footer>
+  </div>
+  <div id="live-status" class="toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+  <dialog id="task-dialog" aria-labelledby="task-dialog-title">
+    <div class="dialog-heading"><div><div class="eyebrow">START WITH THE REQUIREMENTS</div><h2 id="task-dialog-title">New work item</h2></div><button type="button" class="icon-button" id="close-dialog" aria-label="Close new work item form">×</button></div>
+    <p class="muted">Bring the ticket and supporting documents together. You’ll review the extracted criteria before using them for test work.</p>
+    <form id="task-form">
+      <div class="form-row"><label class="field" for="task-id">Work item ID<input id="task-id" name="taskId" required maxlength="80" pattern="[A-Za-z0-9][A-Za-z0-9_.\-]{0,79}" placeholder="e.g. LOGIN-123" autocomplete="off"><small>Use the ticket or epic identifier for this task.</small></label><label class="field" for="task-goal">What are you working on?<select id="task-goal" name="goal"><option value="assess">Assess existing coverage</option><option value="create">Create tests</option><option value="update">Update tests</option></select></label></div>
+      <label class="upload-zone field" for="task-files"><span class="upload-symbol" aria-hidden="true">↥</span><strong>Add the source documents</strong><span>Jira exports, PDFs, Word, Excel, CSV, Markdown or PNG/JPG images</span><input id="task-files" name="files" type="file" multiple required accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.json,.txt,.md,.html,.htm,.png,.jpg,.jpeg"><small>Original files are retained locally. Scans and diagrams need a reviewed interpretation.</small></label>
+      <label class="field" for="task-sheet">Worksheet to use <span class="optional">optional</span><input id="task-sheet" name="sheet" placeholder="e.g. Acceptance Criteria" autocomplete="off"><small>Applies to uploaded Excel files. Leave blank to inspect all worksheets.</small></label>
+      <p id="upload-error" class="form-error" role="alert" hidden></p>
+      <div class="dialog-actions"><button type="button" class="button secondary" id="cancel-dialog">Cancel</button><button type="submit" class="button primary" id="upload-submit">Create work item <span aria-hidden="true">→</span></button></div>
+    </form>
+  </dialog>
+</body>
+</html>

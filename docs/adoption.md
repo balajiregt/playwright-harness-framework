@@ -80,6 +80,10 @@ coding agent prepares source-linked criteria and handles any field mapping;
 the tester reviews readable criteria and questions rather than authoring JSON.
 Accept only after that exact review. Originals, source hashes and provenance
 remain private in the adopter's task; intake does not write tests or run them.
+For a browser view of the same private tasks, start the
+[local workbench](portal.md) with the selected adopter. It can attach existing
+Playwright JSON and behavioral-mutation reports after actual execution; upload
+alone does not execute an agent or establish acceptance.
 
 Your host coding agent uses its already selected model. Extra local or hosted
 decision models are optional advisory integrations, not a prerequisite for

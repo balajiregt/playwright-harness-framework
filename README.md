@@ -2,6 +2,18 @@
 
 Repository: [balajiregt/playwright-agent](https://github.com/balajiregt/playwright-agent) (formerly `playwright-harness-framework`).
 
+## Open the local workbench
+
+```sh
+npm run portal -- --repo /path/to/your-playwright-project
+```
+
+Open the printed loopback URL to collect documents, review acceptance criteria,
+inspect traceability and attach recorded Playwright and behavioral-mutation JSON
+reports in one project-local view. [Portal guide](docs/portal.md) covers setup,
+the coding-agent handoff and report imports. The workbench stays in this product;
+opening it does not execute tests, start another model or publish documents.
+
 > One workflow for requirement-guided Playwright test creation, acceptance
 > assessment and mutation verification. The existing harness supplies framework
 > conventions; the internal quality module supplies evaluation and reporting.
