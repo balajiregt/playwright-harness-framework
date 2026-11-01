@@ -7,6 +7,7 @@ import {fileURLToPath,pathToFileURL} from 'node:url';
 const productRoot=fileURLToPath(new URL('../',import.meta.url));
 export const qualityRoot=path.join(productRoot,'quality');
 const scripts={
+  intake:['src/intake-cli.ts'],
   demo:['src/demo-cli.ts'],
   qa:['src/team-cli.ts'], mutation:['src/mutation-cli.ts'], export:['src/mutation-cli.ts','export'],
   'context:resolve':['src/workflow-cli.ts','resolve'], 'review:preview':['src/workflow-cli.ts','preview'],

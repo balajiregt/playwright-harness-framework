@@ -41,6 +41,8 @@ The selected target is **the adopter repository containing this shim**, not the 
 
 Select the user's ticket, acceptance criteria or task folder explicitly. No requirements document, provider or workload is selected by onboarding. Keep assessment-only requests read-only. Build an evidence-linked acceptance matrix, reuse existing coverage, and verify only through the target's real commands. Missing execution or assertions remain unknown; report product/environment gaps without weakening tests.
 
+For downloaded tickets, PDFs, flows or Excel RTMs, follow the canonical workflow's document-intake guide. Use the toolkit's intake command with this adopter as --repo. The agent handles structured draft files, shows source-linked criteria and clarifications to the tester, and accepts only the exact reviewed interpretation after explicit user confirmation. Keep originals and reports private; intake does not prove product acceptance or execute tests.
+
 Use the host coding agent's existing model, file edits, terminal and available browser tools. Code Mode is optional and exposes only its configured tools; it is not a generic test-writing API. Do not install dependencies, enable providers, run mutation campaigns, register global MCP servers or hooks, publish, or deploy as a side effect of selecting this agent. Follow the target's permissions and instructions.
 `;
 }

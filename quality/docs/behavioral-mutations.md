@@ -71,6 +71,12 @@ explicitly for `qa`; mutation imports read the selected folder via `artifactDir`
 No customer artifacts are bundled or downloaded automatically, and choosing a
 folder does not start inference or a workload.
 
+For documents prepared by [the intake workflow](../../docs/document-intake.md),
+set `artifactFiles` to the exact original filenames returned by intake, alongside
+`artifactDir` pointing at the private work-item folder. The optional filename
+allowlist excludes generated requirements, provenance and unrelated documents.
+Without it, the existing flat-folder reader still reads every non-hidden file.
+
 Copy the sample config to `quality/mutation.config.local.json` when working
 from the product root; set `repo`, `artifactDir`, `playwrightConfig`, explicit
 `sourceFiles` and projects. Config-owned paths resolve relative to the config

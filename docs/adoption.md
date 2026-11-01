@@ -73,6 +73,14 @@ skips, list commands and unrelated green suites do not establish acceptance.
 Keep private work-item documents and raw evidence in your project's ignored
 locations. Promote reviewed reusable lessons into its existing documentation.
 
+If requirements arrive as downloaded PRDs, Jira/RTM exports or narrative files,
+follow [local document intake](document-intake.md). From the toolkit, select the
+adopter with `--repo`, its private `--task` and explicit `--file` inputs. The host
+coding agent prepares source-linked criteria and handles any field mapping;
+the tester reviews readable criteria and questions rather than authoring JSON.
+Accept only after that exact review. Originals, source hashes and provenance
+remain private in the adopter's task; intake does not write tests or run them.
+
 Your host coding agent uses its already selected model. Extra local or hosted
 decision models are optional advisory integrations, not a prerequisite for
 test authoring, matrix review or duplicate analysis. Optional Code Mode exposes

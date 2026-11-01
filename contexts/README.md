@@ -30,7 +30,9 @@ shared; other files in that folder and all other work items remain ignored.
 Keep private tickets, epics and PRDs in one selected
 `contexts/tasks/<work-item>/` folder. Pass the existing requirements file
 explicitly to `qa`; set mutation `artifactDir` to the selected folder, relative
-to the mutation config file. No separate quality-module context-input folder
+to the mutation config file. For an intake task also use its returned
+`artifactFiles` list of exact original filenames, so generated requirements and
+source sidecars are not swept into raw context. No separate quality-module context-input folder
 is needed. See [import formats and limits](../quality/docs/behavioral-mutations.md#use-your-own-exports-and-repository)
 and [quality guidance](../quality/AGENTS.md). Reading context does not authorize
 provider calls or workload execution.
@@ -43,3 +45,20 @@ implementation-derived behaviour must not become an unqualified business rule.
 
 The workspace's shared UI resolver targets the separate role-aware mockserver;
 it is not required to run this product and must not redirect this task there.
+
+## Selected local documents
+
+Use [document intake](../docs/document-intake.md) to copy explicitly selected
+PRD/Jira/RTM files into the target project's private work item and extract
+source-addressable segments. The host coding agent drafts criteria and handles
+mapping/draft JSON; the user reviews the readable criteria and questions before
+acceptance. Originals stay unchanged. Accepted version-1 requirements and their
+provenance sidecar remain private; parser blockers cannot be approved away.
+
+Intake run artifacts belong under the target's ignored
+`artifacts/agent-tasks/<work-item>/intake/<runId>/`, not in shared maps or the
+public CRM fixture. Select only relevant files; do not sweep entire task folders
+or send generated review outputs to a flat raw-document loader.
+Intake places private `*` ignore markers inside the selected work-item folder
+and `artifacts/agent-tasks/`, without adding work-item IDs to the shared root
+ignore file. Tracked tasks and unverifiable existing Git metadata are refused.

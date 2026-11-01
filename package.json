@@ -45,6 +45,7 @@
     "security:hooks": "node scripts/install-security-hook.mjs",
     "security:check": "python3 scripts/security_audit.py",
     "qa": "node scripts/run-quality.mjs qa",
+    "intake": "node scripts/run-quality.mjs intake",
     "mutation": "node scripts/run-quality.mjs mutation",
     "quality:typecheck": "npm --prefix quality run typecheck",
     "quality:test": "npm --prefix quality test && node --test scripts/run-quality.test.mjs",

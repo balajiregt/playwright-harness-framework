@@ -5,6 +5,7 @@ import {readFile,realpath} from 'node:fs/promises';
 export const relativePath=z.string().min(1).max(240).refine(s=>!path.isAbsolute(s)&&!s.split(/[\\/]/).some(p=>p==='..'||p.startsWith('.')),'Use a relative non-hidden path');
 export const configSchema=z.object({
  version:z.literal(1),repo:z.string(),artifactDir:z.string(),output:z.string().default('artifacts/mutations'),
+ artifactFiles:z.array(z.string().min(1).max(240).refine(s=>s===path.basename(s)&&!s.startsWith('.')&&!s.includes('\\'),'Select a non-hidden filename directly inside artifactDir')).min(1).max(30).refine(files=>new Set(files).size===files.length,'Duplicate selected artifact').optional(),
  captureEvidence:z.boolean().default(false),
  playwrightConfig:relativePath.default('playwright.config.ts'),sourceFiles:z.array(relativePath).min(1).max(8),
  projects:z.array(z.string()).default([]),maxMutations:z.number().int().min(1).max(10).default(3),

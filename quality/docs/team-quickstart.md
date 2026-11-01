@@ -54,6 +54,11 @@ not new weights. Use the matching vendor template for other models.
 
 ## 2. Supply requirements
 
+For existing Jira downloads, PDFs and Excel RTMs, start with the parent product's
+[document intake](../../docs/document-intake.md). Its accepted requirements file
+already matches this module's schema; select that returned path explicitly.
+Intake does not start a provider or execute tests.
+
 Copy a [JSON](../examples/team/requirements.json), [XLS](../examples/team/requirements.xls),
 [XLSX](../examples/team/requirements.xlsx), [DOCX](../examples/team/requirements.docx)
 or [DOC](../examples/team/requirements.doc) template.

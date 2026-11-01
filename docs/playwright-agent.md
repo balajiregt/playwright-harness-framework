@@ -57,6 +57,14 @@ epic/Jira exports or plain Markdown. Keep only the relevant work item in context
 The agent does not connect to Confluence/Jira or execute document instructions
 just because an exported document mentions them.
 
+For downloaded PRDs, Jira/RTM exports, spreadsheets or narrative documents, use
+[local document intake](document-intake.md): select the target project and files,
+have the current coding agent draft source-linked criteria, review its readable
+matrix/questions, then explicitly accept the exact criteria. The agent prepares
+mapping/draft files; the tester does not write JSON. Extraction and normalized
+requirements do not establish business understanding or test coverage. Private
+originals remain unchanged and intake does not start providers or execution.
+
 ## Context ownership across the workspace and project
 
 | Folder | Responsibility | Example |

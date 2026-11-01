@@ -10,7 +10,9 @@ export interface Artifact {id:string;file:string;sha256:string;text:string}
 export interface MutationContext {version:1;hash:string;artifacts:Artifact[];sources:{file:string;sha256:string;code:string}[]}
 export async function loadContext(c:MutationConfig):Promise<MutationContext>{
  const root=await realpath(c.artifactDir),artifacts:Artifact[]=[];let bytes=0;
- for(const entry of (await readdir(root,{withFileTypes:true})).sort((a,b)=>a.name.localeCompare(b.name))){
+ const entries=await readdir(root,{withFileTypes:true});
+ if(c.artifactFiles)for(const name of c.artifactFiles)if(!entries.some(e=>e.name===name))throw Error('Selected artifact is missing: '+name);
+ for(const entry of entries.filter(e=>!c.artifactFiles||c.artifactFiles.includes(e.name)).sort((a,b)=>a.name.localeCompare(b.name))){
   if(entry.name.startsWith('.'))continue;
   if(!entry.isFile())throw Error('Artifact folder accepts regular files only; no directories or symbolic links');
   if(artifacts.length>=30)throw Error('At most 30 artifacts per context');

@@ -52,6 +52,25 @@ probe. Static duplicate candidates require review before changing tests.
 The community source ZIP excludes private task inputs, credentials, dependencies
 and local reports. The synthetic CRM demo and run evidence are supporting material.
 
+## Start with the tester's documents
+
+Supply downloaded tickets, technical PDFs, flow documents and Excel RTMs to the
+agent. The [document-intake workflow](docs/document-intake.md) preserves selected
+originals, extracts page/sheet/row evidence and drafts structured criteria. The
+agent handles JSON and column mapping; the tester reviews the meaning and gaps.
+Free-form documents need source-linked agent drafting. Scans and diagrams that
+cannot be read stay flagged for clarification.
+
+```sh
+npm run intake -- prepare --repo /path/to/your-project --task LOGIN-123 --goal assess --file /path/to/jira-export.csv --file /path/to/traceability.xlsx
+```
+
+The command returns a private run folder with source segments, draft criteria,
+a readable review and an initial matrix. Review and acceptance are explicit
+separate steps. Accepted requirements keep the existing QA schema and include a
+provenance sidecar. This local workflow uses the host coding agent and existing
+parsers; it does not start another model, run tests or publish documents.
+
 ## One product, shared capabilities
 
 | Capability | Implementation owner |
