@@ -9,15 +9,23 @@ export interface PortalRun {
 }
 export interface TestReportView {
  id:string;kind:'playwright';name:string;importedAt:string;recordedAt:string|null;
+ durationMs:number|null;reportErrors:string[];reportErrorCount:number;
  counts:{expected:number;unexpected:number;skipped:number;flaky:number;total:number};
- tests:{title:string;project:string;status:string;durationMs:number|null;errors:string[]}[];
+ tests:{title:string;project:string;status:string;durationMs:number|null;errors:string[];errorCount:number;
+  outcome:'expected'|'unexpected'|'flaky'|'skipped';expectedStatus:string;file?:string;line?:number;column?:number;
+  attempts:{status:string;retry:number|null;durationMs:number|null;errors:string[];errorCount:number}[];
+ }[];
  limitations:string[];
+}
+export interface ExecutionSummary {
+ status:string;errors:number;tests:number;passed:number;failed:number;skipped:number;other:number;
+ assertionFailures:number;durationMs:number;
 }
 export interface MutationReportView {
  id:string;kind:'mutation';name:string;importedAt:string;recordedAt:string|null;runId:string;
  counts:{requested:number;killed:number;survived:number;notActivated:number;invalid:number;inconclusive:number;notRun:number};
- baselines:{status:string;tests:number}[];restored:string|null;originalUnchanged:boolean;
- faults:{id:string;requirementId:string;status:string;reason?:string;baselineProbe?:string;mutantProbe?:string;killingTests:string[]}[];
+ baselines:ExecutionSummary[];restored:string|null;restoration:ExecutionSummary|null;originalUnchanged:boolean;
+ faults:{id:string;requirementId:string;criterion:string;description:string;status:string;reason?:string;baselineProbe?:string;mutantProbe?:string;killingTests:string[];killingTestCount:number;attempts:ExecutionSummary[]}[];
  limitations:string[];
 }
 export interface PortalTaskDetail {

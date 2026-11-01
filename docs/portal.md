@@ -21,6 +21,34 @@ uploads no documents and disables write/import/acceptance actions. **Exit
 preview** returns to the unchanged live workspace. Preview values are never
 project results or benchmark evidence.
 
+## Expand the dashboard
+
+Open a dashboard card's detail action or an outcome count to inspect the records
+behind it. The inspector stays on the selected work item and is read-only:
+
+- **Test outcomes:** select an imported report, filter by outcome and search its
+  tests. Expand a test for its declared expected status, recorded source
+  location, attempts, retries, duration and error excerpts. An expected failure
+  remains an expected failure; it is not presented as a passed assertion.
+- **Mutation outcomes:** select a campaign and filter its faults. Expand a fault
+  for the linked criterion, fault description, independent observations,
+  repeat attempts and killing-test references. Baseline and restoration summaries
+  retain skipped, failed, incomplete and unavailable evidence.
+- **Requirements, traceability and sources:** inspect the recorded criteria,
+  source links and matrix assessments without converting them into verified
+  coverage. Activity shows the recorded intake and report-import events.
+
+Report timestamps distinguish execution time, when supplied, from import time.
+Search and filters apply to the selected report, not every import. Use the
+original JSON download for complete recorded detail; bounded error excerpts are
+not complete logs. Different imports are not assumed to cover identical source,
+test scope or acceptance criteria, so the dashboard does not infer progress
+trends or an overall acceptance score from their counts.
+
+The labelled layout preview supports the same read-only inspection with
+fictional records. Close the inspector with its close control or Escape;
+keyboard focus returns to the control that opened it.
+
 ## Open one project
 
 From the toolkit checkout or extracted source ZIP:

@@ -40,6 +40,12 @@
     <footer class="app-footer"><span>Playwright Agent</span><span>Requirements → tests → observed evidence</span></footer>
   </div>
   <div id="live-status" class="toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+  <dialog id="insight-dialog" class="insight-dialog" aria-labelledby="insight-title" aria-describedby="insight-scope">
+    <div class="insight-heading"><div><div class="eyebrow">EVIDENCE INSIGHTS</div><h2 id="insight-title">Detailed insights</h2></div><button type="button" class="icon-button" id="close-insight" aria-label="Close detailed insights">×</button></div>
+    <p id="insight-scope" class="insight-scope"></p>
+    <div id="insight-controls"></div>
+    <div id="insight-results" class="insight-results"></div>
+  </dialog>
   <dialog id="task-dialog" aria-labelledby="task-dialog-title">
     <div class="dialog-heading"><div><div class="eyebrow">START WITH THE REQUIREMENTS</div><h2 id="task-dialog-title">New work item</h2></div><button type="button" class="icon-button" id="close-dialog" aria-label="Close new work item form">×</button></div>
     <p class="muted">Bring the ticket and supporting documents together. You’ll review the extracted criteria before using them for test work.</p>

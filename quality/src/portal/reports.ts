@@ -5,9 +5,9 @@ import {randomUUID,createHash} from 'node:crypto';
 import {z} from 'zod';
 import {digest} from '../context.js';
 import {planSchema} from '../mutation/schema.js';
-import {healthy,classify,type Campaign} from '../mutation/runner.js';
+import {healthy,classify,type Campaign,type Execution} from '../mutation/runner.js';
 import {campaignMetrics} from '../mutation/report.js';
-import type {TestReportView,MutationReportView} from './types.js';
+import type {TestReportView,MutationReportView,ExecutionSummary} from './types.js';
 
 const MAX_BYTES=5*1024*1024,MAX_STORED_BYTES=8*1024*1024;
 const uuid=/^[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/;
@@ -51,7 +51,7 @@ function testView(raw:unknown,e:Envelope):TestReportView {
   const suite=z.object({suites:z.array(z.unknown()).optional(),specs:z.array(z.unknown()).optional()}).parse(value);
   for(const child of suite.suites??[])pending.push({value:child,depth:depth+1});
   for(const value of suite.specs??[]){
-   const spec=z.object({title:z.string(),tests:z.array(playwrightTest)}).parse(value);
+   const spec=z.object({title:z.string(),file:z.string().optional(),line:count.optional(),column:count.optional(),tests:z.array(playwrightTest)}).parse(value);
    for(const t of spec.tests){
     if(++counts.total>10000)fail('too many test records');
     const final=t.results.at(-1),prior=t.results.slice(0,-1);
@@ -68,16 +68,28 @@ function testView(raw:unknown,e:Envelope):TestReportView {
     if(t.status==='flaky')status=`flaky (final ${status})`;
     else if(t.status==='unexpected')status=`unexpected (final ${status})`;
     else if(t.status==='expected'&&t.expectedStatus!=='passed')status=`expected failure (${status})`;
-    const elapsed=t.results.every(r=>r.duration!==undefined)?t.results.reduce((n,r)=>n+r.duration!,0):null;
-    const errors=t.results.flatMap(r=>[...r.errors??[],...(r.error?[r.error]:[])]).map(err=>err.message??err.value??'Error details unavailable').slice(0,5).map(message=>bounded(message,1000));
-    tests.push({title:bounded(spec.title),project:bounded(t.projectName??'',120),status,durationMs:elapsed!==null&&Number.isFinite(elapsed)?elapsed:null,errors});
+    const elapsed=t.results.length&&t.results.every(r=>r.duration!==undefined)?t.results.reduce((n,r)=>n+r.duration!,0):null;
+    const recordedErrors=t.results.flatMap(r=>[...r.errors??[],...(r.error?[r.error]:[])]),errors=recordedErrors.map(err=>err.message??err.value??'Error details unavailable').slice(0,5).map(message=>bounded(message,1000));
+    const attempts=t.results.map(r=>{const errors=[...r.errors??[],...(r.error?[r.error]:[])];return {status:r.status,retry:r.retry??null,durationMs:r.duration??null,errorCount:errors.length,errors:errors.slice(0,5).map(err=>bounded(err.message??err.value??'Error details unavailable',1000))};});
+    tests.push({title:bounded(spec.title),project:bounded(t.projectName??'',120),status,durationMs:elapsed!==null&&Number.isFinite(elapsed)?elapsed:null,errors,errorCount:recordedErrors.length,
+     outcome:t.status,expectedStatus:t.expectedStatus,...(spec.file!==undefined?{file:bounded(spec.file)}:{}),...(spec.line!==undefined?{line:spec.line}:{}),...(spec.column!==undefined?{column:spec.column}:{}),attempts});
    }
   }
  }
  for(const key of ['expected','unexpected','skipped','flaky'] as const)if(counts[key]!==report.stats[key])fail('summary counts disagree with test records');
  const notes=[...limitations,'Expected outcomes include declared expected failures; expected is not a passed-test count. Durations sum recorded attempts.'];
  if(report.errors?.length)notes.push(`Report records ${report.errors.length} top-level errors; test totals alone are incomplete.`);
- return {id:e.id,kind:'playwright',name:e.name,importedAt:e.importedAt,recordedAt:report.stats.startTime??null,counts,tests,limitations:notes};
+ return {id:e.id,kind:'playwright',name:e.name,importedAt:e.importedAt,recordedAt:report.stats.startTime??null,durationMs:report.stats.duration??null,
+  reportErrorCount:report.errors?.length??0,reportErrors:(report.errors??[]).slice(0,5).map(err=>bounded(err.message??err.value??'Error details unavailable',1000)),counts,tests,limitations:notes};
+}
+function executionSummary(e:Execution):ExecutionSummary {
+ const summary:ExecutionSummary={status:bounded(e.status,60),errors:e.errors,tests:e.tests.length,passed:0,failed:0,skipped:0,other:0,assertionFailures:0,durationMs:e.wallMs};
+ for(const test of e.tests){
+  const status=test.results.at(-1)?.status;
+  if(status==='passed'||status==='failed'||status==='skipped')summary[status]++;else summary.other++;
+  if(test.results.some(result=>result.status==='failed'&&result.assertionFailure))summary.assertionFailures++;
+ }
+ return summary;
 }
 function mutationView(raw:unknown,e:Envelope):MutationReportView {
  const c=campaignSchema.parse(raw) as Campaign;
@@ -97,8 +109,8 @@ function mutationView(raw:unknown,e:Envelope):MutationReportView {
  const m=campaignMetrics(c);
  return {id:e.id,kind:'mutation',name:e.name,importedAt:e.importedAt,recordedAt:c.createdAt,runId:bounded(c.runId,120),
   counts:{requested:m.requested,killed:m.killed,survived:m.survived,notActivated:m.notActivated,invalid:m.invalid,inconclusive:m.inconclusive,notRun:m.notRun},
-  baselines:c.baseline.map(b=>({status:bounded(b.status,60),tests:b.tests.length})),restored:c.restored?bounded(c.restored.status,60):null,originalUnchanged:c.originalUnchanged,
-  faults:c.faults.map(f=>({id:bounded(f.id,120),requirementId:bounded(f.requirementId,120),status:f.status,...(f.reason?{reason:bounded(f.reason,1000)}:{}),...(f.baselineProbe!==undefined?{baselineProbe:bounded(f.baselineProbe)}:{}),...(f.mutantProbe!==undefined?{mutantProbe:bounded(f.mutantProbe)}:{}),killingTests:f.killingTests.slice(0,50).map(v=>bounded(v))})),
+  baselines:c.baseline.map(executionSummary),restored:c.restored?bounded(c.restored.status,60):null,restoration:c.restored?executionSummary(c.restored):null,originalUnchanged:c.originalUnchanged,
+  faults:c.faults.map(f=>({id:bounded(f.id,120),requirementId:bounded(f.requirementId,120),criterion:bounded(c.plan.requirements.find(r=>r.id===f.requirementId)!.criterion,2000),description:bounded(c.plan.mutations.find(m=>m.id===f.id)!.description,1000),status:f.status,...(f.reason?{reason:bounded(f.reason,1000)}:{}),...(f.baselineProbe!==undefined?{baselineProbe:bounded(f.baselineProbe)}:{}),...(f.mutantProbe!==undefined?{mutantProbe:bounded(f.mutantProbe)}:{}),killingTests:f.killingTests.slice(0,50).map(v=>bounded(v)),killingTestCount:f.killingTests.length,attempts:f.attempts.map(executionSummary)})),
   limitations:[...limitations,'Partial and unknown fault outcomes remain recorded as such. Imported source/scope hashes do not authenticate the original application.']};
 }
 function view(bytes:Buffer,e:Envelope){const raw=parse(bytes);return e.kind==='playwright'?testView(raw,e):mutationView(raw,e);}

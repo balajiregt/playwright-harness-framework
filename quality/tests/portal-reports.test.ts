@@ -24,7 +24,7 @@ function playwright(){
   {title:'retry succeeds',expectedStatus:'passed',status:'flaky',results:[attempt('failed'),{...attempt('passed'),retry:1}]},
   {title:'skipped',expectedStatus:'skipped',status:'skipped',results:[attempt('skipped')]}
  ];
- return {stats:{expected:2,unexpected:1,skipped:1,flaky:1,startTime:recorded,duration:100},errors:[],suites:[{title:'suite',specs:tests.map(({title,...t})=>({title,tests:[{...t,projectName:'chromium'}]}))}]};
+ return {stats:{expected:2,unexpected:1,skipped:1,flaky:1,startTime:recorded,duration:100},errors:[],suites:[{title:'suite',specs:tests.map(({title,...t},index)=>({title,...(index===0?{file:'tests/receiving.spec.ts',line:17,column:3}:{}),tests:[{...t,projectName:'chromium'}]}))}]};
 }
 function campaign():Campaign {
  const plan:MutationPlan={version:1,contextHash:digest('context'),requirements:['R1','R2'].map(id=>({id,criterion:'A synthetic requirement '+id,critical:true,source:{artifactId:'epic',quote:'An authored fixture source quote.'}})),
@@ -42,6 +42,11 @@ test('Playwright imports retain honest expected/flaky/skipped counts and exact d
  const view=reports.tests[0];assert.equal(view.recordedAt,recorded);assert.equal(view.name,'../../original-results.json');
  assert.deepEqual(view.counts,{expected:2,unexpected:1,skipped:1,flaky:1,total:5});
  assert.equal(view.tests[1].status,'expected failure (failed)');assert.equal(view.tests[3].status,'flaky (final passed)');assert.equal(view.tests[3].durationMs,24);
+ assert.deepEqual({file:view.tests[0].file,line:view.tests[0].line,column:view.tests[0].column},{file:'tests/receiving.spec.ts',line:17,column:3});
+ assert.equal(view.tests[1].outcome,'expected');assert.equal(view.tests[1].expectedStatus,'failed');assert.equal(view.tests[1].file,undefined);
+ assert.deepEqual(view.tests[3].attempts,[{status:'failed',retry:0,durationMs:12,errors:[],errorCount:0},{status:'passed',retry:1,durationMs:12,errors:[],errorCount:0}]);
+ assert.deepEqual(view.tests[2].attempts[0].errors,['Assertion failed']);
+ assert.equal(view.durationMs,100);assert.equal(view.reportErrorCount,0);assert.deepEqual(view.reportErrors,[]);
  assert.ok(view.limitations.some(v=>v.includes('not a passed-test count')));assert.ok(view.limitations.some(v=>v.includes('not inferred')));
  assert.deepEqual(await readReportFile(f.repo,taskId,id),{name:'../../original-results.json',bytes:raw});
  assert.deepEqual((await readdir(f.directory)).sort(),['.gitignore',id+'.json'].sort());
@@ -63,11 +68,33 @@ test('an unexpected pass of an expected-failure test remains unexpected, not gre
  await attachReport({repo:f.repo,taskId,kind:'playwright',name:'unexpected-pass.json',bytes:bytes(report)});
  const view=(await readReports(f.repo,taskId)).tests[0];assert.equal(view.counts.unexpected,1);assert.equal(view.tests[2].status,'unexpected (final passed)');
 });
+test('missing attempt metadata remains unavailable instead of inventing retry or execution duration',async t=>{
+ const f=await fixture(t),report={stats:{expected:1,unexpected:0,skipped:1,flaky:0},suites:[{specs:[{title:'minimal recorded test',tests:[{expectedStatus:'passed',status:'expected',results:[{status:'passed'}]}]},{title:'no recorded attempts',tests:[{expectedStatus:'skipped',status:'skipped',results:[]}]}]}]};
+ await attachReport({repo:f.repo,taskId,kind:'playwright',name:'minimal.json',bytes:bytes(report)});
+ const view=(await readReports(f.repo,taskId)).tests[0];
+ assert.equal(view.tests[0].durationMs,null);assert.equal(view.tests[0].file,undefined);assert.equal(view.tests[0].line,undefined);
+ assert.equal(view.durationMs,null);assert.deepEqual(view.tests[0].attempts,[{status:'passed',retry:null,durationMs:null,errors:[],errorCount:0}]);
+ assert.equal(view.tests[1].durationMs,null);assert.deepEqual(view.tests[1].attempts,[]);
+});
+test('bounded failure excerpts retain full error counts and do not hide runner errors behind expected test totals',async t=>{
+ const f=await fixture(t),report={...playwright(),errors:Array.from({length:7},(_,i)=>({message:'Runner failure '+i+'\u0000'+('x'.repeat(1200))}))};
+ const errors=Array.from({length:8},(_,i)=>({message:'Assertion detail '+i}));report.suites[0].specs[2].tests[0].results[0].errors=errors;
+ await attachReport({repo:f.repo,taskId,kind:'playwright',name:'runner-errors.json',bytes:bytes(report)});
+ const view=(await readReports(f.repo,taskId)).tests[0];
+ assert.equal(view.reportErrorCount,7);assert.equal(view.reportErrors.length,5);assert.equal(view.reportErrors[0].length,1000);assert.ok(!view.reportErrors[0].includes('\u0000'));
+ assert.equal(view.tests[2].errorCount,8);assert.equal(view.tests[2].errors.length,5);assert.equal(view.tests[2].attempts[0].errorCount,8);assert.equal(view.tests[2].attempts[0].errors.length,5);
+ assert.deepEqual(view.counts,{expected:2,unexpected:1,skipped:1,flaky:1,total:5});assert.ok(view.limitations.some(note=>note.includes('7 top-level errors')));
+});
 test('conclusive mutation imports require actual activation and consistent repeated assertion evidence',async t=>{
  const f=await fixture(t),c=campaign();const {id}=await attachReport({repo:f.repo,taskId,kind:'mutation',name:'campaign.json',bytes:bytes(c)});
  const view=(await readReports(f.repo,taskId)).mutations[0];
  assert.deepEqual(view.counts,{requested:2,killed:1,survived:1,notActivated:0,invalid:0,inconclusive:0,notRun:0});
  assert.equal(view.originalUnchanged,true);assert.equal(view.baselines.length,2);assert.equal(view.restored,'passed');assert.equal(view.recordedAt,recorded);
+ assert.deepEqual(view.baselines[0],{status:'passed',errors:0,tests:2,passed:2,failed:0,skipped:0,other:0,assertionFailures:0,durationMs:10});
+ assert.deepEqual(view.restoration,view.baselines[0]);
+ assert.equal(view.faults[0].criterion,'A synthetic requirement R1');assert.equal(view.faults[0].description,'A controlled behavioral fault.');
+ assert.equal(view.faults[0].killingTestCount,1);
+ assert.deepEqual(view.faults[0].attempts[0],{status:'failed',errors:0,tests:2,passed:1,failed:1,skipped:0,other:0,assertionFailures:1,durationMs:10});
  assert.ok(!JSON.stringify(view).includes('SECRET_SOURCE_SENTINEL'));assert.ok(!JSON.stringify(view).includes('/private/source/'));
  assert.equal(JSON.parse((await readReportFile(f.repo,taskId,id)).bytes.toString()).plan.mutations[0].before,'SECRET_SOURCE_SENTINEL');
  const changes=[(v:Campaign)=>{v.faults[0].mutantProbe='0';},(v:Campaign)=>{v.faults[0].attempts[1]=structuredClone(v.baseline[0]);},(v:Campaign)=>{v.faults[0].killingTests=['not observed'];},(v:Campaign)=>{v.originalUnchanged=false;},(v:Campaign)=>{v.baseline.pop();},(v:Campaign)=>{v.planHash=digest('other');},(v:Campaign)=>{v.faults[0].id='UNPLANNED';}];
@@ -79,6 +106,17 @@ test('partial mutation campaigns retain unknown/not-run outcomes without inventi
  c.faults[1]={id:'M2',requirementId:'R2',status:'not_run',attempts:[],killingTests:[]};
  await attachReport({repo:f.repo,taskId,kind:'mutation',name:'partial.json',bytes:bytes(c)});
  const view=(await readReports(f.repo,taskId)).mutations[0];assert.equal(view.counts.inconclusive,1);assert.equal(view.counts.notRun,1);assert.equal(view.counts.killed,0);assert.equal(view.restored,null);assert.equal(view.originalUnchanged,false);
+ assert.equal(view.restoration,null);assert.deepEqual(view.faults[1].attempts,[]);
+});
+test('mutation execution summaries keep timeout, interrupted and missing results outside passed/failed/skipped counts',async t=>{
+ const f=await fixture(t),c=campaign(),passed=structuredClone(c.baseline[0].tests[0]);
+ const recorded=(status:string,assertionFailure=false)=>({...structuredClone(passed),results:[{...passed.results[0],status,assertionFailure}]});
+ c.faults[0].status='inconclusive';c.faults[0].killingTests=[];
+ c.faults[0].attempts=[{status:'runner_error',errors:1,wallMs:43,tests:[passed,recorded('failed',true),recorded('skipped'),recorded('timedOut'),recorded('interrupted'),{...structuredClone(passed),results:[]}]}];
+ await attachReport({repo:f.repo,taskId,kind:'mutation',name:'incomplete-attempts.json',bytes:bytes(c)});
+ const view=(await readReports(f.repo,taskId)).mutations[0];
+ assert.equal(view.faults[0].status,'inconclusive');
+ assert.deepEqual(view.faults[0].attempts,[{status:'runner_error',errors:1,tests:6,passed:1,failed:1,skipped:1,other:3,assertionFailures:1,durationMs:43}]);
 });
 test('imported mutation campaigns cannot call an all-skipped suite conclusive evidence',async t=>{
  const f=await fixture(t),c=campaign();
