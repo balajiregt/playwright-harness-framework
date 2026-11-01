@@ -32,8 +32,8 @@ const sha=(bytes:Buffer)=>createHash('sha256').update(bytes).digest('hex');
 const bounded=(value:string,max=500)=>value.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g,'').slice(0,max);
 function fail(message:string):never {throw Error('Report evidence: '+message);}
 const limitations=[
- 'Imported recorded evidence; this portal did not rerun tests or mutations.',
- 'Task association was supplied by the uploader. Criterion coverage is not inferred.',
+ 'Recorded report evidence; importing or viewing a report does not execute tests or mutations.',
+ 'Work-item association must be checked against the recorded source and scope. Criterion coverage is not inferred.',
  'Validation checks internal report consistency, not source authenticity or independent human review.'
 ];
 function parse(bytes:Buffer):unknown {

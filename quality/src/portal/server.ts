@@ -9,6 +9,7 @@ import {prepareIntake,inspectIntake,saveIntakeDraft,acceptIntake} from '../intak
 import type {IntakeMappings} from '../intake/types.js';
 import {taskList,taskDetail,registeredRun,originalDocument,projectRoot,validTask,validRun,guarded,runRelative} from './project.js';
 import {attachReport,readReportFile} from './reports.js';
+import {createExecutionManager} from './execution.js';
 
 const staticRoot=fileURLToPath(new URL('./public/',import.meta.url));
 const uuid=z.string().uuid(),task=z.string().regex(/^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$/);
@@ -38,8 +39,9 @@ function safeMessage(error:unknown){
 function send(res:ServerResponse,status:number,value:unknown){res.writeHead(status,{'Content-Type':'application/json; charset=utf-8'});res.end(JSON.stringify(value));}
 function download(res:ServerResponse,name:string,bytes:Buffer){res.writeHead(200,{'Content-Type':'application/octet-stream','Content-Disposition':`attachment; filename="download"; filename*=UTF-8''${encodeURIComponent(name)}`,'Content-Length':bytes.length});res.end(bytes);}
 
-export async function startPortal(options:{repo:string;port?:number;python?:string}){
+export async function startPortal(options:{repo:string;port?:number;python?:string;allowRun?:boolean;executionConfig?:string}){
  const repo=await projectRoot(options.repo),token=randomBytes(32).toString('hex');let origin='',busy=false;
+ const executions=await createExecutionManager({repo,allowRun:options.allowRun,executionConfig:options.executionConfig});
  const server=http.createServer(async(req,res)=>{
   res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Content-Security-Policy',csp);res.setHeader('Referrer-Policy','no-referrer');
   let ownsWrite=false;
@@ -55,6 +57,7 @@ export async function startPortal(options:{repo:string;port?:number;python?:stri
     busy=true;ownsWrite=true;
    }
    if(req.method==='GET'&&url.pathname==='/api/session'){send(res,200,{project:{name:path.basename(repo),root:repo},token});return;}
+   if(req.method==='GET'&&url.pathname==='/api/execution'){send(res,200,await executions.capabilities());return;}
    if(req.method==='GET'&&url.pathname==='/api/tasks'){send(res,200,{tasks:await taskList(repo)});return;}
    if(req.method==='POST'&&url.pathname==='/api/tasks'){
     const form=await formBody(req),taskId=task.parse(textField(form,'taskId')),goal=z.enum(['assess','create','update']).parse(textField(form,'goal'));
@@ -75,6 +78,18 @@ export async function startPortal(options:{repo:string;port?:number;python?:stri
    }
    if(segments[0]==='api'&&segments[1]==='tasks'&&segments[2]){
     const taskId=validTask(segments[2]);
+    if(segments[3]==='executions'){
+     if(req.method==='GET'&&segments.length===4){send(res,200,{jobs:await executions.list(taskId)});return;}
+     if(req.method==='GET'&&segments.length===5){send(res,200,await executions.get(taskId,uuid.parse(segments[4])));return;}
+     if(req.method==='POST'&&segments.length===4){
+      const input=z.object({runId:uuid,kind:z.enum(['playwright','mutation']),actionHash:z.string().regex(/^[a-f0-9]{64}$/),intakeHash:z.string().regex(/^[a-f0-9]{64}$/),draftHash:z.string().regex(/^[a-f0-9]{64}$/),confirmRun:z.literal(true)}).strict().parse(await jsonBody(req));
+      send(res,202,await executions.start({...input,taskId}));return;
+     }
+     if(req.method==='POST'&&segments.length===6&&segments[5]==='cancel'){
+      z.object({confirmCancel:z.literal(true)}).strict().parse(await jsonBody(req));
+      send(res,200,await executions.cancel(taskId,uuid.parse(segments[4])));return;
+     }
+    }
     if(req.method==='GET'&&segments.length===3){const run=url.searchParams.get('run');send(res,200,await taskDetail(repo,taskId,run?validRun(run):undefined));return;}
     if(req.method==='POST'&&segments.length===4&&segments[3]==='draft'){
      const input=z.object({runId:uuid,draft:z.unknown()}).strict().parse(await jsonBody(req));
@@ -126,5 +141,5 @@ export async function startPortal(options:{repo:string;port?:number;python?:stri
  await new Promise<void>((resolve,reject)=>{server.once('error',reject);server.listen(options.port??8792,'127.0.0.1',()=>{server.off('error',reject);resolve();});});
  const address=server.address();if(!address||typeof address==='string')throw Error('Cannot determine workbench address');
  origin=`http://127.0.0.1:${address.port}`;
- return {server,origin,repo,close:()=>new Promise<void>((resolve,reject)=>server.close(error=>error?reject(error):resolve()))};
+ return {server,origin,repo,close:async()=>{await executions.close();await new Promise<void>((resolve,reject)=>server.close(error=>error?reject(error):resolve()));}};
 }

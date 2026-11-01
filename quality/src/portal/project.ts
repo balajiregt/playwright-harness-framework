@@ -3,6 +3,7 @@ import path from 'node:path';
 import {createHash} from 'node:crypto';
 import {inspectIntake} from '../intake/store.js';
 import {readReports} from './reports.js';
+import {readAgentAnalysis} from './analysis.js';
 import type {PortalTaskDetail,PortalTaskSummary} from './types.js';
 
 export function validTask(id:string){if(!/^[A-Za-z0-9][A-Za-z0-9_.-]{0,79}$/.test(id))throw Error('Invalid work-item ID');return id;}
@@ -55,7 +56,8 @@ export async function taskDetail(repo:string,task:string,selected?:string):Promi
  const matrixFile=await guarded(repo,`${runRelative(task,id)}/matrix.csv`,'file',true);
  if(matrixFile&&(await lstat(matrixFile)).size>4*1024*1024)throw Error('Traceability CSV exceeds the workbench limit');
  const matrix=matrixFile?matrixRows(await readFile(matrixFile,'utf8')):[];
- return {taskId:task,runs,reports,run:{id,createdAt:value.snapshot.createdAt,goal:value.snapshot.goal,intakeHash:value.snapshot.intakeHash,draftHash:value.draftHash,draft:value.draft,documents:value.snapshot.sources,openQuestions:value.draft.questions.filter(q=>!q.resolution).length,blockingDocuments:value.snapshot.sources.filter(s=>s.extraction.issues.some(i=>i.severity==='blocking')).length,reviewed:value.reviewed,accepted:value.accepted,brief:briefFile?await readFile(briefFile,'utf8'):'',stale:value.stale,mappings:value.snapshot.mappings,matrix}};
+ const analysis=await readAgentAnalysis(root,{intakeHash:value.snapshot.intakeHash,draftHash:value.draftHash,stale:Boolean(value.stale)});
+ return {taskId:task,runs,reports,run:{id,createdAt:value.snapshot.createdAt,goal:value.snapshot.goal,intakeHash:value.snapshot.intakeHash,draftHash:value.draftHash,draft:value.draft,documents:value.snapshot.sources,openQuestions:value.draft.questions.filter(q=>!q.resolution).length,blockingDocuments:value.snapshot.sources.filter(s=>s.extraction.issues.some(i=>i.severity==='blocking')).length,reviewed:value.reviewed,accepted:value.accepted,brief:briefFile?await readFile(briefFile,'utf8'):'',stale:value.stale,mappings:value.snapshot.mappings,matrix,...(analysis?{analysis}:{})}};
 }
 export async function taskList(repo:string):Promise<PortalTaskSummary[]>{
  const root=await guarded(repo,'artifacts/agent-tasks','directory',true);if(!root)return [];

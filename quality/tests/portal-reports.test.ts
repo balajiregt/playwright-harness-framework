@@ -48,6 +48,7 @@ test('Playwright imports retain honest expected/flaky/skipped counts and exact d
  assert.deepEqual(view.tests[2].attempts[0].errors,['Assertion failed']);
  assert.equal(view.durationMs,100);assert.equal(view.reportErrorCount,0);assert.deepEqual(view.reportErrors,[]);
  assert.ok(view.limitations.some(v=>v.includes('not a passed-test count')));assert.ok(view.limitations.some(v=>v.includes('not inferred')));
+ assert.ok(!view.limitations.some(v=>v.includes('portal did not rerun')||v.includes('supplied by the uploader')));
  assert.deepEqual(await readReportFile(f.repo,taskId,id),{name:'../../original-results.json',bytes:raw});
  assert.deepEqual((await readdir(f.directory)).sort(),['.gitignore',id+'.json'].sort());
  assert.deepEqual(await readReports(f.repo,'OTHER-TASK'),{tests:[],mutations:[]});

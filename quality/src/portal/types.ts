@@ -1,4 +1,5 @@
 import type {IntakeDraft,IntakeSource,IntakeMappings} from '../intake/types.js';
+import type {AgentAnalysis} from './analysis.js';
 
 export interface PortalRun {
  id:string;createdAt:string;goal:string;intakeHash:string;draftHash:string;
@@ -6,6 +7,7 @@ export interface PortalRun {
  reviewed:boolean;accepted:boolean;brief:string;
  stale?:string;mappings?:IntakeMappings;
  matrix?:Record<string,string>[];
+ analysis?:AgentAnalysis;
 }
 export interface TestReportView {
  id:string;kind:'playwright';name:string;importedAt:string;recordedAt:string|null;

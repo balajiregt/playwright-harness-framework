@@ -2,17 +2,39 @@
 
 Repository: [balajiregt/playwright-agent](https://github.com/balajiregt/playwright-agent) (formerly `playwright-harness-framework`).
 
-## Open the local workbench
+## Start in your coding chat
+
+Attach the ticket and supporting documents, identify your existing project and
+ask `$playwright-agent` to **create**, **update** or **assess** tests. The agent
+prepares the source-linked criteria, matrix and findings, then opens the selected
+work item in the local workbench when its tools permit. Test authoring continues
+in that same chat; the portal does not start another model.
+
+```text
+Use $playwright-agent in my existing project for LOGIN-123.
+Use the attached requirements to create the missing login tests.
+Inspect existing assertions, prepare the criteria and matrix, open the workbench,
+then make the focused changes and run the relevant checks.
+Show unclear requirements before treating them as accepted criteria.
+```
+
+The agent can consume attachments only when the host exposes their local files
+or text. It reports unavailable attachments instead of claiming to have read
+them. [Document intake](docs/document-intake.md) explains source preservation and
+the separate review needed to accept an interpretation.
+
+## Open the local workbench directly
 
 ```sh
 npm run portal -- --repo /path/to/your-playwright-project
 ```
 
-Open the printed loopback URL to collect documents, review acceptance criteria,
-inspect traceability and attach recorded Playwright and behavioral-mutation JSON
-reports in one project-local view. [Portal guide](docs/portal.md) covers setup,
-the coding-agent handoff and report imports. The workbench stays in this product;
-opening it does not execute tests, start another model or publish documents.
+Open the printed loopback URL to review the agent's analysis, criteria,
+traceability and recorded test/mutation reports. It starts read-only for
+execution. When execution is requested, the agent can register the project's
+actual configurations and enable **Run Playwright**, **Run mutations** and
+**Stop**; opening the portal itself never runs them. Manual document and report
+imports remain available. The [portal guide](docs/portal.md) covers these controls.
 
 > One workflow for requirement-guided Playwright test creation, acceptance
 > assessment and mutation verification. The existing harness supplies framework
@@ -67,7 +89,8 @@ and local reports. The synthetic CRM demo and run evidence are supporting materi
 ## Start with the tester's documents
 
 Supply downloaded tickets, technical PDFs, flow documents and Excel RTMs to the
-agent. The [document-intake workflow](docs/document-intake.md) preserves selected
+agent in chat, or select them in the portal. The
+[document-intake workflow](docs/document-intake.md) preserves selected
 originals, extracts page/sheet/row evidence and drafts structured criteria. The
 agent handles JSON and column mapping; the tester reviews the meaning and gaps.
 Free-form documents need source-linked agent drafting. Scans and diagrams that

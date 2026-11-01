@@ -1,10 +1,12 @@
 # Private local Playwright workbench
 
-The portal is a browser view inside Playwright Agent for one selected project:
-work items, local document intake, reviewed criteria, traceability and recorded
-test evidence. Keep your existing Playwright repository and coding tool. The
-portal does not start a model, write tests or execute a suite when you upload a
-document or report.
+The portal is the browser workbench for one selected Playwright project: agent
+analysis, document intake, reviewed criteria, traceability and test evidence.
+Start the task in your existing coding chat. The host agent prepares the inputs,
+records its findings and continues test authoring there. The portal displays
+that work and can run explicitly registered project checks; it does not start
+another model or write tests. Opening it or uploading a document never executes
+a suite.
 
 It runs on loopback and keeps task data in the selected project's private local
 folders. It is not hosted on the public benchmark site and needs no database,
@@ -49,7 +51,54 @@ The labelled layout preview supports the same read-only inspection with
 fictional records. Close the inspector with its close control or Escape;
 keyboard focus returns to the control that opened it.
 
-## Open one project
+## Start in chat, then inspect the task
+
+```text
+Use $playwright-agent for LOGIN-123 in my existing Playwright project.
+Use the attached ticket, PDF and RTM to create the missing tests.
+Inspect the existing assertions, prepare source-linked criteria, a matrix and
+findings, and open this work item in the local workbench.
+Then make the focused test changes and run their checks.
+Show unresolved requirements before recording accepted criteria.
+```
+
+The host agent uses only attachment files or text its client actually exposes.
+It preserves accessible originals and identifies unavailable content. If the
+client supplies only text, a labelled text capture can become a source; it is
+not presented as the unavailable original binary. See
+[document intake](document-intake.md) for formats and extraction limits.
+
+After preparing and reviewing the intake, the host agent records concrete
+assertions and assessments in the run's existing `matrix.csv`, preserving its
+headers and source references. It writes the readable findings in a private
+analysis file and records that file for the intake UUID:
+
+```sh
+npm run portal -- analysis --repo "../my-existing-project" --task LOGIN-123 --run RUN_UUID --file "../my-existing-project/artifacts/agent-tasks/LOGIN-123/analysis.md"
+npm run portal -- serve --repo "../my-existing-project" --task LOGIN-123
+```
+
+The analysis is displayed read-only and bound to the selected intake/draft
+hashes. A changed draft makes the saved assessment stale. Those hashes do not
+independently establish coverage or source-code freshness; the host agent must
+inspect the current source and tests. Review regenerates the initial matrix,
+so record assessed matrix cells after reviewing the current draft. Keep proposed
+actions and unresolved findings in the analysis, and retain unknown runtime
+until checks actually execute.
+
+The agent returns the task URL and opens it only when its browser tools and
+session permissions allow. It may reuse a running instance for the same project;
+an occupied port does not authorize stopping an unrelated process. When tools
+are unavailable, it provides the saved artifacts and launch command without
+claiming to have opened the page. Test creation and changes continue in the host
+chat while the workbench shows their analysis and results.
+
+Accepting the exact requirements interpretation remains a separate explicit
+review action. It does not add another approval gate to routine test work
+already requested against clear requirements. An assess-only request keeps
+source/tests unchanged and execution disabled unless execution is also asked for.
+
+## Open one project directly
 
 From the toolkit checkout or extracted source ZIP:
 
@@ -64,11 +113,12 @@ existing extraction interpreter when needed:
 npm run portal -- --repo "../my-existing-project" --port 8792 --python "/path/to/python"
 ```
 
-Keep the terminal running while using the workbench; stop it with Ctrl+C. Start
+`--task LOGIN-123` selects an existing work item in the printed URL. Keep the
+terminal running while using the workbench; stop it with Ctrl+C. Start
 a separate instance for a different project. Do not expose it through a public
 tunnel or change its binding to serve private requirements over a network.
 
-## From documents to an agent task
+## Manual intake is also available
 
 1. Choose **New work item**, a private ID such as `LOGIN-123` and the intent: assess, create
    or update. The public synthetic `CRM-DEMO-001` fixture is not an intake folder
@@ -100,11 +150,63 @@ local. The intake matrix starts with runtime unknown/not run; source links and
 supplied RTM statuses do not establish assertion coverage. The agent must inspect
 actual assertions and retain execution evidence separately.
 
-## Attach evidence after actual execution
+## Enable registered execution when requested
 
-Use **Test reports** or **Mutation reports** and **Import report** for existing
-JSON reports, or let the native
-coding agent register an already executed result from its terminal:
+Execution starts disabled. When the user requests checks, the host agent can
+prepare a run configuration from the selected project's actual trusted files
+and start the workbench with:
+
+```sh
+npm run portal -- serve --repo "../my-existing-project" --task LOGIN-123 --allow-run --run-config portal-runs.json
+```
+
+The registered JSON file lives inside that project. The following example is a
+shape to adapt to inspected, existing paths and project names; omit an execution
+kind that the project has not configured:
+
+```json
+{
+  "version": 1,
+  "playwright": {
+    "config": "playwright.config.ts",
+    "projects": ["chromium"],
+    "testFiles": ["tests/login.spec.ts"],
+    "timeoutMs": 300000
+  },
+  "mutation": {
+    "config": "mutation.config.json",
+    "plan": "artifacts/agent-tasks/LOGIN-123/mutation-plan.json",
+    "timeoutMs": 900000
+  }
+}
+```
+
+`playwright.config` is required for Playwright; `projects`, `testFiles`, `grep`
+and `timeoutMs` are optional selectors. Mutation needs both its existing config
+and reviewed source-bound plan. Paths stay inside the selected project and must
+be regular files without symlink path components. Project configurations are
+executable project code, so register only a project you trust. The configuration
+does not accept arbitrary shell commands or a browser-entered command/environment.
+Timeouts are milliseconds, from 1,000 to 3,600,000; defaults are 300,000 for
+Playwright and 900,000 for mutations.
+
+**Run Playwright** and **Run mutations** show the registered scope before a run.
+**Stop** cancels the owned process tree; cancellation or incomplete evidence is
+not a pass. The mutation action uses the existing runner and reviewed fresh plan,
+not automatic planning or a provider call. An `--allow-run` server never starts
+a check merely because it is opened. Read-only assessments leave the flag off;
+an authorized create/update task can include its ordinary focused verification.
+
+After a run, only a fresh, valid machine-readable report is automatically
+attached to its work item, including a valid report from a failing test process.
+Missing or malformed output remains a visible run failure. Imported results and
+successful jobs still do not establish that all acceptance criteria are met.
+
+## Attach existing execution evidence
+
+After the host coding agent runs checks through the native CLI, it registers
+the fresh actual JSON result for the selected task. This makes the result
+available in the workbench without asking the tester to import it again:
 
 ```sh
 npm run portal -- attach --repo "../my-existing-project" --task LOGIN-123 --kind playwright --file "../my-existing-project/test-results/results.json"
@@ -112,8 +214,17 @@ npm run portal -- attach --repo "../my-existing-project" --task LOGIN-123 --kind
 ```
 
 These commands attach evidence; they do not execute Playwright or mutations.
-File paths are explicit local selections. Supported views preserve the imported
-report's recorded results and limitations:
+`--file` is caller-relative. The agent checks the report's freshness and actual
+execution scope before attaching it. Reports already autoattached by portal
+jobs are not attached again. The agent updates saved analysis and matrix runtime
+cells only where matching evidence supports them, then refreshes the selected
+portal's reports while preserving unsaved criteria edits. If refresh would
+discard an unsaved draft, keep those edits and defer refresh until it is safe.
+An unavailable browser is reported with the task URL and attached report paths.
+
+Manual imports remain available through **Test reports** or **Mutation reports**
+and **Import report**. File paths are explicit local selections. Supported views
+preserve the imported report's recorded results and limitations:
 
 | Report | What the workbench can show | What it does not establish |
 | --- | --- | --- |

@@ -32,21 +32,32 @@ keeps the workflow in the current chat. See the official
 and [skills](https://learn.chatgpt.com/docs/build-skills) documentation, and
 [VS Code custom agents](https://code.visualstudio.com/docs/agent-customization/custom-agents).
 
-## Give it a task
+## Start with the task and documents in chat
+
+Supply the ticket, epic, technical documents or RTM in the coding conversation
+and identify the target project and intent. The agent uses attachments only
+when the host makes their local files or text accessible. An attachment name or
+link alone does not establish access to its bytes. If only text is available,
+the agent can save that supplied text as a labelled text source; it does not
+claim to have preserved an unavailable PDF, workbook or original export.
 
 ```text
-Use $playwright-agent to create tests for login in this harness.
-Read the requirements in contexts/tasks/LOGIN-001/.
-First map the criteria to existing assertions, then create or strengthen only
-the missing coverage, run targeted verification, and report unresolved gaps.
+Use $playwright-agent in my existing project for LOGIN-123.
+Use the attached ticket and supporting documents to create the missing tests.
+Inspect existing assertions, prepare source-linked criteria and a test matrix,
+record your findings, and open this task in the local workbench.
+Then create or strengthen only the missing coverage and run targeted checks.
+Show unclear requirements before treating them as accepted criteria.
 ```
 
 For an assessment that must not change tests:
 
 ```text
-Use $playwright-agent to assess login coverage against contexts/tasks/LOGIN-001/.
+Use $playwright-agent to assess login coverage against the attached documents
+for LOGIN-123 in my existing project.
 Keep source and tests unchanged. Produce an acceptance matrix and identify the
-checks that still need execution. Do not run tests in this assessment.
+checks that still need execution. Show the analysis in the local workbench.
+Do not run tests or enable portal execution in this assessment.
 ```
 
 The task folder is optional when the prompt already supplies sufficient context.
@@ -57,14 +68,35 @@ epic/Jira exports or plain Markdown. Keep only the relevant work item in context
 The agent does not connect to Confluence/Jira or execute document instructions
 just because an exported document mentions them.
 
-For downloaded PRDs, Jira/RTM exports, spreadsheets or narrative documents, use
-[local document intake](document-intake.md) through the CLI or
-[private local workbench](portal.md): select the target project and files,
-have the current coding agent draft source-linked criteria, review its readable
-matrix/questions, then explicitly accept the exact criteria. The agent prepares
-mapping/draft files; the tester does not write JSON. Extraction and normalized
-requirements do not establish business understanding or test coverage. Private
-originals remain unchanged and intake does not start providers or execution.
+The chat-first workflow is:
+
+1. The host agent selects only the accessible documents and prepares
+   [local intake](document-intake.md) in the selected project's private task.
+2. It reads source segments and actual tests, drafts quoted criteria, flags
+   questions and records the acceptance matrix and findings.
+3. It records that analysis for the selected intake version and launches or
+   reuses that project's [local workbench](portal.md), returning the task URL.
+   It opens a browser only when the host permits; otherwise the URL is the
+   handoff. An occupied port does not authorize stopping another process.
+4. It continues the requested test creation or changes in the same chat. The
+   portal displays the analysis and results; it does not author tests or invoke
+   another model.
+5. For requested execution, it registers trusted project configurations and
+   enables the portal run controls, or uses the existing native test commands.
+   Read-only assessments leave execution disabled. Mutation execution also
+   requires an existing reviewed, fresh source-bound plan.
+6. Native CLI runs are followed by attaching their fresh JSON results to this
+   task. Portal jobs already attach valid fresh reports automatically. The agent
+   updates runtime cells only from matching execution evidence and refreshes
+   the report view without discarding unsaved criteria edits.
+
+The agent handles JSON, field mapping and recorded matrix cells. The tester
+reviews readable criteria, references and questions. Accepting that exact
+interpretation remains an explicit review action. This does not add a second
+approval gate for focused test changes already requested against clear supplied
+requirements. Unresolved ambiguities remain visible rather than becoming
+invented policy. Private originals stay unchanged; preparing or opening a task
+does not start providers or execute tests.
 
 ## Context ownership across the workspace and project
 

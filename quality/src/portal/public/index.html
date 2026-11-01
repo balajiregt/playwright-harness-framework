@@ -31,6 +31,7 @@
     <main id="workspace" tabindex="-1">
       <div id="error-banner" class="notice danger" role="alert" hidden></div>
       <div id="work-item-header"></div>
+      <section id="execution-panel" class="execution-panel" aria-labelledby="execution-panel-title" hidden></section>
       <div id="tab-bar" class="tab-bar" role="tablist" aria-label="Work item views" hidden></div>
       <div class="workspace-grid" id="workspace-grid">
         <section id="view-panel" class="view-panel" aria-label="Work item content"></section>
@@ -40,6 +41,11 @@
     <footer class="app-footer"><span>Playwright Agent</span><span>Requirements → tests → observed evidence</span></footer>
   </div>
   <div id="live-status" class="toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+  <dialog id="execution-dialog" class="execution-dialog" aria-labelledby="execution-title" aria-describedby="execution-scope">
+    <div class="insight-heading"><div><div class="eyebrow">REGISTERED PROJECT EXECUTION</div><h2 id="execution-title" tabindex="-1">Review execution</h2></div><button type="button" class="icon-button" id="close-execution" aria-label="Close execution details">×</button></div>
+    <p id="execution-scope" class="insight-scope"></p>
+    <div id="execution-dialog-content" class="execution-dialog-content"></div>
+  </dialog>
   <dialog id="insight-dialog" class="insight-dialog" aria-labelledby="insight-title" aria-describedby="insight-scope">
     <div class="insight-heading"><div><div class="eyebrow">EVIDENCE INSIGHTS</div><h2 id="insight-title">Detailed insights</h2></div><button type="button" class="icon-button" id="close-insight" aria-label="Close detailed insights">×</button></div>
     <p id="insight-scope" class="insight-scope"></p>

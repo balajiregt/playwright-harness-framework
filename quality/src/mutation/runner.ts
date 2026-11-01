@@ -17,13 +17,23 @@ export interface Campaign {version:1;kind:'playwright-behavioral-mutations';runI
 const excluded=new Set(['node_modules','artifacts','test-results','playwright-report','output','dist','build','coverage','__pycache__']);
 export async function isolatedCopy(repo:string,destination:string){
  let bytes=0,files=0;
- await cp(repo,destination,{recursive:true,filter:async source=>{
-  if(source===repo)return true;const name=path.basename(source);
+ const relative=path.relative(path.resolve(repo),path.resolve(destination));
+ const inside=relative!=='..'&&!relative.startsWith('..'+path.sep)&&!path.isAbsolute(relative);
+ if(!relative||inside&&!excluded.has(relative.split(path.sep)[0]))throw Error('An in-project copy must be inside an excluded artifact directory');
+ const filter=async(source:string)=>{
+  const name=path.basename(source);
   if(name.startsWith('.')||excluded.has(name)||/\.(pem|key|p12)$/i.test(name))return false;
   const info=await lstat(source);if(info.isSymbolicLink())throw Error('Repository symlinks are not copied; use a standalone local checkout');
   if(info.isFile()){bytes+=info.size;files++;if(bytes>30*1024*1024||files>2000)throw Error('Isolated copy exceeds 30 MiB / 2000 files; use a smaller app checkout');}
   return true;
- }});
+ };
+ // fs.cp rejects repo -> repo/artifacts/tmp even when artifacts is filtered out.
+ // Copy permitted root entries separately so that the excluded job directory is never traversed.
+ await mkdir(destination,{recursive:true});
+ for(const entry of await readdir(repo)){
+  if(entry.startsWith('.')||excluded.has(entry)||/\.(pem|key|p12)$/i.test(entry))continue;
+  await cp(path.join(repo,entry),path.join(destination,entry),{recursive:true,filter});
+ }
  await symlink(path.join(repo,'node_modules'),path.join(destination,'node_modules'),'dir');
 }
 export async function treeHash(root:string):Promise<string>{
