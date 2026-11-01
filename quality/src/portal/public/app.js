@@ -128,6 +128,7 @@
       if(state.preview||state.detail?.taskId!==taskId||run()?.id!==version)return;
       // A completed execution updates reports only. In-progress criterion edits stay intact.
       state.detail.reports=detail.reports;
+      for(const kind of ['tests','mutations']){const count=$('#tab-'+kind+' small');if(count)count.textContent=String(tabCount(kind));}
       if(execution.modal?.mode==='job')renderExecutionDialog();
       const reportHost=$('#report-list');
       if(reportHost&&['tests','mutations'].includes(state.tab))renderReportCards(reportHost,state.tab);
