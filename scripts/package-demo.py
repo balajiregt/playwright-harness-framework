@@ -54,6 +54,12 @@ SYNTHETIC_DOCUMENTS = frozenset({
     "quality/examples/team/requirements.doc", "quality/examples/team/requirements.docx",
     "quality/examples/team/requirements.xls", "quality/examples/team/requirements.xlsx",
 })
+# Public, authored reference inputs. Never walk contexts/tasks to find these.
+PUBLIC_TASK_FILES = frozenset({
+    "contexts/tasks/CRM-DEMO-001/epic.md",
+    "contexts/tasks/CRM-DEMO-001/jira-tickets.json",
+    "contexts/tasks/CRM-DEMO-001/requirements.json",
+})
 REQUIRED_FILES = ("package.json", "package-lock.json", "README.md", "AGENTS.md", "LICENSE", "THIRD_PARTY_NOTICES.md")
 PRIVATE_PATH = re.compile(rb"(?:/Users/|/home/)[A-Za-z0-9_.-]+/|[A-Za-z]:\\Users\\[^\\\r\n]+\\")
 PRIVATE_KEY = re.compile(rb"-----BEGIN (?:[A-Z0-9]+ )*PRIVATE KEY-----")
@@ -67,7 +73,8 @@ def permitted(relative: Path, *, explicit: bool = False) -> bool:
         # One individually reviewed README image; other draft assets stay private.
         if relative.as_posix() != "docs/blog/assets/graph-metrics.png":
             return False
-    if "contexts" in parts and "tasks" in parts:
+    lower_parts = tuple(part.lower() for part in parts)
+    if "contexts" in lower_parts and "tasks" in lower_parts and relative.as_posix() not in PUBLIC_TASK_FILES:
         return False
     if name.startswith(".env") and name not in {".env.example", ".env.sample", ".env.template"}:
         return False
@@ -89,7 +96,8 @@ def collect(root: Path) -> list[Path]:
         # Excluded dependencies and private trees are not traversed or dereferenced.
         if any(part.lower() in EXCLUDED_PARTS for part in relative.parts) and not explicit:
             return
-        if "contexts" in relative.parts and "tasks" in relative.parts:
+        lower_parts = tuple(part.lower() for part in relative.parts)
+        if "contexts" in lower_parts and "tasks" in lower_parts:
             return
         if path.is_symlink():
             raise ValueError(f"Symlink in source allowlist: {relative.as_posix()}")
@@ -108,20 +116,33 @@ def collect(root: Path) -> list[Path]:
         visit(root / name, explicit=True)
     for name in SOURCE_TREES:
         visit(root / name)
-    missing = [name for name in REQUIRED_FILES if Path(name) not in selected]
+    # Explicit leaf selection preserves the no-traversal boundary for every other
+    # work item, extra file and subdirectory, including inside the public task.
+    for name in sorted(PUBLIC_TASK_FILES):
+        relative = Path(name)
+        source_path_guard(root, relative)
+        target = root / relative
+        if target.exists():
+            if not target.is_file():
+                raise ValueError(f"Non-regular source entry: {name}")
+            if permitted(relative, explicit=True):
+                selected.add(relative)
+    missing = [name for name in (*REQUIRED_FILES, *sorted(PUBLIC_TASK_FILES)) if Path(name) not in selected]
     if missing:
         raise ValueError("Missing required source files: " + ", ".join(missing))
     return sorted(selected, key=lambda path: path.as_posix())
 
 
+def source_path_guard(root: Path, relative: Path) -> None:
+    # Check from the root down before inspecting a leaf through an ancestor link.
+    for depth in range(1, len(relative.parts) + 1):
+        if (root / Path(*relative.parts[:depth])).is_symlink():
+            raise ValueError(f"Symlink in source allowlist: {relative.as_posix()}")
+
+
 def source_bytes(root: Path, relative: Path) -> bytes:
     path = root / relative
-    # Check ancestors too: replacing an allowed source directory with a link must fail.
-    for parent in (path, *path.parents):
-        if parent == root:
-            break
-        if parent.is_symlink():
-            raise ValueError(f"Symlink in source allowlist: {relative.as_posix()}")
+    source_path_guard(root, relative)
     descriptor = os.open(path, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0))
     with os.fdopen(descriptor, "rb") as handle:
         if not stat.S_ISREG(os.fstat(handle.fileno()).st_mode):

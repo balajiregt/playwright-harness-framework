@@ -27,6 +27,8 @@ reusable lessons into project docs.
 2. Read supplied requirements or the selected `contexts/tasks/<work-item>/`
    folder, then the relevant maps listed in [contexts/README.md](contexts/README.md).
    A clear prompt does not require creating another task card.
+   `CRM-DEMO-001` contains three explicitly public synthetic fixture files;
+   keep private work items separate and preserve the narrow Git/ZIP allowlist.
 3. Inspect the actual target source, tests and configuration. Source manifests,
    coverage graphs and curated captures aid discovery; check freshness. Label
    implementation-derived scenarios separately from confirmed requirements.

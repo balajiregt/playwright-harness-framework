@@ -22,7 +22,7 @@ npm run demo:prepare
 npm run demo:verify
 ```
 
-Preparation selects the synthetic work item without overwriting existing task
+Preparation validates the bundled synthetic work item without changing task
 documents. Verification includes the existing source → tests → coverage →
 duplicate-analysis graph pipeline, six browser tests, acceptance evidence and
 the mandatory model-free mutation checks below. It does not start providers or
@@ -47,12 +47,12 @@ ignored `artifacts/validation-demo/browser/`.
 
 ## Selected task and acceptance evidence
 
-The flat [task template](task-template/epic.md) contains an authored epic,
-synthetic tickets and normalized requirements. `npm run demo:prepare` prepares
-this selected task under ignored `contexts/tasks/CRM-DEMO-001/` before using
-`mutation.config.json`. It copies the template documents without nesting another
-directory. Keep real work items separate; do not overwrite existing documents
-when preparing the demo.
+The tracked [CRM-DEMO-001 task](../../contexts/tasks/CRM-DEMO-001/epic.md)
+contains an authored epic, synthetic tickets and normalized requirements. It is
+the single shared source used by `mutation.config.json`, Git clones and the
+community ZIP. `npm run demo:prepare` validates these existing files without
+copying or overwriting documents. Other work items remain private and ignored;
+use a separate task ID for real tickets and exports.
 
 | Criterion | Existing demonstration evidence |
 | --- | --- |

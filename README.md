@@ -106,6 +106,8 @@ integration. No model, global MCP entry or autonomous hook is installed.
 source/test/coverage graphs, tool receipts, mutation evidence and limitations.
 Reports and screenshots remain under ignored `artifacts/validation-demo/`.
 The source ZIP and its hash manifest are written under ignored `artifacts/releases/`.
+The synthetic [CRM-DEMO-001 task](contexts/tasks/CRM-DEMO-001/epic.md) is tracked
+in Git and included in that ZIP; other task inputs remain private and ignored.
 Live Codex planning and local Laya assessment are separate opt-in verification
 flags; the default demo uses an authored fault catalogue and real Playwright
 execution without extra inference.

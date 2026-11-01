@@ -21,7 +21,7 @@ const outputRoot=path.join(product,'artifacts/validation-demo');
 const require=createRequire(path.join(product,'package.json'));
 const esc=(v:unknown)=>String(v??'Unavailable').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]!));
 
-async function prepare(){return prepareTask(path.join(demo,'task-template'),task,product);}
+async function prepare(){return prepareTask(task,product);}
 
 function matrix(campaign:Campaign){
  const fault=(id:string)=>campaign.faults.find(f=>f.requirementId===id);

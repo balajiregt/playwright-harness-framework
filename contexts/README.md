@@ -5,7 +5,7 @@ selected task; it is not a bundle to load into every session.
 
 | Material | Owner and use |
 | --- | --- |
-| Current requirements, acceptance criteria, exported Jira/PRD documents | Select one ignored `contexts/tasks/<work-item>/` folder, or use the supplied prompt/document path. Do not commit private exports. |
+| Current requirements, acceptance criteria, exported Jira/PRD documents | Select one ignored `contexts/tasks/<work-item>/` folder, or use the supplied prompt/document path. Do not commit private exports. The reviewed synthetic `CRM-DEMO-001` fixture is the explicit public exception. |
 | Runtime and authentication assumptions | `app-under-test.yml`; verify against the selected target and configuration. A template is not a verified application fact. |
 | Commands and artifact conventions | `command-map.yml`, `test-strategy.yml`; confirm executable commands in `package.json` and Playwright configuration. |
 | Flow and agent workflow guidance | `flow-graph.yml`, `agent-loop.yml`; load for the requested workflow. |
@@ -18,6 +18,14 @@ The internal `quality/` module owns evaluation rubrics, reviewed fixtures,
 optional decision adapters and behavioral mutation tooling. Its
 `quality/fixtures/task-preview.yml` is an **offline preview fixture**, not an
 active ticket. Root `npm run quality:context` resolves that fixture only.
+
+The bundled [CRM-DEMO-001 epic](tasks/CRM-DEMO-001/epic.md),
+[synthetic tickets](tasks/CRM-DEMO-001/jira-tickets.json) and
+[normalized requirements](tasks/CRM-DEMO-001/requirements.json) are tracked here
+and included in the community ZIP. They are authored demonstration material;
+this folder is their single source. `npm run demo:prepare` validates the fixture
+without copying or overwriting documents. Only these three reviewed files are
+shared; other files in that folder and all other work items remain ignored.
 
 Keep private tickets, epics and PRDs in one selected
 `contexts/tasks/<work-item>/` folder. Pass the existing requirements file

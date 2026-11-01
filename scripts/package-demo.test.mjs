@@ -9,6 +9,7 @@ import { spawnSync } from 'node:child_process';
 
 const script = fileURLToPath(new URL('./package-demo.py', import.meta.url));
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
+const publicTaskFiles = ['epic.md', 'jira-tickets.json', 'requirements.json'].map(name => `contexts/tasks/CRM-DEMO-001/${name}`);
 
 async function put(root, name, data = `fixture: ${name}\n`) {
   const file = path.join(root, name);
@@ -21,7 +22,7 @@ async function fixture(t) {
   t.after(() => rm(dir, { recursive: true, force: true }));
   const root = path.join(dir, 'source');
   const output = path.join(dir, 'releases');
-  for (const name of ['package.json', 'package-lock.json', 'README.md', 'AGENTS.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md']) {
+  for (const name of ['package.json', 'package-lock.json', 'README.md', 'AGENTS.md', 'LICENSE', 'THIRD_PARTY_NOTICES.md', ...publicTaskFiles]) {
     await put(root, name);
   }
   return { root, output, dir };
@@ -35,6 +36,8 @@ test('packages a standalone working tree, preserves allowed sources and verifies
   const { root, output } = await fixture(t);
   const included = ['.gitignore', '.npmrc', '.env.example', 'playwright.config.ts', 'tests/demo.spec.ts',
     'pages/demo.ts', 'contexts/source-map.yml', 'contexts/captures/demo.png',
+    'contexts/tasks/CRM-DEMO-001/epic.md', 'contexts/tasks/CRM-DEMO-001/jira-tickets.json',
+    'contexts/tasks/CRM-DEMO-001/requirements.json',
     '.agents/skills/playwright-agent/SKILL.md', '.codex/agents/playwright-agent.toml', '.github/agents/playwright.agent.md',
     'quality/src/team.ts', 'quality/python/requirements.lock', 'quality/integrations/code-mode/package-lock.json',
     'quality/.platform-publish.json', 'quality/.agents/skills/platform-publish/references/metrics-v1.schema.json',
@@ -43,6 +46,10 @@ test('packages a standalone working tree, preserves allowed sources and verifies
   for (const name of included) await put(root, name);
   const excluded = ['.git/config', '.env', '.env.local', 'notes-private.md', 'node_modules/dep/index.js',
     'contexts/tasks/CASE-1/requirements.md', 'contexts/.resolved/CASE-1.yml',
+    'contexts/tasks/CRM-DEMO-001/notes.md', 'contexts/tasks/CRM-DEMO-001/.env',
+    'contexts/tasks/CRM-DEMO-001/secrets.json', 'contexts/tasks/CRM-DEMO-001/nested/epic.md',
+    'quality/contexts/tasks/CRM-DEMO-001/epic.md',
+    'contexts/Tasks/PRIVATE-UPPER/requirements.json',
     'quality/context-inputs/epic.md', 'quality/.venv/lib/private.py', 'quality/mutation.config.local.json',
     'scripts/__pycache__/x.pyc', 'scripts/private.key', 'src/id_rsa', 'src/app.log', 'src/localconfigs/settings.json',
     'src/models/weights.json', 'src/datasets/live.json', 'src/cache/session.json',
@@ -58,6 +65,7 @@ test('packages a standalone working tree, preserves allowed sources and verifies
   const names = manifest.files.map(item => item.path);
   for (const name of included) assert.ok(names.includes(name), `missing ${name}`);
   for (const name of excluded) assert.ok(!names.includes(name), `private ${name}`);
+  assert.ok(!names.some(name => name.includes('PRIVATE-UPPER')));
   assert.equal(names.length, new Set(names).size);
   assert.equal(manifest.sourceMode, 'reviewed-working-tree-allowlist');
   assert.equal(manifestBytes.includes(Buffer.from(root)), false);
@@ -83,6 +91,54 @@ with zipfile.ZipFile(sys.argv[1]) as z:
   const again = run(root, output);
   assert.equal(again.status, 0, again.stderr);
   assert.notEqual(JSON.parse(again.stdout).directory, info.directory);
+});
+
+test('public task allowlist rejects linked ancestors and files while private task trees stay unvisited', async t => {
+  const { root, output, dir } = await fixture(t);
+  await put(dir, 'outside/epic.md', '-----BEGIN ' + 'PRIVATE KEY-----');
+  await mkdir(path.join(root, 'contexts/tasks'), { recursive: true });
+  const publicDir = path.join(root, 'contexts/tasks/CRM-DEMO-001');
+  await rm(publicDir, { recursive: true });
+  await symlink(path.join(dir, 'outside'), publicDir);
+  let result = run(root, output);
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /Symlink in source allowlist: contexts\/tasks\/CRM-DEMO-001/);
+  assert.doesNotMatch(result.stderr, /Private path or key marker/);
+  await rm(publicDir);
+  await mkdir(publicDir);
+  for (const name of publicTaskFiles.filter(name => !name.endsWith('/epic.md'))) await put(root, name);
+  await symlink(path.join(dir, 'outside/epic.md'), path.join(publicDir, 'epic.md'));
+  result = run(root, output);
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /Symlink in source allowlist: contexts\/tasks\/CRM-DEMO-001\/epic.md/);
+  await rm(path.join(publicDir, 'epic.md'));
+  await put(root, 'contexts/tasks/CRM-DEMO-001/epic.md', 'Public authored fixture');
+  await symlink(path.join(dir, 'outside'), path.join(root, 'contexts/tasks/PRIVATE-CASE'));
+  await symlink(path.join(dir, 'outside'), path.join(publicDir, 'private-nested'));
+  result = run(root, output);
+  assert.equal(result.status, 0, result.stderr);
+  const names = JSON.parse(await readFile(path.join(JSON.parse(result.stdout).directory, 'SOURCE-MANIFEST.json'), 'utf8')).files.map(f => f.path);
+  assert.ok(names.includes('contexts/tasks/CRM-DEMO-001/epic.md'));
+  assert.ok(!names.some(name => name.includes('PRIVATE-CASE') || name.includes('private-nested')));
+  // A link at tasks itself must also fail before the public leaf is inspected.
+  await rm(path.join(root, 'contexts/tasks'), { recursive: true });
+  await symlink(path.join(dir, 'outside'), path.join(root, 'contexts/tasks'));
+  result = run(root, output);
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /Symlink in source allowlist: contexts\/tasks\/CRM-DEMO-001/);
+});
+
+test('missing any required public task document fails before creating an archive', async t => {
+  const { root, output } = await fixture(t);
+  for (const name of publicTaskFiles) {
+    const original = await readFile(path.join(root, name));
+    await rm(path.join(root, name));
+    const result = run(root, output);
+    assert.notEqual(result.status, 0, name);
+    assert.ok(result.stderr.includes(`Missing required source files: ${name}`), result.stderr);
+    await assert.rejects(readdir(output), { code: 'ENOENT' });
+    await put(root, name, original);
+  }
 });
 
 test('rejects file or directory symlinks in allowed source trees without traversing them', async t => {

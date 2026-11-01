@@ -57,16 +57,16 @@ epic/Jira exports or plain Markdown. Keep only the relevant work item in context
 The agent does not connect to Confluence/Jira or execute document instructions
 just because an exported document mentions them.
 
-## Understand the two context folders
+## Context ownership across the workspace and project
 
 | Folder | Responsibility | Example |
 | --- | --- | --- |
-| Workspace `agent-system/contexts` | Task routing and resolved project ownership, files and verification commands across the workspace. | `current/ui-context.yml`, generated `resolved-ui-context.yml` |
+| Workspace `agent-system/skills` | Shared workflow instructions and templates. Active tasks and resolved files belong to the selected project. This agent does not require the workspace resolver. | `playwright-ui-change/SKILL.md` for the separate role-aware mockserver workflow |
 | This project's `contexts` | Framework conventions and application knowledge used inside the selected Playwright project. | `app-under-test.yml`, `command-map.yml`, coverage rules and curated captures |
-| This project's `contexts/tasks/<work-item>` | Private requirements and task-specific inputs for one agent request. | `LOGIN-001/task.md` and selected requirement documents |
+| This project's `contexts/tasks/<work-item>` | Private requirements and task-specific inputs for one agent request; the three reviewed `CRM-DEMO-001` synthetic files are the public example. | `LOGIN-001/task.md` and selected requirement documents |
 
-These are separate layers. Do not duplicate the same requirements in both main
-context folders. A current workspace task selecting the role-aware mockserver
+Keep each work item's requirements in its owning project. Workspace skills
+supply workflows and templates. A workspace task selecting the role-aware mockserver
 does not make that project the default target for this explicitly selected
 harness agent. Selecting an external adopting repository must be explicit too.
 Framework templates, generated graphs and saved captures are checked against

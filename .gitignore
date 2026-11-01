@@ -53,8 +53,14 @@ target/
 # Reviewed local security archives are source inputs, not build output.
 !**/scripts/security/*.tgz
 
-# Playwright Agent task inputs and internal quality runtime
-/contexts/tasks/
+# Private task inputs; only the reviewed synthetic CRM demo is shared.
+/contexts/tasks/*
+!/contexts/tasks/CRM-DEMO-001/
+/contexts/tasks/CRM-DEMO-001/**
+!/contexts/tasks/CRM-DEMO-001/epic.md
+!/contexts/tasks/CRM-DEMO-001/jira-tickets.json
+!/contexts/tasks/CRM-DEMO-001/requirements.json
+# Internal quality runtime
 /quality/artifacts/
 /quality/.venv
 # Retired private import path stays ignored if accidentally recreated.
